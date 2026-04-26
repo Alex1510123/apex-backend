@@ -46,12 +46,12 @@ SECTOR_ETFS = {
     "Versorger":      "XLU",
 }
 
-BENCHMARK = "^GSPC"  # S&P 500
+BENCHMARK = "SPY"  # S&P 500
 
 MACRO_TICKERS = {
-    "10Y_Treasury": "^TNX",
+    "10Y_Treasury": "TLT",
     "DXY":          "DX-Y.NYB",
-    "VIX":          "^VIX",
+    "VIX":          "VIXY",
     "Gold":         "GC=F",
     "WTI_Crude":    "CL=F",
     "BTC":          "BTC-USD",
