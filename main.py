@@ -272,11 +272,12 @@ def calc_composite_score(prices: pd.Series, benchmark_prices: pd.Series) -> dict
 
 def calc_returns(prices: pd.Series) -> dict:
     if len(prices) == 0:
-        return {"1M": 0.0, "3M": 0.0, "YTD": 0.0, "1Y": 0.0}
+        return {"1M": 0.0, "3M": 0.0, "6M": 0.0, "YTD": 0.0, "1Y": 0.0}
     last = prices.iloc[-1]
     out  = {
         "1M":  round(float((last / prices.iloc[-21]  - 1) * 100), 2) if len(prices) >= 21  else 0.0,
         "3M":  round(float((last / prices.iloc[-63]  - 1) * 100), 2) if len(prices) >= 63  else 0.0,
+        "6M":  round(float((last / prices.iloc[-126] - 1) * 100), 2) if len(prices) >= 126 else 0.0,
         "1Y":  round(float((last / prices.iloc[-252] - 1) * 100), 2) if len(prices) >= 252 else 0.0,
     }
     ytd        = prices[prices.index.year == prices.index[-1].year]
@@ -428,6 +429,8 @@ def screener_top(limit: int = Query(10, ge=1, le=20)):
                 "rs_vs_spy":  scores["rs"],
                 "perf_1M":    returns["1M"],
                 "perf_3M":    returns["3M"],
+                "perf_6M":    returns["6M"],
+                "perf_1Y":    returns["1Y"],
                 "perf_YTD":   returns["YTD"],
                 "signal": (
                     "Strong Buy" if scores["composite"] >= 80 else
