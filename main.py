@@ -1,5 +1,5 @@
 """
-APEX Markets — Backend API v3 (Polygon.io edition)
+APEX Markets — Backend API v4 (Financial Modeling Prep edition)
 """
 import time
 import requests
@@ -12,33 +12,51 @@ from pydantic import BaseModel
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 
-POLYGON_API_KEY = "mrjT33BPvQVbSrYsdUU1k94NW9Ta0MJe"
-POLYGON_BASE    = "https://api.polygon.io"
+FMP_API_KEY = "M94snYNBq8LP36YITTdkbuicwAykE4U5"
+FMP_BASE    = "https://financialmodelingprep.com/api/v3"
 
 BENCHMARK = "SPY"
 
+# FMP has a built-in /sector-performance endpoint — no ETF proxies needed for sectors.
+# These ETFs are kept for multi-timeframe scoring (1M, 3M, YTD, 1Y) via historical data.
 SECTOR_ETFS = {
-    "Technologie":    "XLK",
-    "Kommunikation":  "XLC",
-    "Finanzen":       "XLF",
-    "Gesundheit":     "XLV",
-    "Industrie":      "XLI",
-    "Konsum_Zyklisch":"XLY",
-    "Konsum_Basis":   "XLP",
-    "Energie":        "XLE",
-    "Materialien":    "XLB",
-    "Immobilien":     "XLRE",
-    "Versorger":      "XLU",
+    "Technologie":     "XLK",
+    "Kommunikation":   "XLC",
+    "Finanzen":        "XLF",
+    "Gesundheit":      "XLV",
+    "Industrie":       "XLI",
+    "Konsum_Zyklisch": "XLY",
+    "Konsum_Basis":    "XLP",
+    "Energie":         "XLE",
+    "Materialien":     "XLB",
+    "Immobilien":      "XLRE",
+    "Versorger":       "XLU",
 }
 
-# ETF proxies for macro indicators — all available via Polygon snapshot
+# FMP sector-performance label → SECTOR_ETFS key
+FMP_SECTOR_MAP = {
+    "Technology":             "Technologie",
+    "Communication Services": "Kommunikation",
+    "Financial Services":     "Finanzen",
+    "Healthcare":             "Gesundheit",
+    "Industrials":            "Industrie",
+    "Consumer Cyclical":      "Konsum_Zyklisch",
+    "Consumer Defensive":     "Konsum_Basis",
+    "Energy":                 "Energie",
+    "Basic Materials":        "Materialien",
+    "Real Estate":            "Immobilien",
+    "Utilities":              "Versorger",
+}
+
+# Macro tickers as requested — FMP handles ETFs, crypto, forex, and indices
 MACRO_TICKERS = {
-    "10Y_Treasury": "TLT",
-    "Volatility":   "VIXY",
+    "S&P 500":      "SPY",
     "Gold":         "GLD",
     "WTI_Crude":    "USO",
-    "Bitcoin":      "GBTC",
-    "US_Dollar":    "UUP",
+    "10Y_Treasury": "TLT",
+    "Bitcoin":      "BTC-USD",
+    "US_Dollar":    "DX-Y.NYB",
+    "Volatility":   "^VIX",
 }
 
 SCREEN_UNIVERSE = [
@@ -52,8 +70,8 @@ SCREEN_UNIVERSE = [
 
 app = FastAPI(
     title="APEX Markets API",
-    description="Marktanalyse-Backend mit Polygon.io Daten",
-    version="3.0.0",
+    description="Marktanalyse-Backend mit Financial Modeling Prep Daten",
+    version="4.0.0",
 )
 
 app.add_middleware(
@@ -81,135 +99,121 @@ class TimedCache:
 
 cache = TimedCache()
 
-# ─── Polygon request layer ────────────────────────────────────────────────────
+# ─── FMP request layer ────────────────────────────────────────────────────────
 
-_last_poly_call: float = 0.0
-_POLY_MIN_INTERVAL = 13.0  # 5 req/min on free tier → 12s apart; 13s adds buffer
+_last_fmp_call: float = 0.0
+_FMP_MIN_INTERVAL = 2.0  # FMP free tier: 250 req/day, ~10 req/min — 2s is conservative
 
-def poly_get(path: str, params: dict | None = None) -> dict:
-    """Rate-limited GET to Polygon REST API."""
-    global _last_poly_call
+def fmp_get(path: str, params: dict | None = None):
+    """Rate-limited GET to FMP REST API. Returns parsed JSON (list or dict)."""
+    global _last_fmp_call
 
-    elapsed = time.time() - _last_poly_call
-    if elapsed < _POLY_MIN_INTERVAL:
-        time.sleep(_POLY_MIN_INTERVAL - elapsed)
+    elapsed = time.time() - _last_fmp_call
+    if elapsed < _FMP_MIN_INTERVAL:
+        time.sleep(_FMP_MIN_INTERVAL - elapsed)
 
     p = dict(params or {})
-    p["apiKey"] = POLYGON_API_KEY
+    p["apikey"] = FMP_API_KEY
 
     try:
-        resp = requests.get(f"{POLYGON_BASE}{path}", params=p, timeout=20)
+        resp = requests.get(f"{FMP_BASE}{path}", params=p, timeout=20)
         resp.raise_for_status()
     except requests.RequestException as e:
-        raise HTTPException(status_code=502, detail=f"Polygon network error: {e}")
+        raise HTTPException(status_code=502, detail=f"FMP network error: {e}")
     finally:
-        _last_poly_call = time.time()
+        _last_fmp_call = time.time()
 
     data = resp.json()
-    status = data.get("status", "")
 
-    # "DELAYED" is valid on free tier (15-min lag); treat as OK
-    if status not in ("OK", "DELAYED", "ok"):
-        raise HTTPException(
-            status_code=502,
-            detail=data.get("message") or data.get("error") or f"Polygon error: {status}",
-        )
+    # FMP returns {"Error Message": "..."} on bad key / invalid ticker
+    if isinstance(data, dict) and "Error Message" in data:
+        raise HTTPException(status_code=502, detail=data["Error Message"])
 
     return data
 
 # ─── Data fetchers ────────────────────────────────────────────────────────────
 
-def fetch_snapshots(tickers: list[str]) -> dict[str, dict]:
+def fetch_quotes(tickers: list[str]) -> dict[str, dict]:
     """
-    Batch snapshot for N tickers — 1 API call regardless of count.
-    Returns {TICKER: {price, change, change_pct, prev_close, volume}}.
-    Cached 15 min.
+    Batch quote fetch — FMP accepts comma-separated tickers in one call.
+    Returns {TICKER: {price, change, change_pct, ...}}.
+    Cached 15 min per individual ticker; only uncached tickers are fetched.
     """
-    # Return from cache for any ticker already cached; only fetch the rest
-    missing   = [t for t in tickers if cache.get(f"snap:{t}", 900) is None]
-    result    = {t: cache.get(f"snap:{t}", 900) for t in tickers if t not in missing}
+    missing = [t for t in tickers if cache.get(f"quote:{t}", 900) is None]
+    result  = {t: cache.get(f"quote:{t}", 900) for t in tickers if t not in missing}
 
     if not missing:
         return result
 
-    # Polygon allows up to ~200 tickers per snapshot call
-    tickers_param = ",".join(missing)
-    data = poly_get(
-        "/v2/snapshot/locale/us/markets/stocks/tickers",
-        {"tickers": tickers_param},
-    )
+    data = fmp_get(f"/quote/{','.join(missing)}")
 
-    for snap in data.get("tickers", []):
-        t        = snap["ticker"]
-        day      = snap.get("day", {})
-        prev_day = snap.get("prevDay", {})
-
-        # Price: prefer lastTrade.p → day.c → prevDay.c
-        price = (
-            (snap.get("lastTrade") or {}).get("p")
-            or day.get("c")
-            or prev_day.get("c")
-            or 0.0
-        )
-        prev_close  = prev_day.get("c") or price
-        change      = snap.get("todaysChange", price - prev_close)
-        change_pct  = snap.get("todaysChangePerc", 0.0)
-
+    for q in (data if isinstance(data, list) else []):
+        sym = q.get("symbol", "")
+        if not sym:
+            continue
         entry = {
-            "ticker":         t,
-            "price":          round(float(price), 2),
-            "previous_close": round(float(prev_close), 2),
-            "change":         round(float(change), 2),
-            "change_pct":     round(float(change_pct), 2),
-            "volume":         int(day.get("v", 0)),
+            "ticker":         sym,
+            "name":           q.get("name", ""),
+            "price":          round(float(q.get("price") or 0), 2),
+            "change":         round(float(q.get("change") or 0), 2),
+            "change_pct":     round(float(q.get("changesPercentage") or 0), 2),
+            "previous_close": round(float(q.get("previousClose") or 0), 2),
+            "volume":         int(q.get("volume") or 0),
+            "market_cap":     q.get("marketCap"),
+            "pe":             q.get("pe"),
         }
-        cache.set(f"snap:{t}", entry)
-        result[t] = entry
+        cache.set(f"quote:{sym}", entry)
+        result[sym] = entry
 
     return result
 
 
-def fetch_aggs(ticker: str, from_date: str, to_date: str) -> pd.DataFrame:
+def fetch_historical(ticker: str, timeseries: int = 365) -> pd.DataFrame:
     """
-    Daily OHLCV bars from Polygon aggs endpoint.
-    from_date / to_date: "YYYY-MM-DD".
-    Cached 24h — daily bars are immutable once the session closes.
+    FMP /historical-price-full — daily OHLCV, adjusted.
+    FMP returns newest-first; we sort ascending for scoring functions.
+    Cached 24h.
     """
-    cache_key = f"aggs:{ticker}:{from_date}:{to_date}"
-    cached = cache.get(cache_key, ttl_seconds=86400)
+    cache_key = f"hist:{ticker}:{timeseries}"
+    cached    = cache.get(cache_key, ttl_seconds=86400)
     if cached is not None:
         return cached
 
-    data = poly_get(
-        f"/v2/aggs/ticker/{ticker}/range/1/day/{from_date}/{to_date}",
-        {"adjusted": "true", "sort": "asc", "limit": 50000},
-    )
+    data       = fmp_get(f"/historical-price-full/{ticker}", {"timeseries": timeseries})
+    historical = data.get("historical", []) if isinstance(data, dict) else []
 
-    results = data.get("results", [])
-    if not results:
-        raise HTTPException(status_code=502, detail=f"No agg data for {ticker} ({from_date}→{to_date})")
+    if not historical:
+        raise HTTPException(status_code=502, detail=f"No historical data for {ticker}")
 
-    df = pd.DataFrame(results)
-    df["date"] = pd.to_datetime(df["t"], unit="ms", utc=True).dt.tz_localize(None)
+    df = pd.DataFrame(historical)
+    df["date"] = pd.to_datetime(df["date"])
     df.set_index("date", inplace=True)
-    df.rename(columns={"o": "Open", "h": "High", "l": "Low", "c": "Close", "v": "Volume"}, inplace=True)
-    df = df[["Open", "High", "Low", "Close", "Volume"]].astype({"Close": float, "Volume": float})
+    df.sort_index(inplace=True)  # ascending — oldest first
+    df.rename(columns={
+        "open": "Open", "high": "High", "low": "Low",
+        "close": "Close", "volume": "Volume",
+    }, inplace=True)
+    df["Close"]  = df["Close"].astype(float)
+    df["Volume"] = pd.to_numeric(df.get("Volume", 0), errors="coerce").fillna(0).astype(int)
 
     cache.set(cache_key, df)
     return df
 
 
-def _date_range(days: int) -> tuple[str, str]:
-    """Returns (from_date, to_date) as "YYYY-MM-DD" strings."""
-    to  = datetime.utcnow()
-    frm = to - timedelta(days=days)
-    return frm.strftime("%Y-%m-%d"), to.strftime("%Y-%m-%d")
+def fetch_sector_performance() -> list[dict]:
+    """
+    FMP /sector-performance — 1d % change for all 11 sectors in one call.
+    Cached 1h.
+    """
+    cache_key = "fmp:sector_perf"
+    cached    = cache.get(cache_key, ttl_seconds=3600)
+    if cached is not None:
+        return cached
 
-
-def fetch_history(ticker: str, days: int = 365) -> pd.DataFrame:
-    """Convenience wrapper around fetch_aggs with a day count."""
-    frm, to = _date_range(days)
-    return fetch_aggs(ticker, frm, to)
+    data   = fmp_get("/sector-performance")
+    result = data if isinstance(data, list) else []
+    cache.set(cache_key, result)
+    return result
 
 # ─── Scoring (unchanged logic) ────────────────────────────────────────────────
 
@@ -240,8 +244,8 @@ def calc_composite_score(prices: pd.Series, benchmark_prices: pd.Series) -> dict
     if len(prices) < 21:
         return {"composite": 50.0, "momentum": 50.0, "rs": 0.0}
 
-    momentum    = calc_momentum_score(prices)
-    common_idx  = prices.index.intersection(benchmark_prices.index)
+    momentum   = calc_momentum_score(prices)
+    common_idx = prices.index.intersection(benchmark_prices.index)
     if len(common_idx) < 21:
         return {"composite": momentum, "momentum": momentum, "rs": 0.0}
 
@@ -267,7 +271,7 @@ def calc_returns(prices: pd.Series) -> dict:
         "3M":  round(float((last / prices.iloc[-63]  - 1) * 100), 2) if len(prices) >= 63  else 0.0,
         "1Y":  round(float((last / prices.iloc[-252] - 1) * 100), 2) if len(prices) >= 252 else 0.0,
     }
-    ytd       = prices[prices.index.year == prices.index[-1].year]
+    ytd        = prices[prices.index.year == prices.index[-1].year]
     out["YTD"] = round(float((ytd.iloc[-1] / ytd.iloc[0] - 1) * 100), 2) if len(ytd) > 1 else 0.0
     return out
 
@@ -289,7 +293,7 @@ def trend_indicator(prices: pd.Series) -> str:
 def root():
     return {
         "service":   "APEX Markets API",
-        "version":   "3.0.0 (Polygon.io)",
+        "version":   "4.0.0 (Financial Modeling Prep)",
         "status":    "online",
         "endpoints": [
             "/health", "/quote/{ticker}", "/history/{ticker}",
@@ -305,11 +309,10 @@ def health():
 
 @app.get("/quote/{ticker}")
 def quote(ticker: str):
-    """Current quote for a single ticker."""
-    snaps = fetch_snapshots([ticker.upper()])
-    data  = snaps.get(ticker.upper())
+    quotes = fetch_quotes([ticker.upper()])
+    data   = quotes.get(ticker.upper())
     if not data:
-        raise HTTPException(status_code=404, detail=f"No snapshot for {ticker}")
+        raise HTTPException(status_code=404, detail=f"No quote for {ticker}")
     return data
 
 
@@ -318,10 +321,9 @@ def history(
     ticker: str,
     period: str = Query("1y", regex="^(1mo|3mo|6mo|1y|2y|5y)$"),
 ):
-    """Daily close prices for the requested period."""
-    period_days = {"1mo": 35, "3mo": 95, "6mo": 185, "1y": 370, "2y": 740, "5y": 1830}
-    frm, to = _date_range(period_days[period])
-    df = fetch_aggs(ticker.upper(), frm, to)
+    """Daily close prices. FMP timeseries = number of trading days."""
+    period_ts = {"1mo": 35, "3mo": 95, "6mo": 185, "1y": 365, "2y": 730, "5y": 1825}
+    df = fetch_historical(ticker.upper(), timeseries=period_ts[period])
 
     out = [
         {"date": idx.strftime("%Y-%m-%d"), "close": round(float(row["Close"]), 2)}
@@ -333,48 +335,60 @@ def history(
 @app.get("/sectors")
 def sectors():
     """
-    Sector ETF performance.
-    Snapshot (1 call) → 1d change.
-    Aggs per ETF (cached 24h) → 1M, 3M, YTD, 1Y + composite score.
+    Sector performance via FMP /sector-performance (1 call → all 11 sectors, 1d change)
+    enriched with multi-timeframe returns and composite scores from ETF history (cached 24h).
     """
     cache_key = "sectors:full"
     cached    = cache.get(cache_key, ttl_seconds=3600)
     if cached is not None:
         return cached
 
-    sector_tickers = list(SECTOR_ETFS.values())
+    # 1d performance for all sectors — 1 API call
+    sector_perf = fetch_sector_performance()
+    perf_by_name: dict[str, float] = {}
+    for item in sector_perf:
+        raw_name = item.get("sector", "")
+        de_name  = FMP_SECTOR_MAP.get(raw_name, raw_name)
+        pct_str  = str(item.get("changesPercentage", "0")).replace("%", "").strip()
+        try:
+            perf_by_name[de_name] = round(float(pct_str), 2)
+        except ValueError:
+            perf_by_name[de_name] = 0.0
 
-    # 1 batch call for current-day quotes
-    snaps           = fetch_snapshots(sector_tickers + [BENCHMARK])
-    benchmark_close = fetch_history(BENCHMARK, days=370)["Close"]
+    benchmark_df    = fetch_historical(BENCHMARK, timeseries=365)
+    benchmark_close = benchmark_df["Close"]
 
     results = []
     for name, ticker in SECTOR_ETFS.items():
         try:
-            snap    = snaps.get(ticker, {})
-            df      = fetch_history(ticker, days=370)
+            df      = fetch_historical(ticker, timeseries=365)
             close   = df["Close"]
             returns = calc_returns(close)
             scores  = calc_composite_score(close, benchmark_close)
             trend   = trend_indicator(close)
 
             results.append({
-                "name":         name,
-                "ticker":       ticker,
-                "price":        snap.get("price", round(float(close.iloc[-1]), 2)),
-                "performance":  snap.get("change_pct", returns["1M"]),  # 1d % for bar chart
-                "perf_1d":      snap.get("change_pct", 0.0),
-                "perf_1M":      returns["1M"],
-                "perf_3M":      returns["3M"],
-                "perf_YTD":     returns["YTD"],
-                "perf_1Y":      returns["1Y"],
-                "score":        scores["composite"],
+                "name":           name,
+                "ticker":         ticker,
+                "performance":    perf_by_name.get(name, returns["1M"]),  # 1d % for bar chart
+                "perf_1d":        perf_by_name.get(name, 0.0),
+                "perf_1M":        returns["1M"],
+                "perf_3M":        returns["3M"],
+                "perf_YTD":       returns["YTD"],
+                "perf_1Y":        returns["1Y"],
+                "score":          scores["composite"],
                 "momentum_score": scores["momentum"],
-                "rs_vs_spy":    scores["rs"],
-                "trend":        trend,
+                "rs_vs_spy":      scores["rs"],
+                "trend":          trend,
             })
         except Exception as e:
-            results.append({"name": name, "ticker": ticker, "error": str(e)})
+            results.append({
+                "name":        name,
+                "ticker":      ticker,
+                "performance": perf_by_name.get(name, 0.0),
+                "perf_1d":     perf_by_name.get(name, 0.0),
+                "error":       str(e),
+            })
 
     results.sort(key=lambda x: x.get("score", 0), reverse=True)
     output = {"timestamp": datetime.utcnow().isoformat(), "sectors": results}
@@ -386,33 +400,33 @@ def sectors():
 def screener_top(limit: int = Query(10, ge=1, le=20)):
     """
     Top stocks by composite score (momentum + RS vs SPY).
-    Snapshot batch (1 call) + aggs per ticker for scoring (cached 24h).
+    Batch quote (1 call) + historical per ticker for scoring (cached 24h).
     """
     cache_key = f"screener:top:{limit}"
     cached    = cache.get(cache_key, ttl_seconds=3600)
     if cached is not None:
         return cached
 
-    # Fetch all quotes in one batch call
-    all_tickers = SCREEN_UNIVERSE + [BENCHMARK]
-    snaps       = fetch_snapshots(all_tickers)
+    # All quotes in one batch call
+    quotes = fetch_quotes(SCREEN_UNIVERSE + [BENCHMARK])
 
-    benchmark_df    = fetch_history(BENCHMARK, days=370)
+    benchmark_df    = fetch_historical(BENCHMARK, timeseries=365)
     benchmark_close = benchmark_df["Close"]
 
     results = []
     for ticker in SCREEN_UNIVERSE:
         try:
-            snap    = snaps.get(ticker, {})
-            df      = fetch_history(ticker, days=370)
+            q       = quotes.get(ticker, {})
+            df      = fetch_historical(ticker, timeseries=365)
             close   = df["Close"]
             scores  = calc_composite_score(close, benchmark_close)
             returns = calc_returns(close)
 
             results.append({
                 "ticker":     ticker,
-                "price":      snap.get("price", round(float(close.iloc[-1]), 2)),
-                "change_pct": snap.get("change_pct", 0.0),
+                "name":       q.get("name", ""),
+                "price":      q.get("price", round(float(close.iloc[-1]), 2)),
+                "change_pct": q.get("change_pct", 0.0),
                 "score":      scores["composite"],
                 "momentum":   scores["momentum"],
                 "rs_vs_spy":  scores["rs"],
@@ -438,22 +452,23 @@ def screener_top(limit: int = Query(10, ge=1, le=20)):
 @app.get("/macro")
 def macro():
     """
-    Macro indicators — all fetched in a single batch snapshot call.
-    Cached 15 min per ticker inside fetch_snapshots.
+    Macro indicators — all fetched in a single batch quote call.
+    Tickers: SPY, GLD, USO, TLT, BTC-USD, DX-Y.NYB, ^VIX.
+    Cached 15 min per ticker inside fetch_quotes.
     """
     tickers = list(MACRO_TICKERS.values())
-    snaps   = fetch_snapshots(tickers)
+    quotes  = fetch_quotes(tickers)
 
     out = []
     for label, ticker in MACRO_TICKERS.items():
-        snap = snaps.get(ticker)
-        if snap:
+        q = quotes.get(ticker)
+        if q:
             out.append({
                 "label":      label,
                 "ticker":     ticker,
-                "value":      snap["price"],
-                "change":     snap["change"],
-                "change_pct": snap["change_pct"],
+                "value":      q["price"],
+                "change":     q["change"],
+                "change_pct": q["change_pct"],
             })
 
     return {"timestamp": datetime.utcnow().isoformat(), "indicators": out}
@@ -474,9 +489,9 @@ def portfolio_analyze(req: PortfolioRequest):
     if not req.positions:
         raise HTTPException(status_code=400, detail="Keine Positionen übergeben")
 
-    tickers         = [p.ticker.upper() for p in req.positions]
-    snaps           = fetch_snapshots(tickers + [BENCHMARK])
-    benchmark_df    = fetch_history(BENCHMARK, days=370)
+    tickers           = [p.ticker.upper() for p in req.positions]
+    quotes            = fetch_quotes(tickers + [BENCHMARK])
+    benchmark_df      = fetch_historical(BENCHMARK, timeseries=365)
     benchmark_returns = benchmark_df["Close"].pct_change().dropna()
 
     enriched    = []
@@ -486,8 +501,8 @@ def portfolio_analyze(req: PortfolioRequest):
     for pos in req.positions:
         ticker = pos.ticker.upper()
         try:
-            snap    = snaps.get(ticker, {})
-            current = snap.get("price") or 0.0
+            q       = quotes.get(ticker, {})
+            current = q.get("price") or 0.0
             if not current:
                 raise ValueError("No price available")
 
@@ -496,7 +511,7 @@ def portfolio_analyze(req: PortfolioRequest):
             pnl     = value - cost
             pnl_pct = (pnl / cost * 100) if cost else 0
 
-            df  = fetch_history(ticker, days=370)
+            df  = fetch_historical(ticker, timeseries=365)
             ret = df["Close"].pct_change().dropna()
 
             enriched.append({
