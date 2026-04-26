@@ -1,5 +1,5 @@
 """
-APEX Markets — Backend API v4 (Financial Modeling Prep edition)
+APEX Markets — Backend API v5 (EODHD edition)
 """
 import time
 import requests
@@ -12,13 +12,11 @@ from pydantic import BaseModel
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 
-FMP_API_KEY = "M94snYNBq8LP36YITTdkbuicwAykE4U5"
-FMP_BASE    = "https://financialmodelingprep.com/api/v3"
+EODHD_API_KEY = "69ee10907be601.18560848"
+EODHD_BASE    = "https://eodhd.com/api"
 
 BENCHMARK = "SPY"
 
-# FMP has a built-in /sector-performance endpoint — no ETF proxies needed for sectors.
-# These ETFs are kept for multi-timeframe scoring (1M, 3M, YTD, 1Y) via historical data.
 SECTOR_ETFS = {
     "Technologie":     "XLK",
     "Kommunikation":   "XLC",
@@ -33,30 +31,23 @@ SECTOR_ETFS = {
     "Versorger":       "XLU",
 }
 
-# FMP sector-performance label → SECTOR_ETFS key
-FMP_SECTOR_MAP = {
-    "Technology":             "Technologie",
-    "Communication Services": "Kommunikation",
-    "Financial Services":     "Finanzen",
-    "Healthcare":             "Gesundheit",
-    "Industrials":            "Industrie",
-    "Consumer Cyclical":      "Konsum_Zyklisch",
-    "Consumer Defensive":     "Konsum_Basis",
-    "Energy":                 "Energie",
-    "Basic Materials":        "Materialien",
-    "Real Estate":            "Immobilien",
-    "Utilities":              "Versorger",
-}
-
-# Macro tickers as requested — FMP handles ETFs, crypto, forex, and indices
+# EODHD ticker format:
+#   US stocks/ETFs : symbol only (SPY, AAPL)
+#   Crypto         : BTC-USD.CC
+#   Forex          : EURUSD.FOREX
+#   Indices        : GDAXI.INDX, ATX.INDX, STOXX50E.INDX
 MACRO_TICKERS = {
-    "S&P 500":      "SPY",
-    "Gold":         "GLD",
-    "WTI_Crude":    "USO",
-    "10Y_Treasury": "TLT",
-    "Bitcoin":      "BTC-USD",
-    "US_Dollar":    "DX-Y.NYB",
-    "Volatility":   "^VIX",
+    "S&P 500":         "SPY",
+    "Gold":            "GLD",
+    "WTI_Crude":       "USO",
+    "10Y_Treasury":    "TLT",
+    "Volatility":      "VIXY",
+    "US_Dollar":       "UUP",
+    "Bitcoin":         "BTC-USD.CC",
+    "EUR/USD":         "EURUSD.FOREX",
+    "DAX":             "GDAXI.INDX",
+    "Euro Stoxx 50":   "STOXX50E.INDX",
+    "ATX":             "ATX.INDX",
 }
 
 SCREEN_UNIVERSE = [
@@ -70,8 +61,8 @@ SCREEN_UNIVERSE = [
 
 app = FastAPI(
     title="APEX Markets API",
-    description="Marktanalyse-Backend mit Financial Modeling Prep Daten",
-    version="4.0.0",
+    description="Marktanalyse-Backend mit EODHD Daten",
+    version="5.0.0",
 )
 
 app.add_middleware(
@@ -99,123 +90,138 @@ class TimedCache:
 
 cache = TimedCache()
 
-# ─── FMP request layer ────────────────────────────────────────────────────────
+# ─── EODHD request layer ──────────────────────────────────────────────────────
 
-_last_fmp_call: float = 0.0
-_FMP_MIN_INTERVAL = 2.0  # FMP free tier: 250 req/day, ~10 req/min — 2s is conservative
+_last_eodhd_call: float = 0.0
+_EODHD_MIN_INTERVAL = 2.0  # conservative — avoids burst issues on any plan tier
 
-def fmp_get(path: str, params: dict | None = None):
-    """Rate-limited GET to FMP REST API. Returns parsed JSON (list or dict)."""
-    global _last_fmp_call
+def eodhd_get(path: str, params: dict | None = None):
+    """Rate-limited GET to EODHD API. Always appends api_token and fmt=json."""
+    global _last_eodhd_call
 
-    elapsed = time.time() - _last_fmp_call
-    if elapsed < _FMP_MIN_INTERVAL:
-        time.sleep(_FMP_MIN_INTERVAL - elapsed)
+    elapsed = time.time() - _last_eodhd_call
+    if elapsed < _EODHD_MIN_INTERVAL:
+        time.sleep(_EODHD_MIN_INTERVAL - elapsed)
 
     p = dict(params or {})
-    p["apikey"] = FMP_API_KEY
+    p["api_token"] = EODHD_API_KEY
+    p["fmt"]       = "json"
 
     try:
-        resp = requests.get(f"{FMP_BASE}{path}", params=p, timeout=20)
+        resp = requests.get(f"{EODHD_BASE}{path}", params=p, timeout=20)
         resp.raise_for_status()
     except requests.RequestException as e:
-        raise HTTPException(status_code=502, detail=f"FMP network error: {e}")
+        raise HTTPException(status_code=502, detail=f"EODHD network error: {e}")
     finally:
-        _last_fmp_call = time.time()
+        _last_eodhd_call = time.time()
 
     data = resp.json()
 
-    # FMP returns {"Error Message": "..."} on bad key / invalid ticker
-    if isinstance(data, dict) and "Error Message" in data:
-        raise HTTPException(status_code=502, detail=data["Error Message"])
+    # EODHD returns plain {"message": "..."} for auth errors
+    if isinstance(data, dict) and "message" in data and not any(
+        k in data for k in ("open", "close", "code", "date")
+    ):
+        raise HTTPException(status_code=502, detail=data["message"])
 
     return data
 
 # ─── Data fetchers ────────────────────────────────────────────────────────────
 
-def fetch_quotes(tickers: list[str]) -> dict[str, dict]:
+def fetch_realtime(tickers: list[str]) -> dict[str, dict]:
     """
-    Batch quote fetch — FMP accepts comma-separated tickers in one call.
-    Returns {TICKER: {price, change, change_pct, ...}}.
-    Cached 15 min per individual ticker; only uncached tickers are fetched.
+    Batch real-time quotes via EODHD /real-time endpoint.
+    One call returns all tickers using the &s= multi-ticker parameter.
+    EODHD returns a single object when 1 ticker, array when multiple.
+    Cached 15 min per ticker; only uncached tickers are fetched.
     """
-    missing = [t for t in tickers if cache.get(f"quote:{t}", 900) is None]
-    result  = {t: cache.get(f"quote:{t}", 900) for t in tickers if t not in missing}
+    missing = [t for t in tickers if cache.get(f"rt:{t}", 900) is None]
+    result  = {t: cache.get(f"rt:{t}", 900) for t in tickers if t not in missing}
 
     if not missing:
         return result
 
-    data = fmp_get(f"/quote/{','.join(missing)}")
+    # Path uses the first ticker; all tickers go into the &s= param
+    path_ticker = missing[0]
+    data = eodhd_get(f"/real-time/{path_ticker}", {"s": ",".join(missing)})
 
-    for q in (data if isinstance(data, list) else []):
-        sym = q.get("symbol", "")
+    # Normalise single-object vs array response
+    items = data if isinstance(data, list) else [data]
+
+    for item in items:
+        sym  = item.get("code", "")
         if not sym:
             continue
+
+        price      = float(item.get("close")         or item.get("previousClose") or 0)
+        prev_close = float(item.get("previousClose") or price)
+        change     = float(item.get("change")        or 0)
+        change_pct = float(item.get("change_p")      or 0)
+
         entry = {
             "ticker":         sym,
-            "name":           q.get("name", ""),
-            "price":          round(float(q.get("price") or 0), 2),
-            "change":         round(float(q.get("change") or 0), 2),
-            "change_pct":     round(float(q.get("changesPercentage") or 0), 2),
-            "previous_close": round(float(q.get("previousClose") or 0), 2),
-            "volume":         int(q.get("volume") or 0),
-            "market_cap":     q.get("marketCap"),
-            "pe":             q.get("pe"),
+            "price":          round(price, 4),        # 4dp for forex/crypto
+            "previous_close": round(prev_close, 4),
+            "change":         round(change, 4),
+            "change_pct":     round(change_pct, 4),
+            "volume":         int(item.get("volume") or 0),
         }
-        cache.set(f"quote:{sym}", entry)
+        cache.set(f"rt:{sym}", entry)
         result[sym] = entry
 
     return result
 
 
-def fetch_historical(ticker: str, timeseries: int = 365) -> pd.DataFrame:
+def fetch_eod(ticker: str, from_date: str, to_date: str) -> pd.DataFrame:
     """
-    FMP /historical-price-full — daily OHLCV, adjusted.
-    FMP returns newest-first; we sort ascending for scoring functions.
+    Historical daily OHLCV via EODHD /eod endpoint.
+    EODHD returns data in ascending order (oldest first).
     Cached 24h.
     """
-    cache_key = f"hist:{ticker}:{timeseries}"
+    cache_key = f"eod:{ticker}:{from_date}:{to_date}"
     cached    = cache.get(cache_key, ttl_seconds=86400)
     if cached is not None:
         return cached
 
-    data       = fmp_get(f"/historical-price-full/{ticker}", {"timeseries": timeseries})
-    historical = data.get("historical", []) if isinstance(data, dict) else []
+    data = eodhd_get(f"/eod/{ticker}", {"from": from_date, "to": to_date})
 
-    if not historical:
-        raise HTTPException(status_code=502, detail=f"No historical data for {ticker}")
+    if not isinstance(data, list) or len(data) == 0:
+        raise HTTPException(status_code=502, detail=f"No EOD data for {ticker}")
 
-    df = pd.DataFrame(historical)
+    df = pd.DataFrame(data)
     df["date"] = pd.to_datetime(df["date"])
     df.set_index("date", inplace=True)
-    df.sort_index(inplace=True)  # ascending — oldest first
+    df.sort_index(inplace=True)
     df.rename(columns={
-        "open": "Open", "high": "High", "low": "Low",
-        "close": "Close", "volume": "Volume",
+        "open":           "Open",
+        "high":           "High",
+        "low":            "Low",
+        "adjusted_close": "Close",   # use split/dividend-adjusted close
+        "volume":         "Volume",
     }, inplace=True)
-    df["Close"]  = df["Close"].astype(float)
+
+    # Fall back to unadjusted close if adjusted_close is missing
+    if "Close" not in df.columns and "close" in df.columns:
+        df.rename(columns={"close": "Close"}, inplace=True)
+
+    df["Close"]  = pd.to_numeric(df["Close"],  errors="coerce").ffill()
     df["Volume"] = pd.to_numeric(df.get("Volume", 0), errors="coerce").fillna(0).astype(int)
 
     cache.set(cache_key, df)
     return df
 
 
-def fetch_sector_performance() -> list[dict]:
-    """
-    FMP /sector-performance — 1d % change for all 11 sectors in one call.
-    Cached 1h.
-    """
-    cache_key = "fmp:sector_perf"
-    cached    = cache.get(cache_key, ttl_seconds=3600)
-    if cached is not None:
-        return cached
+def _date_range(days: int) -> tuple[str, str]:
+    """(from_date, to_date) as YYYY-MM-DD strings."""
+    to  = datetime.utcnow()
+    frm = to - timedelta(days=days)
+    return frm.strftime("%Y-%m-%d"), to.strftime("%Y-%m-%d")
 
-    data   = fmp_get("/sector-performance")
-    result = data if isinstance(data, list) else []
-    cache.set(cache_key, result)
-    return result
 
-# ─── Scoring (unchanged logic) ────────────────────────────────────────────────
+def fetch_history(ticker: str, days: int = 370) -> pd.DataFrame:
+    frm, to = _date_range(days)
+    return fetch_eod(ticker, frm, to)
+
+# ─── Scoring ──────────────────────────────────────────────────────────────────
 
 def calc_relative_strength(ticker_returns: pd.Series, benchmark_returns: pd.Series) -> float:
     if len(ticker_returns) == 0 or len(benchmark_returns) == 0:
@@ -234,8 +240,7 @@ def calc_momentum_score(prices: pd.Series) -> float:
         r_6m  = (prices.iloc[-1] / prices.iloc[-126] - 1) if len(prices) >= 126 else r_3m
         r_12m = (prices.iloc[-1] / prices.iloc[-252] - 1) if len(prices) >= 252 else r_6m
         weighted = 0.4 * r_1m + 0.3 * r_3m + 0.2 * r_6m + 0.1 * r_12m
-        score = 50 + np.tanh(weighted * 5) * 50
-        return float(np.clip(score, 0, 100))
+        return float(np.clip(50 + np.tanh(weighted * 5) * 50, 0, 100))
     except Exception:
         return 50.0
 
@@ -253,8 +258,7 @@ def calc_composite_score(prices: pd.Series, benchmark_prices: pd.Series) -> dict
     b  = benchmark_prices.loc[common_idx].iloc[-63:] if len(common_idx) >= 63 else benchmark_prices.loc[common_idx]
     rs = calc_relative_strength(p.pct_change().dropna(), b.pct_change().dropna())
 
-    rs_score  = 50 + np.tanh(rs / 10) * 50
-    composite = 0.5 * momentum + 0.5 * rs_score
+    composite = 0.5 * momentum + 0.5 * (50 + np.tanh(rs / 10) * 50)
     return {
         "composite": round(float(composite), 1),
         "momentum":  round(float(momentum), 1),
@@ -293,7 +297,7 @@ def trend_indicator(prices: pd.Series) -> str:
 def root():
     return {
         "service":   "APEX Markets API",
-        "version":   "4.0.0 (Financial Modeling Prep)",
+        "version":   "5.0.0 (EODHD)",
         "status":    "online",
         "endpoints": [
             "/health", "/quote/{ticker}", "/history/{ticker}",
@@ -309,8 +313,8 @@ def health():
 
 @app.get("/quote/{ticker}")
 def quote(ticker: str):
-    quotes = fetch_quotes([ticker.upper()])
-    data   = quotes.get(ticker.upper())
+    snaps = fetch_realtime([ticker.upper()])
+    data  = snaps.get(ticker.upper())
     if not data:
         raise HTTPException(status_code=404, detail=f"No quote for {ticker}")
     return data
@@ -321,12 +325,11 @@ def history(
     ticker: str,
     period: str = Query("1y", regex="^(1mo|3mo|6mo|1y|2y|5y)$"),
 ):
-    """Daily close prices. FMP timeseries = number of trading days."""
-    period_ts = {"1mo": 35, "3mo": 95, "6mo": 185, "1y": 365, "2y": 730, "5y": 1825}
-    df = fetch_historical(ticker.upper(), timeseries=period_ts[period])
+    period_days = {"1mo": 35, "3mo": 95, "6mo": 185, "1y": 370, "2y": 740, "5y": 1830}
+    df = fetch_history(ticker.upper(), days=period_days[period])
 
     out = [
-        {"date": idx.strftime("%Y-%m-%d"), "close": round(float(row["Close"]), 2)}
+        {"date": idx.strftime("%Y-%m-%d"), "close": round(float(row["Close"]), 4)}
         for idx, row in df.iterrows()
     ]
     return {"ticker": ticker.upper(), "period": period, "data": out}
@@ -335,33 +338,24 @@ def history(
 @app.get("/sectors")
 def sectors():
     """
-    Sector performance via FMP /sector-performance (1 call → all 11 sectors, 1d change)
-    enriched with multi-timeframe returns and composite scores from ETF history (cached 24h).
+    Sector ETF quotes (1 batch call) + EOD history per ETF for multi-timeframe
+    returns and composite scoring. Full result cached 1h; history cached 24h.
     """
     cache_key = "sectors:full"
     cached    = cache.get(cache_key, ttl_seconds=3600)
     if cached is not None:
         return cached
 
-    # 1d performance for all sectors — 1 API call
-    sector_perf = fetch_sector_performance()
-    perf_by_name: dict[str, float] = {}
-    for item in sector_perf:
-        raw_name = item.get("sector", "")
-        de_name  = FMP_SECTOR_MAP.get(raw_name, raw_name)
-        pct_str  = str(item.get("changesPercentage", "0")).replace("%", "").strip()
-        try:
-            perf_by_name[de_name] = round(float(pct_str), 2)
-        except ValueError:
-            perf_by_name[de_name] = 0.0
-
-    benchmark_df    = fetch_historical(BENCHMARK, timeseries=365)
+    sector_tickers = list(SECTOR_ETFS.values())
+    snaps          = fetch_realtime(sector_tickers + [BENCHMARK])
+    benchmark_df   = fetch_history(BENCHMARK, days=370)
     benchmark_close = benchmark_df["Close"]
 
     results = []
     for name, ticker in SECTOR_ETFS.items():
         try:
-            df      = fetch_historical(ticker, timeseries=365)
+            snap    = snaps.get(ticker, {})
+            df      = fetch_history(ticker, days=370)
             close   = df["Close"]
             returns = calc_returns(close)
             scores  = calc_composite_score(close, benchmark_close)
@@ -370,8 +364,9 @@ def sectors():
             results.append({
                 "name":           name,
                 "ticker":         ticker,
-                "performance":    perf_by_name.get(name, returns["1M"]),  # 1d % for bar chart
-                "perf_1d":        perf_by_name.get(name, 0.0),
+                "price":          snap.get("price", round(float(close.iloc[-1]), 2)),
+                "performance":    snap.get("change_pct", returns["1M"]),  # 1d % for bar chart
+                "perf_1d":        snap.get("change_pct", 0.0),
                 "perf_1M":        returns["1M"],
                 "perf_3M":        returns["3M"],
                 "perf_YTD":       returns["YTD"],
@@ -385,8 +380,8 @@ def sectors():
             results.append({
                 "name":        name,
                 "ticker":      ticker,
-                "performance": perf_by_name.get(name, 0.0),
-                "perf_1d":     perf_by_name.get(name, 0.0),
+                "performance": snaps.get(ticker, {}).get("change_pct", 0.0),
+                "perf_1d":     snaps.get(ticker, {}).get("change_pct", 0.0),
                 "error":       str(e),
             })
 
@@ -400,33 +395,30 @@ def sectors():
 def screener_top(limit: int = Query(10, ge=1, le=20)):
     """
     Top stocks by composite score (momentum + RS vs SPY).
-    Batch quote (1 call) + historical per ticker for scoring (cached 24h).
+    Batch real-time (1 call) for quotes; EOD per ticker for scoring (cached 24h).
     """
     cache_key = f"screener:top:{limit}"
     cached    = cache.get(cache_key, ttl_seconds=3600)
     if cached is not None:
         return cached
 
-    # All quotes in one batch call
-    quotes = fetch_quotes(SCREEN_UNIVERSE + [BENCHMARK])
-
-    benchmark_df    = fetch_historical(BENCHMARK, timeseries=365)
+    snaps           = fetch_realtime(SCREEN_UNIVERSE + [BENCHMARK])
+    benchmark_df    = fetch_history(BENCHMARK, days=370)
     benchmark_close = benchmark_df["Close"]
 
     results = []
     for ticker in SCREEN_UNIVERSE:
         try:
-            q       = quotes.get(ticker, {})
-            df      = fetch_historical(ticker, timeseries=365)
+            snap    = snaps.get(ticker, {})
+            df      = fetch_history(ticker, days=370)
             close   = df["Close"]
             scores  = calc_composite_score(close, benchmark_close)
             returns = calc_returns(close)
 
             results.append({
                 "ticker":     ticker,
-                "name":       q.get("name", ""),
-                "price":      q.get("price", round(float(close.iloc[-1]), 2)),
-                "change_pct": q.get("change_pct", 0.0),
+                "price":      snap.get("price", round(float(close.iloc[-1]), 2)),
+                "change_pct": snap.get("change_pct", 0.0),
                 "score":      scores["composite"],
                 "momentum":   scores["momentum"],
                 "rs_vs_spy":  scores["rs"],
@@ -452,23 +444,22 @@ def screener_top(limit: int = Query(10, ge=1, le=20)):
 @app.get("/macro")
 def macro():
     """
-    Macro indicators — all fetched in a single batch quote call.
-    Tickers: SPY, GLD, USO, TLT, BTC-USD, DX-Y.NYB, ^VIX.
-    Cached 15 min per ticker inside fetch_quotes.
+    Macro indicators — single batch real-time call covers all tickers including
+    crypto (BTC-USD.CC), forex (EURUSD.FOREX), and indices (GDAXI.INDX, etc.).
     """
     tickers = list(MACRO_TICKERS.values())
-    quotes  = fetch_quotes(tickers)
+    snaps   = fetch_realtime(tickers)
 
     out = []
     for label, ticker in MACRO_TICKERS.items():
-        q = quotes.get(ticker)
-        if q:
+        snap = snaps.get(ticker)
+        if snap:
             out.append({
                 "label":      label,
                 "ticker":     ticker,
-                "value":      q["price"],
-                "change":     q["change"],
-                "change_pct": q["change_pct"],
+                "value":      snap["price"],
+                "change":     snap["change"],
+                "change_pct": snap["change_pct"],
             })
 
     return {"timestamp": datetime.utcnow().isoformat(), "indicators": out}
@@ -490,8 +481,8 @@ def portfolio_analyze(req: PortfolioRequest):
         raise HTTPException(status_code=400, detail="Keine Positionen übergeben")
 
     tickers           = [p.ticker.upper() for p in req.positions]
-    quotes            = fetch_quotes(tickers + [BENCHMARK])
-    benchmark_df      = fetch_historical(BENCHMARK, timeseries=365)
+    snaps             = fetch_realtime(tickers + [BENCHMARK])
+    benchmark_df      = fetch_history(BENCHMARK, days=370)
     benchmark_returns = benchmark_df["Close"].pct_change().dropna()
 
     enriched    = []
@@ -501,8 +492,8 @@ def portfolio_analyze(req: PortfolioRequest):
     for pos in req.positions:
         ticker = pos.ticker.upper()
         try:
-            q       = quotes.get(ticker, {})
-            current = q.get("price") or 0.0
+            snap    = snaps.get(ticker, {})
+            current = snap.get("price") or 0.0
             if not current:
                 raise ValueError("No price available")
 
@@ -511,7 +502,7 @@ def portfolio_analyze(req: PortfolioRequest):
             pnl     = value - cost
             pnl_pct = (pnl / cost * 100) if cost else 0
 
-            df  = fetch_historical(ticker, timeseries=365)
+            df  = fetch_history(ticker, days=370)
             ret = df["Close"].pct_change().dropna()
 
             enriched.append({
