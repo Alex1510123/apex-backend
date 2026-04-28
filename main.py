@@ -94,6 +94,40 @@ class TimedCache:
 
 cache = TimedCache()
 
+# ─── Ticker format resolution ─────────────────────────────────────────────────
+
+def _eodhd_ticker_formats(ticker: str) -> list[str]:
+    """Return EODHD formats to try in order.
+    Tickers that already contain a dot (BTC-USD.CC, GDAXI.INDX) are tried as-is only."""
+    if "." in ticker:
+        return [ticker]
+    return [ticker, f"{ticker}.US", f"{ticker}.NASDAQ"]
+
+
+def _fetch_rt_one(fmt: str) -> dict | None:
+    """Single real-time lookup for one EODHD ticker format. Returns normalised quote or None."""
+    try:
+        data  = eodhd_get(f"/real-time/{fmt}")
+        items = data if isinstance(data, list) else [data]
+        item  = items[0] if items else {}
+        price = float(item.get("close") or item.get("previousClose") or 0)
+        if not price:
+            return None
+        prev = float(item.get("previousClose") or price)
+        return {
+            "ticker":         item.get("code", fmt),
+            "symbol":         item.get("code", fmt),
+            "shortName":      item.get("name", fmt),
+            "price":          round(price, 4),
+            "previous_close": round(prev, 4),
+            "change":         round(float(item.get("change")   or 0), 4),
+            "change_pct":     round(float(item.get("change_p") or 0), 4),
+            "volume":         int(item.get("volume") or 0),
+        }
+    except Exception:
+        return None
+
+
 # ─── EODHD request layer ──────────────────────────────────────────────────────
 
 _last_eodhd_call: float = 0.0
@@ -134,8 +168,8 @@ def eodhd_get(path: str, params: dict | None = None):
 def fetch_realtime(tickers: list[str]) -> dict[str, dict]:
     """
     Batch real-time quotes via EODHD /real-time endpoint.
-    One call returns all tickers using the &s= multi-ticker parameter.
-    EODHD returns a single object when 1 ticker, array when multiple.
+    Tickers missing from the batch response are retried individually with
+    .US and .NASDAQ suffixes before giving up.
     Cached 15 min per ticker; only uncached tickers are fetched.
     """
     missing = [t for t in tickers if cache.get(f"rt:{t}", 900) is None]
@@ -144,33 +178,57 @@ def fetch_realtime(tickers: list[str]) -> dict[str, dict]:
     if not missing:
         return result
 
-    # Path uses the first ticker; all tickers go into the &s= param
-    path_ticker = missing[0]
-    data = eodhd_get(f"/real-time/{path_ticker}", {"s": ",".join(missing)})
+    found: set[str] = set()
 
-    # Normalise single-object vs array response
-    items = data if isinstance(data, list) else [data]
+    # Batch call — path uses first ticker; all go into &s= as well
+    try:
+        path_ticker = missing[0]
+        data  = eodhd_get(f"/real-time/{path_ticker}", {"s": ",".join(missing)})
+        items = data if isinstance(data, list) else [data]
 
-    for item in items:
-        sym  = item.get("code", "")
-        if not sym:
+        for item in items:
+            sym = item.get("code", "")
+            if not sym:
+                continue
+
+            price      = float(item.get("close")         or item.get("previousClose") or 0)
+            prev_close = float(item.get("previousClose") or price)
+            entry = {
+                "ticker":         sym,
+                "symbol":         sym,
+                "price":          round(price, 4),
+                "previous_close": round(prev_close, 4),
+                "change":         round(float(item.get("change")   or 0), 4),
+                "change_pct":     round(float(item.get("change_p") or 0), 4),
+                "volume":         int(item.get("volume") or 0),
+            }
+            cache.set(f"rt:{sym}", entry)
+            result[sym] = entry
+            found.add(sym)
+            # Also index by base ticker if EODHD returned an exchange-suffixed code
+            base = sym.rsplit(".", 1)[0] if "." in sym else sym
+            if base != sym:
+                cache.set(f"rt:{base}", entry)
+                result[base] = entry
+                found.add(base)
+    except Exception:
+        pass  # batch failed; per-ticker fallback below covers everything
+
+    # Per-ticker fallback for anything still absent after the batch call
+    for t in missing:
+        if t in found:
             continue
-
-        price      = float(item.get("close")         or item.get("previousClose") or 0)
-        prev_close = float(item.get("previousClose") or price)
-        change     = float(item.get("change")        or 0)
-        change_pct = float(item.get("change_p")      or 0)
-
-        entry = {
-            "ticker":         sym,
-            "price":          round(price, 4),        # 4dp for forex/crypto
-            "previous_close": round(prev_close, 4),
-            "change":         round(change, 4),
-            "change_pct":     round(change_pct, 4),
-            "volume":         int(item.get("volume") or 0),
-        }
-        cache.set(f"rt:{sym}", entry)
-        result[sym] = entry
+        for fmt in _eodhd_ticker_formats(t):
+            if fmt == t:
+                continue  # already attempted in the batch call
+            entry = _fetch_rt_one(fmt)
+            if entry:
+                cache.set(f"rt:{t}",   entry)
+                cache.set(f"rt:{fmt}", entry)
+                result[t]   = entry
+                result[fmt] = entry
+                found.add(t)
+                break
 
     return result
 
@@ -178,40 +236,45 @@ def fetch_realtime(tickers: list[str]) -> dict[str, dict]:
 def fetch_eod(ticker: str, from_date: str, to_date: str) -> pd.DataFrame:
     """
     Historical daily OHLCV via EODHD /eod endpoint.
-    EODHD returns data in ascending order (oldest first).
-    Cached 24h.
+    Tries bare ticker first, then .US and .NASDAQ suffixes if no data is returned.
+    EODHD returns data in ascending order (oldest first). Cached 24h.
     """
-    cache_key = f"eod:{ticker}:{from_date}:{to_date}"
-    cached    = cache.get(cache_key, ttl_seconds=86400)
-    if cached is not None:
-        return cached
+    for fmt in _eodhd_ticker_formats(ticker):
+        cache_key = f"eod:{fmt}:{from_date}:{to_date}"
+        cached    = cache.get(cache_key, ttl_seconds=86400)
+        if cached is not None:
+            return cached
 
-    data = eodhd_get(f"/eod/{ticker}", {"from": from_date, "to": to_date})
+        try:
+            data = eodhd_get(f"/eod/{fmt}", {"from": from_date, "to": to_date})
+        except HTTPException:
+            continue
 
-    if not isinstance(data, list) or len(data) == 0:
-        raise HTTPException(status_code=502, detail=f"No EOD data for {ticker}")
+        if not isinstance(data, list) or len(data) == 0:
+            continue
 
-    df = pd.DataFrame(data)
-    df["date"] = pd.to_datetime(df["date"])
-    df.set_index("date", inplace=True)
-    df.sort_index(inplace=True)
-    df.rename(columns={
-        "open":           "Open",
-        "high":           "High",
-        "low":            "Low",
-        "adjusted_close": "Close",   # use split/dividend-adjusted close
-        "volume":         "Volume",
-    }, inplace=True)
+        df = pd.DataFrame(data)
+        df["date"] = pd.to_datetime(df["date"])
+        df.set_index("date", inplace=True)
+        df.sort_index(inplace=True)
+        df.rename(columns={
+            "open":           "Open",
+            "high":           "High",
+            "low":            "Low",
+            "adjusted_close": "Close",   # use split/dividend-adjusted close
+            "volume":         "Volume",
+        }, inplace=True)
 
-    # Fall back to unadjusted close if adjusted_close is missing
-    if "Close" not in df.columns and "close" in df.columns:
-        df.rename(columns={"close": "Close"}, inplace=True)
+        if "Close" not in df.columns and "close" in df.columns:
+            df.rename(columns={"close": "Close"}, inplace=True)
 
-    df["Close"]  = pd.to_numeric(df["Close"],  errors="coerce").ffill()
-    df["Volume"] = pd.to_numeric(df.get("Volume", 0), errors="coerce").fillna(0).astype(int)
+        df["Close"]  = pd.to_numeric(df["Close"],  errors="coerce").ffill()
+        df["Volume"] = pd.to_numeric(df.get("Volume", 0), errors="coerce").fillna(0).astype(int)
 
-    cache.set(cache_key, df)
-    return df
+        cache.set(cache_key, df)
+        return df
+
+    raise HTTPException(status_code=502, detail=f"No EOD data for {ticker}")
 
 
 def _date_range(days: int) -> tuple[str, str]:
@@ -305,8 +368,9 @@ def root():
         "version":   "5.0.0 (EODHD)",
         "status":    "online",
         "endpoints": [
-            "/health", "/quote/{ticker}", "/history/{ticker}",
-            "/sectors", "/screener/top", "/macro", "/portfolio/analyze",
+            "/health", "/quote/{ticker}", "/search/{ticker}",
+            "/history/{ticker}", "/sectors", "/screener/top",
+            "/macro", "/portfolio/analyze",
         ],
     }
 
@@ -318,11 +382,35 @@ def health():
 
 @app.get("/quote/{ticker}")
 def quote(ticker: str):
-    snaps = fetch_realtime([ticker.upper()])
-    data  = snaps.get(ticker.upper())
+    t     = ticker.strip().upper()
+    snaps = fetch_realtime([t])
+    data  = snaps.get(t)
     if not data:
         raise HTTPException(status_code=404, detail=f"No quote for {ticker}")
-    return data
+    return {**data, "symbol": data.get("symbol", t)}
+
+
+@app.get("/search/{ticker}")
+def search_ticker(ticker: str):
+    """
+    Resolve a ticker to its working EODHD format by trying bare ticker, then .US, then .NASDAQ.
+    Returns {"found": true, "ticker_eodhd": "SOXX.US", "price": 234.5} or {"found": false}.
+    Used by the frontend to validate custom tickers before adding them to the RRG chart.
+    """
+    t = ticker.strip().upper()
+    for fmt in _eodhd_ticker_formats(t):
+        entry = _fetch_rt_one(fmt)
+        if entry and entry.get("price"):
+            return {
+                "found":        True,
+                "ticker":       t,
+                "ticker_eodhd": fmt,
+                "price":        entry["price"],
+                "change_pct":   entry["change_pct"],
+                "symbol":       entry.get("symbol", fmt),
+                "shortName":    entry.get("shortName", fmt),
+            }
+    return {"found": False, "ticker": t}
 
 
 @app.get("/history/{ticker}")
