@@ -37,10 +37,10 @@ SECTOR_ETFS = {
 #   Forex          : EURUSD.FOREX
 #   Indices        : GDAXI.INDX, ATX.INDX, STOXX50E.INDX
 MACRO_TICKERS = {
-    "S&P 500":         "SPY",
+    "S&P 500":         "GSPC.INDX",
     "Gold":            "GLD",
-    "WTI_Crude":       "USO",
-    "10Y_Treasury":    "TLT",
+    "WTI_Crude":       "UKOIL.COMMODITY",
+    "10Y_Treasury":    "TNX.INDX",
     "Volatility":      "VIXY",
     "US_Dollar":       "UUP",
     "Bitcoin":         "BTC-USD.CC",
@@ -549,10 +549,14 @@ def macro():
     for label, ticker in MACRO_TICKERS.items():
         snap = snaps.get(ticker)
         if snap:
+            value = snap["price"]
+            # EODHD reports TNX.INDX scaled x10 (e.g. 43 instead of 4.3)
+            if ticker == "TNX.INDX" and value > 20:
+                value = round(value / 10, 4)
             out.append({
                 "label":      label,
                 "ticker":     ticker,
-                "value":      snap["price"],
+                "value":      value,
                 "change":     snap["change"],
                 "change_pct": snap["change_pct"],
             })
