@@ -51,11 +51,60 @@ MACRO_TICKERS = {
 }
 
 SCREEN_UNIVERSE = [
-    "AAPL", "MSFT", "NVDA", "GOOGL", "META",
-    "AMZN", "TSLA", "JPM",  "LLY",  "XOM",
-    "V",    "UNH",  "AVGO", "HD",   "CAT",
-    "ORCL", "CRM",  "AMD",  "GS",   "MA",
+    # Technology
+    "AAPL",  "MSFT",  "NVDA",  "GOOGL", "META",  "AVGO",  "AMD",   "ORCL",  "CRM",
+    # Communication
+    "NFLX",  "DIS",
+    # Consumer Discretionary
+    "AMZN",  "TSLA",  "HD",    "MCD",
+    # Healthcare
+    "LLY",   "UNH",   "JNJ",   "ABBV",
+    # Financials
+    "JPM",   "V",     "MA",    "GS",    "BAC",
+    # Energy
+    "XOM",   "CVX",
+    # Industrials
+    "CAT",   "HON",   "BA",
+    # Materials / Real Estate / Utilities / Staples
+    "LIN",   "AMT",   "NEE",   "PG",    "WMT",
 ]
+
+TICKER_META = {
+    "AAPL":  ("Apple Inc.",         "Technology"),
+    "MSFT":  ("Microsoft",          "Technology"),
+    "NVDA":  ("NVIDIA",             "Technology"),
+    "GOOGL": ("Alphabet",           "Technology"),
+    "META":  ("Meta Platforms",     "Technology"),
+    "AVGO":  ("Broadcom",           "Technology"),
+    "AMD":   ("Advanced Micro Dev.","Technology"),
+    "ORCL":  ("Oracle",             "Technology"),
+    "CRM":   ("Salesforce",         "Technology"),
+    "NFLX":  ("Netflix",            "Communication"),
+    "DIS":   ("Walt Disney",        "Communication"),
+    "AMZN":  ("Amazon",             "Consumer"),
+    "TSLA":  ("Tesla",              "Consumer"),
+    "HD":    ("Home Depot",         "Consumer"),
+    "MCD":   ("McDonald's",         "Consumer"),
+    "LLY":   ("Eli Lilly",          "Healthcare"),
+    "UNH":   ("UnitedHealth",       "Healthcare"),
+    "JNJ":   ("Johnson & Johnson",  "Healthcare"),
+    "ABBV":  ("AbbVie",             "Healthcare"),
+    "JPM":   ("JPMorgan Chase",     "Finance"),
+    "V":     ("Visa",               "Finance"),
+    "MA":    ("Mastercard",         "Finance"),
+    "GS":    ("Goldman Sachs",      "Finance"),
+    "BAC":   ("Bank of America",    "Finance"),
+    "XOM":   ("ExxonMobil",         "Energy"),
+    "CVX":   ("Chevron",            "Energy"),
+    "CAT":   ("Caterpillar",        "Industrials"),
+    "HON":   ("Honeywell",          "Industrials"),
+    "BA":    ("Boeing",             "Industrials"),
+    "LIN":   ("Linde",              "Materials"),
+    "AMT":   ("American Tower",     "Real Estate"),
+    "NEE":   ("NextEra Energy",     "Utilities"),
+    "PG":    ("Procter & Gamble",   "Staples"),
+    "WMT":   ("Walmart",            "Staples"),
+}
 
 # ─── App ──────────────────────────────────────────────────────────────────────
 
@@ -485,15 +534,15 @@ def sectors():
 
 
 @app.get("/screener/top")
-def screener_top(limit: int = Query(10, ge=1, le=20)):
+def screener_top(limit: int = Query(20, ge=1, le=50)):
     """
     Top stocks by composite score (momentum + RS vs SPY).
-    Batch real-time (1 call) for quotes; EOD per ticker for scoring (cached 24h).
+    Full universe computed once and cached 4h; limit slices the sorted result.
     """
-    cache_key = f"screener:top:{limit}"
-    cached    = cache.get(cache_key, ttl_seconds=3600)
+    full_cache_key = "screener:full"
+    cached         = cache.get(full_cache_key, ttl_seconds=14400)
     if cached is not None:
-        return cached
+        return {"timestamp": cached["timestamp"], "results": cached["results"][:limit]}
 
     snaps           = fetch_realtime(SCREEN_UNIVERSE + [BENCHMARK])
     benchmark_df    = fetch_history(BENCHMARK, days=370)
@@ -508,9 +557,18 @@ def screener_top(limit: int = Query(10, ge=1, le=20)):
             scores  = calc_composite_score(close, benchmark_close)
             returns = calc_returns(close)
 
+            curr     = snap.get("price", round(float(close.iloc[-1]), 2))
+            high_52w = round(float(close.max()), 2)
+            low_52w  = round(float(close.min()), 2)
+            pos_52w  = round((curr - low_52w) / (high_52w - low_52w) * 100, 1) if high_52w != low_52w else 50.0
+
+            meta_name, meta_sector = TICKER_META.get(ticker, (ticker, "Other"))
+
             results.append({
                 "ticker":     ticker,
-                "price":      snap.get("price", round(float(close.iloc[-1]), 2)),
+                "name":       meta_name,
+                "sector":     meta_sector,
+                "price":      curr,
                 "change_pct": snap.get("change_pct", 0.0),
                 "score":      scores["composite"],
                 "momentum":   scores["momentum"],
@@ -520,6 +578,9 @@ def screener_top(limit: int = Query(10, ge=1, le=20)):
                 "perf_6M":    returns["6M"],
                 "perf_1Y":    returns["1Y"],
                 "perf_YTD":   returns["YTD"],
+                "pos_52w":    pos_52w,
+                "high_52w":   high_52w,
+                "low_52w":    low_52w,
                 "signal": (
                     "Strong Buy" if scores["composite"] >= 80 else
                     "Buy"        if scores["composite"] >= 65 else
@@ -531,9 +592,9 @@ def screener_top(limit: int = Query(10, ge=1, le=20)):
             continue
 
     results.sort(key=lambda x: x["score"], reverse=True)
-    output = {"timestamp": datetime.utcnow().isoformat(), "results": results[:limit]}
-    cache.set(cache_key, output)
-    return output
+    full = {"timestamp": datetime.utcnow().isoformat(), "results": results}
+    cache.set(full_cache_key, full)
+    return {"timestamp": full["timestamp"], "results": results[:limit]}
 
 
 @app.get("/macro")
