@@ -851,10 +851,9 @@ def sector_holdings(ticker: str):
 
     try:
         data = eodhd_get(f"/fundamentals/{t}.US", {"filter": "Components"})
-    except HTTPException as e:
-        raise HTTPException(status_code=e.status_code, detail=e.detail)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        # Fundamentals not available on current EODHD plan — return empty so frontend uses static fallback
+        raise HTTPException(status_code=404, detail=f"Holdings not available for {t}")
 
     if not isinstance(data, dict) or not data:
         raise HTTPException(status_code=404, detail=f"No holdings data for {t}")
@@ -901,36 +900,57 @@ def ticker_fundamentals(ticker: str):
 
     eodhd_t = t if "." in t else f"{t}.US"
 
+    # Fundamentals (Highlights) — not available on all EODHD plans; fail silently
+    highlights = {}
     try:
-        highlights = eodhd_get(f"/fundamentals/{eodhd_t}", {"filter": "Highlights"})
-    except HTTPException as e:
-        raise HTTPException(status_code=e.status_code, detail=e.detail)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-    if not isinstance(highlights, dict):
-        raise HTTPException(status_code=404, detail=f"No fundamentals for {t}")
-
-    quote = _fetch_rt_one(eodhd_t)
+        data = eodhd_get(f"/fundamentals/{eodhd_t}", {"filter": "Highlights"})
+        if isinstance(data, dict):
+            highlights = data
+    except Exception:
+        pass
 
     def _safe(key):
         v = highlights.get(key)
         try: return float(v) if v not in (None, "", "None") else None
         except (ValueError, TypeError): return None
 
+    # Real-time quote — always available
+    quote = _fetch_rt_one(eodhd_t)
+
+    # Fallback 52W range from 1Y history when fundamentals unavailable
+    high_52w  = _safe("52WeekHigh")
+    low_52w   = _safe("52WeekLow")
+    perf_1y   = None
+    if high_52w is None or low_52w is None:
+        try:
+            frm, to = _date_range(380)
+            df      = fetch_eod(eodhd_t, frm, to)
+            series  = df["Close"].dropna()
+            if len(series) >= 10:
+                high_52w = round(float(series.max()), 4)
+                low_52w  = round(float(series.min()), 4)
+                if len(series) >= 252:
+                    perf_1y = round((float(series.iloc[-1]) / float(series.iloc[-252]) - 1) * 100, 2)
+        except Exception:
+            pass
+
+    if quote is None and high_52w is None:
+        raise HTTPException(status_code=404, detail=f"No data available for {t}")
+
     result = {
-        "ticker":           t,
-        "price":            quote["price"]      if quote else None,
-        "change":           quote["change"]     if quote else None,
-        "change_pct":       quote["change_pct"] if quote else None,
-        "market_cap":       _safe("MarketCapitalization"),
-        "pe_ratio":         _safe("PERatio"),
-        "eps":              _safe("EarningsShare"),
-        "high_52w":         _safe("52WeekHigh"),
-        "low_52w":          _safe("52WeekLow"),
-        "revenue_ttm":      _safe("RevenueTTM"),
-        "target_price":     _safe("WallStreetTargetPrice"),
-        "profit_margin":    _safe("ProfitMargin"),
+        "ticker":        t,
+        "price":         quote["price"]      if quote else None,
+        "change":        quote["change"]     if quote else None,
+        "change_pct":    quote["change_pct"] if quote else None,
+        "market_cap":    _safe("MarketCapitalization"),
+        "pe_ratio":      _safe("PERatio"),
+        "eps":           _safe("EarningsShare"),
+        "high_52w":      high_52w,
+        "low_52w":       low_52w,
+        "revenue_ttm":   _safe("RevenueTTM"),
+        "target_price":  _safe("WallStreetTargetPrice"),
+        "profit_margin": _safe("ProfitMargin"),
+        "perf_1y":       perf_1y,
     }
     cache.set(cache_key, result)
     return result
