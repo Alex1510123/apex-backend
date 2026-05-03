@@ -677,23 +677,28 @@ def portfolio_analyze(req: PortfolioRequest):
 
 # ─── Yield Curve & Macro Indicators ──────────────────────────────────────────
 
+# CBOE INDX tickers — available on current plan; values are ×10 and need /10 scaling
 YIELD_CURVE_TICKERS = {
-    "3M":  "DTB3.FRED",
-    "6M":  "DTB6.FRED",
-    "1Y":  "DGS1.FRED",
-    "2Y":  "DGS2.FRED",
-    "5Y":  "DGS5.FRED",
-    "10Y": "DGS10.FRED",
-    "30Y": "DGS30.FRED",
+    "3M":  "IRX.INDX",
+    "5Y":  "FVX.INDX",
+    "10Y": "TNX.INDX",
+    "30Y": "TYX.INDX",
 }
 
+# FRED tickers are not available on the current EODHD plan.
+# ref_value/ref_change/ref_change_pct/ref_trend are returned as reference fallbacks.
 MACRO_INDICATORS_CFG = [
-    {"label": "Fed Funds Rate",   "ticker": "FEDFUNDS.FRED", "unit": "%",       "desc": "US-Leitzins (Federal Reserve)"},
-    {"label": "CPI YoY",          "ticker": "CPIAUCSL.FRED", "unit": "%",       "desc": "Inflationsrate USA (YoY)"},
-    {"label": "Arbeitslosigkeit", "ticker": "UNRATE.FRED",   "unit": "%",       "desc": "US-Arbeitslosenquote"},
-    {"label": "ISM PMI",          "ticker": "NAPM.FRED",     "unit": "Punkte",  "desc": "ISM Einkaufsmanagerindex Verarb."},
-    {"label": "M2 Geldmenge",     "ticker": "M2SL.FRED",     "unit": "Mrd. $",  "desc": "US-Geldmenge M2"},
-    {"label": "US Dollar Index",  "ticker": "DX-Y.NYB",      "unit": "Punkte",  "desc": "US Dollar Index (DXY)"},
+    {"label": "Fed Funds Rate",   "ticker": "FEDFUNDS.FRED", "unit": "%",       "desc": "US-Leitzins (Federal Reserve)",
+     "ref_value": 5.33,  "ref_change": 0.0,  "ref_change_pct": 0.0,   "ref_trend": "neutral"},
+    {"label": "CPI YoY",          "ticker": "CPIAUCSL.FRED", "unit": "%",       "desc": "Inflationsrate USA (YoY)",
+     "ref_value": 3.2,   "ref_change": -0.1, "ref_change_pct": -0.1,  "ref_trend": "down"},
+    {"label": "Arbeitslosigkeit", "ticker": "UNRATE.FRED",   "unit": "%",       "desc": "US-Arbeitslosenquote",
+     "ref_value": 3.9,   "ref_change": 0.1,  "ref_change_pct": 2.56,  "ref_trend": "up"},
+    {"label": "ISM PMI",          "ticker": "NAPM.FRED",     "unit": "Punkte",  "desc": "ISM Einkaufsmanagerindex Verarb.",
+     "ref_value": 48.7,  "ref_change": -0.4, "ref_change_pct": -0.81, "ref_trend": "down"},
+    {"label": "M2 Geldmenge",     "ticker": "M2SL.FRED",     "unit": "Mrd. $",  "desc": "US-Geldmenge M2",
+     "ref_value": 20985, "ref_change": 32.0, "ref_change_pct": 0.15,  "ref_trend": "up"},
+    {"label": "US Dollar Index",  "ticker": "UUP",           "unit": "Punkte",  "desc": "US Dollar Index (via UUP ETF)"},
 ]
 
 
@@ -704,9 +709,9 @@ def yield_curve():
     if cached is not None:
         return cached
 
-    frm, to    = _date_range(420)
-    maturities = list(YIELD_CURVE_TICKERS.keys())
-    result     = {"maturities": maturities, "current": {}, "3m_ago": {}, "1y_ago": {}}
+    frm, to = _date_range(420)
+    cur, m3, y1 = {}, {}, {}
+    fetched = 0
 
     for mat, ticker in YIELD_CURVE_TICKERS.items():
         try:
@@ -714,25 +719,36 @@ def yield_curve():
             series = df["Close"].dropna()
             if len(series) == 0:
                 continue
-            result["current"][mat] = round(float(series.iloc[-1]), 3)
+            # CBOE INDX tickers report values ×10; divide to get actual yield %
+            cur[mat] = round(float(series.iloc[-1]) / 10, 3)
+            fetched += 1
             if len(series) >= 63:
-                result["3m_ago"][mat] = round(float(series.iloc[-63]), 3)
+                m3[mat] = round(float(series.iloc[-63]) / 10, 3)
             if len(series) >= 252:
-                result["1y_ago"][mat] = round(float(series.iloc[-252]), 3)
+                y1[mat] = round(float(series.iloc[-252]) / 10, 3)
         except Exception:
             pass
 
-    y2  = result["current"].get("2Y")
-    y10 = result["current"].get("10Y")
-    if y2 is not None and y10 is not None:
-        spread = round(y10 - y2, 3)
-        result["spread_2y10y"] = spread
-        result["status"] = "Invers" if spread < -0.10 else "Flach" if spread < 0.25 else "Normal"
-    else:
-        result["spread_2y10y"] = None
-        result["status"] = "Unbekannt"
+    if fetched == 0:
+        return None  # frontend falls back to DEMO_YIELD
 
-    result["timestamp"] = datetime.utcnow().isoformat()
+    y10    = cur.get("10Y")
+    y5     = cur.get("5Y")
+    spread = round(y10 - y5, 3) if y10 is not None and y5 is not None else None
+    status = ("Invers"    if spread is not None and spread < -0.10
+              else "Flach"   if spread is not None and spread < 0.25
+              else "Normal"  if spread is not None
+              else "Unbekannt")
+
+    result = {
+        "maturities":   ["3M", "6M", "1Y", "2Y", "5Y", "10Y", "30Y"],
+        "current":      cur,
+        "3m_ago":       m3,
+        "1y_ago":       y1,
+        "spread_2y10y": spread,
+        "status":       status,
+        "timestamp":    datetime.utcnow().isoformat(),
+    }
     cache.set(cache_key, result)
     return result
 
@@ -752,30 +768,39 @@ def macro_indicators():
         ticker = cfg["ticker"]
         unit   = cfg["unit"]
         desc   = cfg["desc"]
+
+        # FRED tickers unavailable on current EODHD plan — return reference fallback immediately
+        if ticker.endswith(".FRED"):
+            results.append({
+                "label": label, "ticker": ticker, "unit": unit, "desc": desc,
+                "value": cfg["ref_value"], "change": cfg["ref_change"],
+                "change_pct": cfg["ref_change_pct"], "trend": cfg["ref_trend"],
+                "is_reference": True,
+            })
+            continue
+
+        # Live fetch for non-FRED tickers (UUP etc.)
         try:
             series = pd.Series(dtype=float)
-
-            # DX-Y.NYB: try real-time first
-            if ticker == "DX-Y.NYB":
-                snap = _fetch_rt_one(ticker)
-                if snap and snap.get("price"):
-                    try:
-                        df     = fetch_eod(ticker, frm, to)
-                        series = df["Close"].dropna() if not df.empty else pd.Series(dtype=float)
-                    except Exception:
-                        pass
-                    trend = "neutral"
-                    if len(series) >= 90:
-                        ra = float(series.iloc[-30:].mean())
-                        pa = float(series.iloc[-90:-60].mean())
-                        d  = (ra - pa) / pa if pa else 0
-                        trend = "up" if d > 0.005 else "down" if d < -0.005 else "neutral"
-                    results.append({
-                        "label": label, "ticker": ticker, "unit": unit, "desc": desc,
-                        "value": snap["price"], "change": snap["change"],
-                        "change_pct": snap["change_pct"], "trend": trend,
-                    })
-                    continue
+            snap   = _fetch_rt_one(ticker)
+            if snap and snap.get("price"):
+                try:
+                    df     = fetch_eod(ticker, frm, to)
+                    series = df["Close"].dropna() if not df.empty else pd.Series(dtype=float)
+                except Exception:
+                    pass
+                trend = "neutral"
+                if len(series) >= 90:
+                    ra = float(series.iloc[-30:].mean())
+                    pa = float(series.iloc[-90:-60].mean())
+                    d  = (ra - pa) / pa if pa else 0
+                    trend = "up" if d > 0.005 else "down" if d < -0.005 else "neutral"
+                results.append({
+                    "label": label, "ticker": ticker, "unit": unit, "desc": desc,
+                    "value": snap["price"], "change": snap["change"],
+                    "change_pct": snap["change_pct"], "trend": trend,
+                })
+                continue
 
             df = fetch_eod(ticker, frm, to)
             if df.empty:
@@ -786,30 +811,20 @@ def macro_indicators():
 
             current  = float(series.iloc[-1])
             previous = float(series.iloc[-2])
-
-            # CPI: compute YoY %
-            if label == "CPI YoY" and len(series) >= 13:
-                current     = round((float(series.iloc[-1]) / float(series.iloc[-13]) - 1) * 100, 2)
-                prev_yoy    = round((float(series.iloc[-2]) / float(series.iloc[-14]) - 1) * 100, 2) if len(series) >= 14 else current
-                change_abs  = round(current - prev_yoy, 3)
-                change_pct  = change_abs
-            else:
-                change_abs = round(current - previous, 4)
-                change_pct = round((change_abs / previous * 100), 4) if previous else 0
+            change_abs = round(current - previous, 4)
+            change_pct = round((change_abs / previous * 100), 4) if previous else 0
 
             trend = "neutral"
             if len(series) >= 90:
-                ra  = float(series.iloc[-30:].mean())
-                pa  = float(series.iloc[-90:-60].mean())
+                ra   = float(series.iloc[-30:].mean())
+                pa   = float(series.iloc[-90:-60].mean())
                 diff = (ra - pa) / pa if pa else 0
                 trend = "up" if diff > 0.005 else "down" if diff < -0.005 else "neutral"
 
             results.append({
-                "label":      label,  "ticker":     ticker,
-                "unit":       unit,   "desc":        desc,
-                "value":      round(current, 3),
-                "change":     change_abs, "change_pct": change_pct,
-                "trend":      trend,
+                "label": label, "ticker": ticker, "unit": unit, "desc": desc,
+                "value": round(current, 3), "change": change_abs, "change_pct": change_pct,
+                "trend": trend,
             })
         except Exception as e:
             results.append({"label": label, "ticker": ticker, "unit": unit, "desc": desc, "error": str(e)})
