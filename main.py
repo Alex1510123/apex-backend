@@ -698,7 +698,9 @@ MACRO_INDICATORS_CFG = [
      "ref_value": 48.7,  "ref_change": -0.4, "ref_change_pct": -0.81, "ref_trend": "down"},
     {"label": "M2 Geldmenge",     "ticker": "M2SL.FRED",     "unit": "Mrd. $",  "desc": "US-Geldmenge M2",
      "ref_value": 20985, "ref_change": 32.0, "ref_change_pct": 0.15,  "ref_trend": "up"},
-    {"label": "US Dollar Index",  "ticker": "UUP",           "unit": "Punkte",  "desc": "US Dollar Index (via UUP ETF)"},
+    # UUP tracks DXY; scale_factor converts UUP price (~27) to approximate DXY (~104)
+    {"label": "US Dollar Index",  "ticker": "UUP",           "unit": "Punkte",  "desc": "US Dollar Index (DXY)",
+     "scale_factor": 3.82},
 ]
 
 
@@ -780,6 +782,7 @@ def macro_indicators():
             continue
 
         # Live fetch for non-FRED tickers (UUP etc.)
+        scale = cfg.get("scale_factor", 1.0)
         try:
             series = pd.Series(dtype=float)
             snap   = _fetch_rt_one(ticker)
@@ -797,8 +800,10 @@ def macro_indicators():
                     trend = "up" if d > 0.005 else "down" if d < -0.005 else "neutral"
                 results.append({
                     "label": label, "ticker": ticker, "unit": unit, "desc": desc,
-                    "value": snap["price"], "change": snap["change"],
-                    "change_pct": snap["change_pct"], "trend": trend,
+                    "value": round(snap["price"] * scale, 2),
+                    "change": round(snap["change"] * scale, 4),
+                    "change_pct": snap["change_pct"],  # % stays unchanged
+                    "trend": trend,
                 })
                 continue
 
@@ -832,6 +837,103 @@ def macro_indicators():
     output = {"timestamp": datetime.utcnow().isoformat(), "indicators": results}
     cache.set(cache_key, output)
     return output
+
+
+# ─── Sector Holdings ─────────────────────────────────────────────────────────
+
+@app.get("/sector-holdings/{ticker}")
+def sector_holdings(ticker: str):
+    t         = ticker.upper()
+    cache_key = f"sector_holdings:{t}"
+    cached    = cache.get(cache_key, ttl_seconds=86400)  # holdings change rarely
+    if cached is not None:
+        return cached
+
+    try:
+        data = eodhd_get(f"/fundamentals/{t}.US", {"filter": "Components"})
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    if not isinstance(data, dict) or not data:
+        raise HTTPException(status_code=404, detail=f"No holdings data for {t}")
+
+    holdings = []
+    for code, comp in data.items():
+        # EODHD returns weight as "Assets_%" string or "Weight" float
+        raw = comp.get("Weight") or comp.get("Assets_%") or 0
+        try:
+            w = float(raw)
+        except (ValueError, TypeError):
+            w = 0
+        # Values < 1 are fractions (0.21 = 21%); values > 1 are already percentages
+        weight = round(w * 100 if w <= 1 else w, 2)
+        if weight <= 0:
+            continue
+        holdings.append({
+            "ticker": comp.get("Code", code),
+            "name":   comp.get("Name", code),
+            "weight": weight,
+        })
+
+    holdings.sort(key=lambda x: x["weight"], reverse=True)
+    top10 = holdings[:10]
+
+    result = {
+        "ticker":       t,
+        "holdings":     top10,
+        "top10_weight": round(sum(h["weight"] for h in top10), 1),
+    }
+    cache.set(cache_key, result)
+    return result
+
+
+# ─── Ticker Fundamentals ──────────────────────────────────────────────────────
+
+@app.get("/ticker-fundamentals/{ticker}")
+def ticker_fundamentals(ticker: str):
+    t         = ticker.upper()
+    cache_key = f"ticker_fundamentals:{t}"
+    cached    = cache.get(cache_key, ttl_seconds=3600)
+    if cached is not None:
+        return cached
+
+    eodhd_t = t if "." in t else f"{t}.US"
+
+    try:
+        highlights = eodhd_get(f"/fundamentals/{eodhd_t}", {"filter": "Highlights"})
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    if not isinstance(highlights, dict):
+        raise HTTPException(status_code=404, detail=f"No fundamentals for {t}")
+
+    quote = _fetch_rt_one(eodhd_t)
+
+    def _safe(key):
+        v = highlights.get(key)
+        try: return float(v) if v not in (None, "", "None") else None
+        except (ValueError, TypeError): return None
+
+    result = {
+        "ticker":           t,
+        "price":            quote["price"]      if quote else None,
+        "change":           quote["change"]     if quote else None,
+        "change_pct":       quote["change_pct"] if quote else None,
+        "market_cap":       _safe("MarketCapitalization"),
+        "pe_ratio":         _safe("PERatio"),
+        "eps":              _safe("EarningsShare"),
+        "high_52w":         _safe("52WeekHigh"),
+        "low_52w":          _safe("52WeekLow"),
+        "revenue_ttm":      _safe("RevenueTTM"),
+        "target_price":     _safe("WallStreetTargetPrice"),
+        "profit_margin":    _safe("ProfitMargin"),
+    }
+    cache.set(cache_key, result)
+    return result
 
 
 # ─── Run ──────────────────────────────────────────────────────────────────────
