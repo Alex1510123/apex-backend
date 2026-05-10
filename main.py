@@ -1,6 +1,8 @@
 """
 APEX Markets — Backend API v5 (EODHD edition)
 """
+import os
+import re
 import time
 import requests
 import pandas as pd
@@ -12,7 +14,8 @@ from pydantic import BaseModel
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 
-EODHD_API_KEY = "69ee10907be601.18560848"
+EODHD_API_KEY    = "69ee10907be601.18560848"
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 EODHD_BASE    = "https://eodhd.com/api"
 
 BENCHMARK = "SPY"
@@ -460,6 +463,179 @@ def search_ticker(ticker: str):
                 "shortName":    entry.get("shortName", fmt),
             }
     return {"found": False, "ticker": t}
+
+
+@app.get("/research/memo/{ticker}")
+def research_memo(ticker: str):
+    if not ANTHROPIC_API_KEY:
+        raise HTTPException(status_code=503, detail="Anthropic API key not configured on server")
+
+    t         = ticker.strip().upper()
+    today_str = datetime.utcnow().strftime("%d.%m.%Y")
+
+    # ── 1. Fetch live data (all non-fatal) ────────────────────────────────────
+    quote_data: dict = {}
+    try:
+        snaps      = fetch_realtime([t])
+        quote_data = snaps.get(t) or {}
+    except Exception:
+        pass
+
+    hist_closes: list = []
+    try:
+        df          = fetch_history(t, days=370)
+        hist_closes = df["Close"].dropna().tolist()
+    except Exception:
+        pass
+
+    highlights: dict = {}
+    try:
+        eodhd_t = t if "." in t else f"{t}.US"
+        data    = eodhd_get(f"/fundamentals/{eodhd_t}", {"filter": "Highlights"})
+        if isinstance(data, dict):
+            highlights = data.get("Highlights") or data
+    except Exception:
+        pass
+
+    # ── 2. Derive stats ───────────────────────────────────────────────────────
+    def safe_f(key):
+        v = highlights.get(key)
+        try:
+            return float(v) if v not in (None, "", "None") else None
+        except (ValueError, TypeError):
+            return None
+
+    def fmt_cap(v):
+        if v is None:
+            return None
+        if v >= 1e12:
+            return f"${v / 1e12:.2f} Bio."
+        if v >= 1e9:
+            return f"${v / 1e9:.1f} Mrd."
+        return f"${v / 1e6:.0f} Mio."
+
+    price      = quote_data.get("price")
+    change_pct = quote_data.get("change_pct")
+
+    high52w = low52w = perf1y = perf1m = None
+    if hist_closes:
+        last    = hist_closes[-1]
+        high52w = round(max(hist_closes), 2)
+        low52w  = round(min(hist_closes), 2)
+        ref1y   = hist_closes[-252] if len(hist_closes) >= 252 else hist_closes[0]
+        perf1y  = round(((last / ref1y) - 1) * 100, 1)
+        if len(hist_closes) >= 21:
+            perf1m = round(((last / hist_closes[-21]) - 1) * 100, 1)
+
+    market_cap   = safe_f("MarketCapitalization")
+    pe_ratio     = safe_f("PERatio")
+    eps          = safe_f("EarningsShare")
+    revenue_ttm  = safe_f("RevenueTTM")
+    target_price = safe_f("WallStreetTargetPrice")
+
+    # ── 3. Build live-data block ──────────────────────────────────────────────
+    lines = [f"TICKER: {t}", f"Datum: {today_str}"]
+    if price         is not None: lines.append(f"Aktueller Kurs: {price:.2f} USD")
+    if change_pct    is not None: lines.append(f"Tagesveränderung: {change_pct:.2f}%")
+    if high52w       is not None: lines.append(f"52W-Hoch: {high52w} USD")
+    if low52w        is not None: lines.append(f"52W-Tief: {low52w} USD")
+    if perf1y        is not None: lines.append(f"1J Performance: {perf1y}%")
+    if perf1m        is not None: lines.append(f"1M Performance: {perf1m}%")
+    cap_str = fmt_cap(market_cap)
+    if cap_str:                   lines.append(f"Marktkapitalisierung: {cap_str}")
+    if pe_ratio      is not None: lines.append(f"KGV (P/E): {pe_ratio:.1f}")
+    if eps           is not None: lines.append(f"EPS: ${eps:.2f}")
+    rev_str = fmt_cap(revenue_ttm)
+    if rev_str:                   lines.append(f"Umsatz TTM: {rev_str}")
+    if target_price  is not None: lines.append(f"Analysten-Kursziel (Ø): ${target_price:.2f}")
+
+    has_live   = len(lines) > 2
+    live_block = "\n".join(lines)
+
+    # ── 4. Prompts ────────────────────────────────────────────────────────────
+    data_section = (
+        f"LIVE-DATEN — Stand: {today_str}:\n{live_block}\n\n"
+        f"Nutze AUSSCHLIESSLICH diese Live-Daten für alle Zahlen, Kurse und Bewertungen."
+    ) if has_live else (
+        f"Ticker: {t}\nDatum: {today_str}\n\n"
+        f"Hinweis: Live-Marktdaten waren nicht abrufbar. "
+        f"Kennzeichne alle Bewertungszahlen als geschätzte Modellwerte."
+    )
+
+    user_prompt = (
+        f"Erstelle ein vollständiges Investment Memo für **{t}** (Stand: {today_str}).\n\n"
+        f"{data_section}\n\n"
+        f"Strukturiere das Memo mit diesen Abschnitten (## als Header):\n\n"
+        f"## Unternehmensprofil & Geschäftsmodell\n"
+        f"## Kursentwicklung & Technische Analyse\n"
+        f"## Bewertung\n"
+        f"## Katalysatoren (Bull Case)\n"
+        f"## Risiken (Bear Case)\n"
+        f"## Base Case & Kursziel (12 Monate)\n"
+        f"## Risiko-Rendite-Profil\n"
+        f"## Disclaimer\n\n"
+        f"Verwende Aufzählungspunkte (- ) für Listen. Sei präzise und konkret."
+    )
+
+    system_prompt = (
+        f"Du bist ein erfahrener Finanzanalyst mit CFA-Qualifikation. "
+        f"Du erstellst faktengenaue, professionelle Investment Memos auf Basis bereitgestellter Live-Marktdaten.\n\n"
+        f"PFLICHTREGELN:\n"
+        f"- Verwende AUSSCHLIESSLICH die übergebenen Live-Daten für alle Kurse, KGVs und Bewertungszahlen\n"
+        f"- Das heutige Datum ist {today_str} — verwende NICHT dein Trainingsdaten-Wissen für Datumsangaben\n"
+        f"- KEINE EMOJIS in Überschriften oder Text — professioneller Bloomberg-Stil, ## Markdown-Header\n"
+        f"- Kein 'Kaufen' / 'Verkaufen' / 'Halten' / 'Buy' / 'Sell' / 'Hold' — keine Anlageempfehlungen\n"
+        f"- Abschnitt 'Risiko-Rendite-Profil': neutrale Charakterisierung, keine Empfehlung\n"
+        f"- Du schreibst ausschließlich auf Deutsch, sachlich und direkt\n"
+        f"- Das Memo endet mit Disclaimer: keine individuelle Anlageberatung"
+    )
+
+    # ── 5. Call Anthropic ─────────────────────────────────────────────────────
+    try:
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "Content-Type":    "application/json",
+                "x-api-key":       ANTHROPIC_API_KEY,
+                "anthropic-version": "2023-06-01",
+            },
+            json={
+                "model":      "claude-sonnet-4-5-20250929",
+                "max_tokens": 4096,
+                "system":     system_prompt,
+                "messages":   [{"role": "user", "content": user_prompt}],
+            },
+            timeout=90,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(status_code=502, detail=f"Anthropic API network error: {exc}")
+
+    if not resp.ok:
+        err = resp.json() if resp.content else {}
+        raise HTTPException(
+            status_code=502,
+            detail=err.get("error", {}).get("message", f"Anthropic API Fehler {resp.status_code}"),
+        )
+
+    memo_text = resp.json()["content"][0]["text"]
+
+    # ── 6. Strip emojis from ## headers ──────────────────────────────────────
+    _emoji_re = re.compile(
+        r"[\U0001F300-\U0001FFFF\U00002600-\U000027FF\U00002702-\U000027B0]+",
+        flags=re.UNICODE,
+    )
+    cleaned = []
+    for line in memo_text.split("\n"):
+        if line.startswith("## "):
+            line = "## " + _emoji_re.sub("", line[3:]).strip()
+        cleaned.append(line)
+
+    return {
+        "ticker":        t,
+        "memo":          "\n".join(cleaned),
+        "has_live_data": has_live,
+        "date":          today_str,
+    }
 
 
 @app.get("/history/{ticker}")
