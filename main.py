@@ -465,9 +465,13 @@ def search_ticker(ticker: str):
 @app.get("/history/{ticker}")
 def history(
     ticker: str,
-    period: str = Query("1y", regex="^(1mo|3mo|6mo|1y|2y|5y)$"),
+    period: str = Query("1y", regex="^(1mo|3mo|6mo|1y|2y|3y|5y|10y|max)$"),
 ):
-    period_days = {"1mo": 35, "3mo": 95, "6mo": 185, "1y": 370, "2y": 740, "5y": 1830}
+    period_days = {
+        "1mo": 35, "3mo": 95, "6mo": 185,
+        "1y": 370, "2y": 740, "3y": 1100,
+        "5y": 1830, "10y": 3660, "max": 7300,
+    }
     df = fetch_history(ticker.upper(), days=period_days[period])
 
     out = [
@@ -582,19 +586,20 @@ def screener_top(limit: int = Query(20, ge=1, le=50)):
                 "high_52w":   high_52w,
                 "low_52w":    low_52w,
                 "signal": (
-                    "Strong Buy" if scores["composite"] >= 80 else
-                    "Buy"        if scores["composite"] >= 65 else
-                    "Hold"       if scores["composite"] >= 45 else
-                    "Sell"
+                    "Strong Momentum" if scores["composite"] >= 80 else
+                    "Momentum"        if scores["composite"] >= 65 else
+                    "Neutral"         if scores["composite"] >= 45 else
+                    "Schwach"
                 ),
             })
         except Exception:
             continue
 
     results.sort(key=lambda x: x["score"], reverse=True)
-    full = {"timestamp": datetime.utcnow().isoformat(), "results": results}
+    data_date = benchmark_df.index[-1].strftime("%Y-%m-%d") if len(benchmark_df) > 0 else None
+    full = {"timestamp": datetime.utcnow().isoformat(), "data_date": data_date, "results": results}
     cache.set(full_cache_key, full)
-    return {"timestamp": full["timestamp"], "results": results[:limit]}
+    return {"timestamp": full["timestamp"], "data_date": data_date, "results": results[:limit]}
 
 
 @app.get("/macro")
@@ -961,14 +966,22 @@ def ticker_fundamentals(ticker: str):
 
     eodhd_t = t if "." in t else f"{t}.US"
 
-    # Fundamentals (Highlights) — not available on all EODHD plans; fail silently
+    # Fundamentals — try filtered first, fall back to full object
     highlights = {}
     try:
         data = eodhd_get(f"/fundamentals/{eodhd_t}", {"filter": "Highlights"})
         if isinstance(data, dict):
-            highlights = data
+            # If EODHD returned the full nested object (filter not supported on plan),
+            # dig into the Highlights section; otherwise use the flat dict directly
+            highlights = data.get("Highlights") or data
     except Exception:
-        pass
+        try:
+            # Second attempt: full fundamentals object without filter
+            data = eodhd_get(f"/fundamentals/{eodhd_t}")
+            if isinstance(data, dict):
+                highlights = data.get("Highlights", {})
+        except Exception:
+            pass
 
     def _safe(key):
         v = highlights.get(key)
