@@ -4,6 +4,7 @@ APEX Markets — Backend API v5 (EODHD edition)
 import os
 import re
 import time
+import logging
 import requests
 import pandas as pd
 import numpy as np
@@ -16,6 +17,9 @@ from pydantic import BaseModel
 
 EODHD_API_KEY    = "69ee10907be601.18560848"
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 EODHD_BASE    = "https://eodhd.com/api"
 
 BENCHMARK = "SPY"
@@ -465,6 +469,53 @@ def search_ticker(ticker: str):
     return {"found": False, "ticker": t}
 
 
+def _fetch_fundamentals_highlights(eodhd_t: str) -> dict:
+    """
+    Fetch EODHD Highlights for a ticker. Tries ?filter=Highlights first,
+    falls back to the full fundamentals object. Logs outcome for Railway diagnostics.
+    Returns {} on failure.
+    """
+    # Attempt 1: filtered endpoint (smaller, faster — if supported by plan)
+    try:
+        data = eodhd_get(f"/fundamentals/{eodhd_t}", {"filter": "Highlights"})
+        if isinstance(data, dict):
+            result = data.get("Highlights") or data
+            if isinstance(result, dict):
+                has_data = any(
+                    result.get(k) not in (None, "", "None")
+                    for k in ("MarketCapitalization", "PERatio", "EarningsShare")
+                )
+                logger.info(
+                    "Fundamentals filtered %s: has_cap=%s has_pe=%s has_eps=%s",
+                    eodhd_t,
+                    result.get("MarketCapitalization") is not None,
+                    result.get("PERatio") is not None,
+                    result.get("EarningsShare") is not None,
+                )
+                if has_data:
+                    return result
+                logger.warning("Fundamentals filtered response missing key fields for %s", eodhd_t)
+    except Exception as exc:
+        logger.error("Fundamentals filtered fetch failed for %s: %s", eodhd_t, exc)
+
+    # Attempt 2: full fundamentals object, extract Highlights section
+    try:
+        data = eodhd_get(f"/fundamentals/{eodhd_t}")
+        if isinstance(data, dict):
+            result = data.get("Highlights", {})
+            logger.info(
+                "Fundamentals full fallback %s: has_cap=%s",
+                eodhd_t,
+                result.get("MarketCapitalization") is not None,
+            )
+            return result
+    except Exception as exc:
+        logger.error("Fundamentals full fetch failed for %s: %s", eodhd_t, exc)
+
+    logger.error("Fundamentals completely unavailable for %s", eodhd_t)
+    return {}
+
+
 @app.get("/research/memo/{ticker}")
 def research_memo(ticker: str):
     if not ANTHROPIC_API_KEY:
@@ -488,14 +539,8 @@ def research_memo(ticker: str):
     except Exception:
         pass
 
-    highlights: dict = {}
-    try:
-        eodhd_t = t if "." in t else f"{t}.US"
-        data    = eodhd_get(f"/fundamentals/{eodhd_t}", {"filter": "Highlights"})
-        if isinstance(data, dict):
-            highlights = data.get("Highlights") or data
-    except Exception:
-        pass
+    eodhd_t            = t if "." in t else f"{t}.US"
+    highlights: dict   = _fetch_fundamentals_highlights(eodhd_t)
 
     # ── 2. Derive stats ───────────────────────────────────────────────────────
     def safe_f(key):
@@ -1136,28 +1181,19 @@ def sector_holdings(ticker: str):
 def ticker_fundamentals(ticker: str):
     t         = ticker.upper()
     cache_key = f"ticker_fundamentals:{t}"
-    cached    = cache.get(cache_key, ttl_seconds=3600)
+
+    # Only serve from cache when fundamentals fields are non-null; if the cached
+    # result has all-null fundamentals it means a previous call failed — skip it
+    # so we retry EODHD on the next request.
+    cached = cache.get(cache_key, ttl_seconds=3600)
     if cached is not None:
-        return cached
+        has_cached_fund = any(cached.get(k) is not None for k in ("market_cap", "pe_ratio", "eps"))
+        if has_cached_fund:
+            return cached
+        logger.info("Skipping stale null-fundamentals cache for %s, retrying EODHD", t)
 
-    eodhd_t = t if "." in t else f"{t}.US"
-
-    # Fundamentals — try filtered first, fall back to full object
-    highlights = {}
-    try:
-        data = eodhd_get(f"/fundamentals/{eodhd_t}", {"filter": "Highlights"})
-        if isinstance(data, dict):
-            # If EODHD returned the full nested object (filter not supported on plan),
-            # dig into the Highlights section; otherwise use the flat dict directly
-            highlights = data.get("Highlights") or data
-    except Exception:
-        try:
-            # Second attempt: full fundamentals object without filter
-            data = eodhd_get(f"/fundamentals/{eodhd_t}")
-            if isinstance(data, dict):
-                highlights = data.get("Highlights", {})
-        except Exception:
-            pass
+    eodhd_t    = t if "." in t else f"{t}.US"
+    highlights = _fetch_fundamentals_highlights(eodhd_t)
 
     def _safe(key):
         v = highlights.get(key)
@@ -1168,9 +1204,9 @@ def ticker_fundamentals(ticker: str):
     quote = _fetch_rt_one(eodhd_t)
 
     # Fallback 52W range from 1Y history when fundamentals unavailable
-    high_52w  = _safe("52WeekHigh")
-    low_52w   = _safe("52WeekLow")
-    perf_1y   = None
+    high_52w = _safe("52WeekHigh")
+    low_52w  = _safe("52WeekLow")
+    perf_1y  = None
     if high_52w is None or low_52w is None:
         try:
             frm, to = _date_range(380)
@@ -1202,7 +1238,15 @@ def ticker_fundamentals(ticker: str):
         "profit_margin": _safe("ProfitMargin"),
         "perf_1y":       perf_1y,
     }
+
+    # Only cache with full TTL when we actually got fundamentals; if all null,
+    # cache with a very short effective TTL by back-dating the timestamp so the
+    # entry expires in ~60 s instead of 3600 s.
     cache.set(cache_key, result)
+    has_fundamentals = any(result.get(k) is not None for k in ("market_cap", "pe_ratio", "eps"))
+    if not has_fundamentals:
+        cache._store[cache_key] = (result, time.time() - 3540)  # expires in ~60 s
+
     return result
 
 
