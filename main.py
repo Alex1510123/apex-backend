@@ -270,13 +270,13 @@ def fetch_realtime(tickers: list[str]) -> dict[str, dict]:
     except Exception:
         pass  # batch failed; per-ticker fallback below covers everything
 
-    # Per-ticker fallback for anything still absent after the batch call
+    # Per-ticker fallback for anything still absent after the batch call.
+    # NOTE: we do NOT skip fmt == t — dotted tickers (GDAXI.INDX, BTC-USD.CC)
+    # have only one format candidate and the batch often misses them silently.
     for t in missing:
         if t in found:
             continue
         for fmt in _eodhd_ticker_formats(t):
-            if fmt == t:
-                continue  # already attempted in the batch call
             entry = _fetch_rt_one(fmt)
             if entry:
                 cache.set(f"rt:{t}",   entry)
@@ -828,7 +828,16 @@ def macro():
     """
     Macro indicators — single batch real-time call covers all tickers including
     crypto (BTC-USD.CC), forex (EURUSD.FOREX), and indices (GDAXI.INDX, etc.).
+    Cached 5 min; cache is invalidated if fewer than half the tickers resolved.
     """
+    cache_key = "macro:indicators"
+    cached    = cache.get(cache_key, ttl_seconds=300)
+    if cached is not None:
+        non_null = sum(1 for i in cached.get("indicators", []) if i.get("value") is not None)
+        if non_null >= len(MACRO_TICKERS) // 2:
+            return cached
+        logger.warning("Macro cache had only %d/%d indicators — re-fetching", non_null, len(MACRO_TICKERS))
+
     tickers = list(MACRO_TICKERS.values())
     snaps   = fetch_realtime(tickers)
 
@@ -847,8 +856,13 @@ def macro():
                 "change":     snap["change"],
                 "change_pct": snap["change_pct"],
             })
+            logger.info("Macro OK   %-15s (%s): %.4f", label, ticker, value)
+        else:
+            logger.warning("Macro MISS %-15s (%s): no data from EODHD", label, ticker)
 
-    return {"timestamp": datetime.utcnow().isoformat(), "indicators": out}
+    result = {"timestamp": datetime.utcnow().isoformat(), "indicators": out}
+    cache.set(cache_key, result)
+    return result
 
 
 # ─── Portfolio ─────────────────────────────────────────────────────────────────
@@ -1247,6 +1261,51 @@ def ticker_fundamentals(ticker: str):
     if not has_fundamentals:
         cache._store[cache_key] = (result, time.time() - 3540)  # expires in ~60 s
 
+    return result
+
+
+# ─── Autocomplete ────────────────────────────────────────────────────────────
+
+@app.get("/autocomplete/{query}")
+def autocomplete(query: str):
+    """
+    Ticker/name autocomplete via EODHD search. Returns up to 8 results with
+    ticker (Code.Exchange), name, and asset type. Cached 1 h per query.
+    """
+    q = query.strip()
+    if len(q) < 2:
+        return {"results": []}
+
+    cache_key = f"autocomplete:{q.upper()}"
+    cached    = cache.get(cache_key, ttl_seconds=3600)
+    if cached is not None:
+        return cached
+
+    try:
+        data = eodhd_get(f"/search/{q}", {"limit": 10})
+    except Exception as exc:
+        logger.warning("Autocomplete search failed for %r: %s", q, exc)
+        return {"results": []}
+
+    if not isinstance(data, list):
+        return {"results": []}
+
+    results = []
+    for item in data[:8]:
+        code     = item.get("Code", "")
+        exchange = item.get("Exchange", "") or ""
+        if not code:
+            continue
+        ticker = f"{code}.{exchange}" if exchange and exchange.upper() not in ("", "NONE") else code
+        results.append({
+            "ticker":   ticker,
+            "name":     item.get("Name", ""),
+            "type":     item.get("Type", ""),
+            "exchange": exchange,
+        })
+
+    result = {"results": results}
+    cache.set(cache_key, result)
     return result
 
 
