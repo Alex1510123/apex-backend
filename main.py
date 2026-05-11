@@ -46,8 +46,8 @@ SECTOR_ETFS = {
 MACRO_TICKERS = {
     "S&P 500":         "GSPC.INDX",
     "Gold":            "GLD",
-    "WTI_Crude":       "UKOIL.COMMODITY",
-    "10Y_Treasury":    "TNX.INDX",
+    "WTI_Crude":       "BNO",          # United States Brent Oil Fund; UKOIL.COMMODITY unavailable on current plan
+    "10Y_Treasury":    "TYX.INDX",     # 30Y yield proxy; TNX.INDX unavailable on current plan
     "Volatility":      "VIXY",
     "US_Dollar":       "UUP",
     "Bitcoin":         "BTC-USD.CC",
@@ -833,10 +833,13 @@ def macro():
     cache_key = "macro:indicators"
     cached    = cache.get(cache_key, ttl_seconds=300)
     if cached is not None:
-        non_null = sum(1 for i in cached.get("indicators", []) if i.get("value") is not None)
-        if non_null >= len(MACRO_TICKERS) // 2:
+        present   = {i["label"] for i in cached.get("indicators", [])}
+        non_null  = len(present)
+        required  = {"WTI_Crude", "10Y_Treasury"}
+        if non_null >= len(MACRO_TICKERS) // 2 and required.issubset(present):
             return cached
-        logger.warning("Macro cache had only %d/%d indicators — re-fetching", non_null, len(MACRO_TICKERS))
+        logger.warning("Macro cache incomplete (present=%d, missing=%s) — re-fetching",
+                       non_null, required - present)
 
     tickers = list(MACRO_TICKERS.values())
     snaps   = fetch_realtime(tickers)
@@ -845,16 +848,28 @@ def macro():
     for label, ticker in MACRO_TICKERS.items():
         snap = snaps.get(ticker)
         if snap:
-            value = snap["price"]
-            # EODHD reports TNX.INDX scaled x10 (e.g. 43 instead of 4.3)
-            if ticker == "TNX.INDX" and value > 20:
-                value = round(value / 10, 4)
+            value      = snap["price"]
+            change     = snap["change"]
+            change_pct = snap["change_pct"]
+
+            # EODHD CBOE yield indices (TNX, TYX, FVX, IRX) report values ×10
+            # in the previousClose field while the close field is already correct.
+            # Recompute change/change_pct from the normalised previous_close.
+            if ticker in ("TNX.INDX", "TYX.INDX", "FVX.INDX", "IRX.INDX"):
+                if value > 20:                       # close also ×10 — divide
+                    value = round(value / 10, 4)
+                prev = snap.get("previous_close", value)
+                if prev > 20:
+                    prev = round(prev / 10, 4)
+                change     = round(value - prev, 4)
+                change_pct = round((change / prev * 100) if prev else 0, 4)
+
             out.append({
                 "label":      label,
                 "ticker":     ticker,
                 "value":      value,
-                "change":     snap["change"],
-                "change_pct": snap["change_pct"],
+                "change":     change,
+                "change_pct": change_pct,
             })
             logger.info("Macro OK   %-15s (%s): %.4f", label, ticker, value)
         else:
