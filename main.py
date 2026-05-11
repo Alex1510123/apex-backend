@@ -1250,6 +1250,89 @@ def ticker_fundamentals(ticker: str):
     return result
 
 
+# ─── Risk Metrics ─────────────────────────────────────────────────────────────
+
+@app.get("/risk-metrics/{ticker}")
+def risk_metrics(ticker: str):
+    t         = ticker.strip().upper()
+    cache_key = f"risk_metrics:{t}"
+    cached    = cache.get(cache_key, ttl_seconds=3600)
+    if cached is not None:
+        return cached
+
+    eodhd_t = t if "." in t else f"{t}.US"
+
+    try:
+        df    = fetch_history(t, days=380)
+        close = df["Close"].dropna()
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"No history for {t}: {e}")
+
+    try:
+        spy_df    = fetch_history(BENCHMARK, days=380)
+        spy_close = spy_df["Close"].dropna()
+    except Exception:
+        spy_close = pd.Series(dtype=float)
+
+    quote = None
+    try:
+        snaps = fetch_realtime([t])
+        quote = snaps.get(t)
+    except Exception:
+        pass
+
+    n              = len(close)
+    daily_returns  = close.pct_change().dropna()
+
+    perf_1m = round(float((close.iloc[-1] / close.iloc[-21]  - 1) * 100), 2) if n >= 21  else None
+    perf_3m = round(float((close.iloc[-1] / close.iloc[-63]  - 1) * 100), 2) if n >= 63  else None
+    perf_1y = round(float((close.iloc[-1] / close.iloc[-252] - 1) * 100), 2) if n >= 252 else None
+
+    vol_1y = None
+    if len(daily_returns) >= 30:
+        window = daily_returns.iloc[-252:] if len(daily_returns) >= 252 else daily_returns
+        vol_1y = round(float(window.std() * np.sqrt(252) * 100), 2)
+
+    max_drawdown = None
+    if n >= 30:
+        prices_win = close.iloc[-252:] if n >= 252 else close
+        cum_max    = prices_win.cummax()
+        drawdown   = (prices_win - cum_max) / cum_max
+        max_drawdown = round(float(drawdown.min() * 100), 2)
+
+    beta_vs_spy = None
+    if len(spy_close) >= 30 and len(daily_returns) >= 30:
+        spy_ret = spy_close.pct_change().dropna()
+        common  = daily_returns.index.intersection(spy_ret.index)
+        if len(common) >= 30:
+            s = daily_returns.loc[common].iloc[-252:]
+            b = spy_ret.loc[common].iloc[-252:]
+            c2 = s.index.intersection(b.index)
+            s, b = s.loc[c2], b.loc[c2]
+            var = float(np.var(b))
+            if var:
+                beta_vs_spy = round(float(np.cov(s, b)[0, 1]) / var, 2)
+
+    high_52w = round(float(close.max()), 4) if n >= 1 else None
+    low_52w  = round(float(close.min()), 4) if n >= 1 else None
+
+    result = {
+        "ticker":          t,
+        "price":           quote["price"]      if quote else None,
+        "change_pct":      quote["change_pct"] if quote else None,
+        "perf_1m":         perf_1m,
+        "perf_3m":         perf_3m,
+        "perf_1y":         perf_1y,
+        "volatility_1y":   vol_1y,
+        "max_drawdown_1y": max_drawdown,
+        "beta_vs_spy":     beta_vs_spy,
+        "high_52w":        high_52w,
+        "low_52w":         low_52w,
+    }
+    cache.set(cache_key, result)
+    return result
+
+
 # ─── Run ──────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
