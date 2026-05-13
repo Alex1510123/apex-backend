@@ -9,9 +9,11 @@ import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from auth import verify_jwt
+from supabase_client import supabase as sb_client
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -1406,6 +1408,148 @@ def risk_metrics(ticker: str):
     cache.set(cache_key, result)
     return result
 
+
+# ─── User: Pydantic models ────────────────────────────────────────────────────
+
+class WatchlistAdd(BaseModel):
+    ticker: str
+
+class PositionAdd(BaseModel):
+    ticker: str
+    shares: float
+    cost_basis: float
+
+class IpsUpsert(BaseModel):
+    goal: str | None = None
+    time_horizon: str | None = None
+    risk_tolerance: str | None = None
+    asset_allocation: dict | None = None
+    exclusions: str | None = None
+
+class MemoSave(BaseModel):
+    ticker: str
+    memo_text: str
+
+# ─── User: Watchlist ──────────────────────────────────────────────────────────
+
+@app.get("/user/watchlist")
+def get_watchlist(user_id: str = Depends(verify_jwt)):
+    result = sb_client.table("watchlists").select("ticker,added_at").eq("user_id", user_id).order("added_at").execute()
+    return result.data
+
+
+@app.post("/user/watchlist", status_code=201)
+def add_watchlist(body: WatchlistAdd, user_id: str = Depends(verify_jwt)):
+    ticker = body.ticker.strip().upper()
+    try:
+        result = sb_client.table("watchlists").insert({"user_id": user_id, "ticker": ticker}).execute()
+        return result.data[0]
+    except Exception as e:
+        msg = str(e).lower()
+        if "duplicate" in msg or "unique" in msg or "23505" in msg:
+            raise HTTPException(status_code=409, detail="Ticker bereits in Watchlist")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/user/watchlist/{ticker}")
+def remove_watchlist(ticker: str, user_id: str = Depends(verify_jwt)):
+    sb_client.table("watchlists").delete().eq("user_id", user_id).eq("ticker", ticker.upper()).execute()
+    return {"ok": True}
+
+# ─── User: Portfolio ──────────────────────────────────────────────────────────
+
+@app.get("/user/portfolio")
+def get_portfolio(user_id: str = Depends(verify_jwt)):
+    portfolios = sb_client.table("portfolios").select("id,name,created_at").eq("user_id", user_id).execute()
+    if not portfolios.data:
+        new_p = sb_client.table("portfolios").insert({"user_id": user_id, "name": "Hauptdepot"}).execute()
+        p = new_p.data[0]
+        return [{"id": p["id"], "name": p["name"], "positions": []}]
+    result = []
+    for p in portfolios.data:
+        positions = sb_client.table("positions").select("id,ticker,shares,cost_basis,added_at").eq("portfolio_id", p["id"]).execute()
+        result.append({"id": p["id"], "name": p["name"], "positions": positions.data})
+    return result
+
+
+@app.post("/user/portfolio/{portfolio_id}/position", status_code=201)
+def add_position(portfolio_id: str, body: PositionAdd, user_id: str = Depends(verify_jwt)):
+    owner = sb_client.table("portfolios").select("id").eq("id", portfolio_id).eq("user_id", user_id).execute()
+    if not owner.data:
+        raise HTTPException(status_code=404, detail="Portfolio nicht gefunden")
+    result = sb_client.table("positions").insert({
+        "portfolio_id": portfolio_id,
+        "ticker": body.ticker.strip().upper(),
+        "shares": body.shares,
+        "cost_basis": body.cost_basis,
+    }).execute()
+    return result.data[0]
+
+
+@app.delete("/user/portfolio/position/{position_id}")
+def delete_position(position_id: str, user_id: str = Depends(verify_jwt)):
+    pos = sb_client.table("positions").select("portfolio_id").eq("id", position_id).execute()
+    if not pos.data:
+        raise HTTPException(status_code=404, detail="Position nicht gefunden")
+    owner = sb_client.table("portfolios").select("id").eq("id", pos.data[0]["portfolio_id"]).eq("user_id", user_id).execute()
+    if not owner.data:
+        raise HTTPException(status_code=403, detail="Keine Berechtigung")
+    sb_client.table("positions").delete().eq("id", position_id).execute()
+    return {"ok": True}
+
+# ─── User: IPS ────────────────────────────────────────────────────────────────
+
+@app.get("/user/ips")
+def get_ips(user_id: str = Depends(verify_jwt)):
+    result = sb_client.table("ips").select("*").eq("user_id", user_id).execute()
+    return result.data[0] if result.data else None
+
+
+@app.put("/user/ips")
+def upsert_ips(body: IpsUpsert, user_id: str = Depends(verify_jwt)):
+    data = {
+        "user_id": user_id,
+        "goal": body.goal,
+        "time_horizon": body.time_horizon,
+        "risk_tolerance": body.risk_tolerance,
+        "asset_allocation": body.asset_allocation,
+        "exclusions": body.exclusions,
+        "updated_at": datetime.utcnow().isoformat(),
+    }
+    result = sb_client.table("ips").upsert(data, on_conflict="user_id").execute()
+    return result.data[0]
+
+# ─── User: Memos ──────────────────────────────────────────────────────────────
+
+@app.post("/user/memos", status_code=201)
+def save_memo(body: MemoSave, user_id: str = Depends(verify_jwt)):
+    result = sb_client.table("saved_memos").insert({
+        "user_id": user_id,
+        "ticker": body.ticker.strip().upper(),
+        "memo_text": body.memo_text,
+    }).execute()
+    return result.data[0]
+
+
+@app.get("/user/memos")
+def get_memos(user_id: str = Depends(verify_jwt)):
+    result = (
+        sb_client.table("saved_memos")
+        .select("id,ticker,memo_text,generated_at")
+        .eq("user_id", user_id)
+        .order("generated_at", desc=True)
+        .execute()
+    )
+    return result.data
+
+
+@app.delete("/user/memos/{memo_id}")
+def delete_memo(memo_id: str, user_id: str = Depends(verify_jwt)):
+    memo = sb_client.table("saved_memos").select("id").eq("id", memo_id).eq("user_id", user_id).execute()
+    if not memo.data:
+        raise HTTPException(status_code=404, detail="Memo nicht gefunden")
+    sb_client.table("saved_memos").delete().eq("id", memo_id).execute()
+    return {"ok": True}
 
 # ─── Run ──────────────────────────────────────────────────────────────────────
 
