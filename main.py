@@ -15,7 +15,7 @@ from pydantic import BaseModel
 from auth import verify_jwt
 from supabase_client import supabase as sb_client
 from yahoo_finance import fetch_yahoo_quote   # TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source (EODHD upgrade or Tiingo) before commercial launch
-from fred_api import fetch_fred_series, fetch_fred_cpi_yoy, fetch_fred_yield_history
+from fred_api import fetch_fred_series, fetch_fred_cpi_yoy, fetch_fred_indpro_yoy, fetch_fred_yield_history
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -1196,10 +1196,11 @@ def macro_indicators():
     results.append(_ok("Arbeitslosigkeit", "%", "US-Arbeitslosenquote", d)
                    if d else _err("Arbeitslosigkeit", "%", "US-Arbeitslosenquote"))
 
-    # ── ISM PMI (NAPM, fallback NAPMNOI) ─────────────────────────────────────
-    d = fetch_fred_series("NAPM") or fetch_fred_series("NAPMNOI")
-    results.append(_ok("ISM PMI", "Punkte", "ISM Einkaufsmanagerindex Verarb.", d)
-                   if d else _err("ISM PMI", "Punkte", "ISM Einkaufsmanagerindex Verarb."))
+    # ── Industrial Production YoY (INDPRO) ───────────────────────────────────
+    # ISM PMI (NAPM) removed from FRED in 2024 due to ISM license withdrawal
+    d = fetch_fred_indpro_yoy()
+    results.append(_ok("Industrieproduktion (YoY)", "%", "US-Industrieproduktion Year-over-Year", d)
+                   if d else _err("Industrieproduktion (YoY)", "%", "US-Industrieproduktion Year-over-Year"))
 
     # ── M2 Money Supply ───────────────────────────────────────────────────────
     d = fetch_fred_series("M2SL")

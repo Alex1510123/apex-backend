@@ -81,6 +81,75 @@ def fetch_fred_series(series_id: str) -> dict | None:
         return None
 
 
+def fetch_fred_indpro_yoy() -> dict | None:
+    """
+    Industrial Production YoY %: (current - 12_months_ago) / 12_months_ago * 100.
+    Replaces ISM PMI (NAPM) which was removed from FRED in 2024 due to ISM license withdrawal.
+    Returns same structure as fetch_fred_series (value = YoY %, change = pp MoM delta).
+    Cached 1 hour.
+    """
+    cache_key = "INDPRO_YOY"
+    now = time.time()
+    cached = _CACHE.get(cache_key)
+    if cached and now - cached.get("_ts", 0) < _CACHE_TTL:
+        return {k: v for k, v in cached.items() if k != "_ts"}
+
+    api_key = _get_api_key()
+    if not api_key:
+        logger.error("FRED_API_KEY not set — cannot fetch INDPRO YoY")
+        return None
+
+    params = {
+        "series_id": "INDPRO",
+        "api_key": api_key,
+        "file_type": "json",
+        "sort_order": "desc",
+        "limit": 16,
+    }
+
+    try:
+        resp = requests.get(FRED_BASE, params=params, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as exc:
+        logger.error("FRED INDPRO fetch failed: %s", exc)
+        return None
+
+    try:
+        valid = [
+            float(o["value"])
+            for o in data.get("observations", [])
+            if o.get("value") not in (".", None, "")
+        ]
+        dates = [
+            o["date"]
+            for o in data.get("observations", [])
+            if o.get("value") not in (".", None, "")
+        ]
+
+        if len(valid) < 13:
+            logger.warning("FRED INDPRO insufficient data for YoY (got %d observations)", len(valid))
+            return None
+
+        yoy_current = round((valid[0] - valid[12]) / valid[12] * 100, 2)
+        yoy_prev = round((valid[1] - valid[13]) / valid[13] * 100, 2) if len(valid) > 13 else yoy_current
+
+        change = round(yoy_current - yoy_prev, 4)
+        result = {
+            "value":      yoy_current,
+            "prev_value": yoy_prev,
+            "date":       dates[0] if dates else "",
+            "change":     change,
+            "change_pct": change,
+        }
+        _CACHE[cache_key] = {**result, "_ts": now}
+        return result
+
+    except Exception as exc:
+        logger.error("FRED INDPRO YoY parse error: %s", exc)
+        return None
+
+
 def fetch_fred_cpi_yoy() -> dict | None:
     """
     CPI YoY %: (current_month - 12_months_ago) / 12_months_ago * 100.
