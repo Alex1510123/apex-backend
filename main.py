@@ -1383,13 +1383,23 @@ def sector_holdings(ticker: str):
     if cached is not None:
         return cached
 
+    is_eu = "XETRA" in t or t.startswith("EXH")
+    eodhd_fmt = t if is_eu else f"{t}.US"
+
     try:
-        data = eodhd_get(f"/fundamentals/{t}.US", {"filter": "Components"})
+        data = eodhd_get(f"/fundamentals/{eodhd_fmt}", {"filter": "Components"})
     except Exception:
-        # Fundamentals not available on current EODHD plan — return empty so frontend uses static fallback
+        if is_eu:
+            result = {"available": False, "reason": "Holdings für diesen ETF nicht im EODHD-Plan verfügbar"}
+            cache.set(cache_key, result)
+            return result
         raise HTTPException(status_code=404, detail=f"Holdings not available for {t}")
 
     if not isinstance(data, dict) or not data:
+        if is_eu:
+            result = {"available": False, "reason": "Keine Holdings-Daten von EODHD"}
+            cache.set(cache_key, result)
+            return result
         raise HTTPException(status_code=404, detail=f"No holdings data for {t}")
 
     holdings = []
@@ -1418,6 +1428,90 @@ def sector_holdings(ticker: str):
         "holdings":     top10,
         "top10_weight": round(sum(h["weight"] for h in top10), 1),
     }
+    cache.set(cache_key, result)
+    return result
+
+
+# ─── EU Sector Phase Detection ───────────────────────────────────────────────
+
+@app.get("/sectors/eu-phase")
+def sectors_eu_phase():
+    """
+    EU sector phase detection: EXH ETFs vs STOXX 50 benchmark (90-day RS).
+    Returns phase, dominant sector, RS values. Cached 1 hour.
+    """
+    cache_key = "eu_phase:v1"
+    cached    = cache.get(cache_key, ttl_seconds=3600)
+    if cached is not None:
+        return cached
+
+    EU_ETFS   = ["EXH4.XETRA", "EXH8.XETRA", "EXH3.XETRA", "EXH1.XETRA"]
+    BENCH_KEY = "STOXX50E.INDX"
+    PHASE_NAMES   = ["Frühzyklus", "Mittezyklus", "Spätzyklus", "Rezession"]
+    DOMINANT_MAP  = {0: "EXH4 (Tech)", 1: "EXH7 (Industrie)", 2: "EXH8 (Energie)", 3: "EXH3 (Healthcare)"}
+
+    try:
+        frm, to   = _date_range(110)
+        bench_df  = fetch_eod(BENCH_KEY, frm, to)
+        if len(bench_df) < 20:
+            raise ValueError("Insufficient benchmark data")
+        bench_close = bench_df["Close"]
+
+        rs_values: dict[str, float] = {}
+        trends:    dict[str, str]   = {}
+
+        for etf in EU_ETFS:
+            try:
+                etf_df  = fetch_eod(etf, frm, to)
+                if len(etf_df) < 20:
+                    continue
+                common  = etf_df.index.intersection(bench_close.index)
+                if len(common) < 20:
+                    continue
+                etf_c   = etf_df["Close"].loc[common].iloc[-60:]
+                ben_c   = bench_close.loc[common].iloc[-60:]
+                rs_ser  = (etf_c / etf_c.iloc[0] - 1) * 100 - (ben_c / ben_c.iloc[0] - 1) * 100
+                rs_values[etf] = round(float(rs_ser.iloc[-1]), 2)
+                if len(rs_ser) >= 40:
+                    trends[etf] = "up" if rs_ser.iloc[-20:].mean() > rs_ser.iloc[-40:-20].mean() else "down"
+                else:
+                    trends[etf] = "flat"
+            except Exception as e:
+                logger.warning("EU phase RS failed for %s: %s", etf, e)
+
+        tech   = rs_values.get("EXH4.XETRA", 0)
+        energy = rs_values.get("EXH8.XETRA", 0)
+        health = rs_values.get("EXH3.XETRA", 0)
+        fin    = rs_values.get("EXH1.XETRA", 0)
+
+        if health > max(tech, energy, fin) and health > 0:
+            phase_idx = 3
+        elif energy > 0 and fin > 0 and trends.get("EXH8.XETRA") == "up":
+            phase_idx = 2
+        elif tech > 0 and trends.get("EXH4.XETRA") == "up":
+            phase_idx = 0
+        else:
+            phase_idx = 1
+
+        result = {
+            "phase":          PHASE_NAMES[phase_idx],
+            "phase_idx":      phase_idx,
+            "dominant_sector": DOMINANT_MAP[phase_idx],
+            "rs_values":      {k.split(".")[0]: v for k, v in rs_values.items()},
+            "trends":         {k.split(".")[0]: v for k, v in trends.items()},
+            "benchmark":      BENCH_KEY,
+            "timestamp":      datetime.utcnow().isoformat(),
+        }
+    except Exception as e:
+        logger.error("EU phase detection failed: %s", e)
+        result = {
+            "phase": "Mittezyklus", "phase_idx": 1,
+            "dominant_sector": "EXH7 (Industrie)",
+            "rs_values": {}, "trends": {}, "benchmark": BENCH_KEY,
+            "error": str(e),
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+
     cache.set(cache_key, result)
     return result
 
