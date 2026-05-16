@@ -16,6 +16,7 @@ from auth import verify_jwt
 from supabase_client import supabase as sb_client
 from yahoo_finance import fetch_yahoo_quote   # TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source (EODHD upgrade or Tiingo) before commercial launch
 from fred_api import fetch_fred_series, fetch_fred_cpi_yoy, fetch_fred_indpro_yoy, fetch_fred_yield_history
+from ecb_api import fetch_ecb_series, fetch_ecb_yield_history
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -87,6 +88,38 @@ MACRO_PLAUSIBILITY = {
 
 # Keep legacy alias so any code still referencing MACRO_TICKERS doesn't break
 MACRO_TICKERS = {**MACRO_TICKERS_EODHD}
+
+# ── Global indices ─────────────────────────────────────────────────────────────
+# EODHD tickers for major international indices + ETF (MSCI World)
+GLOBAL_INDEX_ITEMS = [
+    {"label": "DAX",           "ticker": "GDAXI.INDX",   "region": "EU"},
+    {"label": "Euro Stoxx 50", "ticker": "STOXX50E.INDX", "region": "EU"},
+    {"label": "FTSE 100",      "ticker": "FTSE.INDX",    "region": "EU"},
+    {"label": "Nikkei 225",    "ticker": "N225.INDX",    "region": "Asia"},
+    {"label": "Hang Seng",     "ticker": "HSI.INDX",     "region": "Asia"},
+    {"label": "ATX",           "ticker": "ATX.INDX",     "region": "EU"},
+    {"label": "SMI",           "ticker": "SSMI.INDX",    "region": "EU"},
+    {"label": "MSCI World",    "ticker": "URTH",         "region": "Global"},
+]
+
+GLOBAL_INDEX_PLAUSIBILITY = {
+    "DAX":           (5_000,  30_000),
+    "Euro Stoxx 50": (2_000,   8_000),
+    "FTSE 100":      (4_000,  10_000),
+    "Nikkei 225":   (15_000,  50_000),
+    "Hang Seng":    (10_000,  40_000),
+    "ATX":           (1_000,   8_000),
+    "SMI":           (5_000,  20_000),
+    "MSCI World":   (    50,    300),   # ETF price
+}
+
+# ECB Yield Curve maturities (Euro Area AAA government bonds, Svensson model)
+ECB_YIELD_MATURITIES = {
+    "2Y":  "SR_2Y",
+    "5Y":  "SR_5Y",
+    "10Y": "SR_10Y",
+    "30Y": "SR_30Y",
+}
 
 SCREEN_UNIVERSE = [
     # Technology
@@ -1085,56 +1118,91 @@ YIELD_FRED_SERIES = {
 @app.get("/yield-curve")
 def yield_curve():
     """
-    Full 7-maturity US Treasury yield curve from FRED (DGS series).
-    Maturities: 3M, 6M, 1Y, 2Y, 5Y, 10Y, 30Y — all live from FRED.
-    Spread: 2Y10Y (10Y minus 2Y). Status based on 2Y10Y spread.
-    Historical snapshots (3m_ago ≈ 63 trading days, 1y_ago ≈ 252 trading days).
+    US Treasury yield curve (FRED) + EU AAA government bond curve (ECB Yield Curve dataset).
+    Response includes both {us, eu} nested objects AND legacy flat keys for backward compat.
+    US: 7 maturities (3M–30Y). EU: 4 maturities (2Y–30Y), Svensson model spot rates.
     Cached 1 hour.
     """
-    cache_key = "yield_curve:v2"
+    cache_key = "yield_curve:v3"
     cached    = cache.get(cache_key, ttl_seconds=3600)
     if cached is not None:
         return cached
 
+    # ── US Treasury from FRED ─────────────────────────────────────────────────
     cur, m3, y1 = {}, {}, {}
     fetched = 0
 
     for mat, series_id in YIELD_FRED_SERIES.items():
         history = fetch_fred_yield_history(series_id, limit=400)
         if not history:
-            logger.warning("Yield curve MISS %s (%s): no FRED data", mat, series_id)
+            logger.warning("Yield curve US MISS %s (%s): no FRED data", mat, series_id)
             continue
-
         cur[mat] = history[0]["value"]
         fetched += 1
-
         if len(history) > 63:
             m3[mat] = history[63]["value"]
         if len(history) > 252:
             y1[mat] = history[252]["value"]
-
-        logger.info("Yield curve OK %s (%s): %.3f%%", mat, series_id, cur[mat])
+        logger.info("Yield curve US OK %s (%s): %.3f%%", mat, series_id, cur[mat])
 
     if fetched == 0:
-        logger.error("Yield curve: no FRED data available for any maturity")
+        logger.error("Yield curve: no FRED data available for any US maturity")
         return {"error": "yield_curve_unavailable", "timestamp": datetime.utcnow().isoformat()}
 
-    y10    = cur.get("10Y")
-    y2     = cur.get("2Y")
+    y10 = cur.get("10Y")
+    y2  = cur.get("2Y")
     spread = round(y10 - y2, 3) if y10 is not None and y2 is not None else None
+    status = ("Invers" if spread is not None and spread < -0.1
+              else "Flach"  if spread is not None and spread < 0.2
+              else "Normal" if spread is not None
+              else "Unbekannt")
 
-    if spread is not None:
-        if spread < -0.1:
-            status = "Invers"
-        elif spread < 0.2:
-            status = "Flach"
+    us_data = {
+        "maturities":   ["3M", "6M", "1Y", "2Y", "5Y", "10Y", "30Y"],
+        "current":      cur,
+        "3m_ago":       m3,
+        "1y_ago":       y1,
+        "spread_2y10y": spread,
+        "status":       status,
+    }
+
+    # ── EU Bund proxy from ECB Yield Curve (AAA-rated Euro area gov bonds) ────
+    eu_cur:  dict = {}
+    eu_fetched = 0
+
+    for mat, mk in ECB_YIELD_MATURITIES.items():
+        hist = fetch_ecb_yield_history(mk, limit=300)
+        if hist:
+            eu_cur[mat] = round(hist[0]["value"], 3)
+            eu_fetched += 1
         else:
-            status = "Normal"
+            logger.warning("Yield curve EU MISS %s: no ECB data", mat)
+
+    eu_data = None
+    if eu_fetched > 0:
+        eu10 = eu_cur.get("10Y")
+        eu2  = eu_cur.get("2Y")
+        eu_spread = round(eu10 - eu2, 3) if eu10 is not None and eu2 is not None else None
+        eu_status = ("Invers" if eu_spread is not None and eu_spread < -0.1
+                     else "Flach"  if eu_spread is not None and eu_spread < 0.2
+                     else "Normal" if eu_spread is not None
+                     else "Unbekannt")
+        eu_data = {
+            "maturities":   ["2Y", "5Y", "10Y", "30Y"],
+            "current":      eu_cur,
+            "spread_2y10y": eu_spread,
+            "status":       eu_status,
+        }
+        logger.info("Yield curve EU: %d maturities fetched, 10Y=%.3f%%", eu_fetched, eu10 or 0)
     else:
-        status = "Unbekannt"
+        logger.warning("Yield curve EU: no ECB data for any maturity")
 
     result = {
-        "maturities":   ["3M", "6M", "1Y", "2Y", "5Y", "10Y", "30Y"],
+        # New nested structure
+        "us":           us_data,
+        "eu":           eu_data,
+        # Backward-compat flat keys (= US data, old frontend reads these)
+        "maturities":   us_data["maturities"],
         "current":      cur,
         "3m_ago":       m3,
         "1y_ago":       y1,
@@ -1149,81 +1217,148 @@ def yield_curve():
 @app.get("/macro-indicators")
 def macro_indicators():
     """
-    Live US macro indicators via FRED API and Yahoo Finance.
-    No demo / reference values — if a source fails, an error object is returned.
-    Trend: 'up' if current > previous + 0.5, 'down' if < previous - 0.5, else 'neutral'.
+    Live macro indicators: US (FRED + Yahoo Finance) + EU (ECB SDW).
+    Each indicator carries a 'region' flag: 'US' or 'EU'.
+    Trend: 'up' if current > previous + 0.5, 'down' if < previous − 0.5, else 'neutral'.
     Cached 1 hour.
     TODO PRE-LAUNCH: DXY via Yahoo Finance — Replace with licensed source before commercial launch
     """
-    cache_key = "macro_indicators:v2"
+    cache_key = "macro_indicators:v3"
     cached    = cache.get(cache_key, ttl_seconds=3600)
     if cached is not None:
         return cached
 
     def _trend(current: float, prev: float) -> str:
         diff = current - prev
-        if diff > 0.5:
-            return "up"
-        if diff < -0.5:
-            return "down"
+        if diff > 0.5:  return "up"
+        if diff < -0.5: return "down"
         return "neutral"
 
-    def _ok(label: str, unit: str, desc: str, data: dict) -> dict:
+    def _ok(label: str, unit: str, desc: str, data: dict, region: str = "US") -> dict:
         v, p = data["value"], data["prev_value"]
         return {
-            "label": label, "unit": unit, "desc": desc,
+            "label": label, "unit": unit, "desc": desc, "region": region,
             "value": v, "change": data["change"], "change_pct": data["change_pct"],
             "trend": _trend(v, p),
         }
 
-    def _err(label: str, unit: str, desc: str, reason: str = "fred_unavailable") -> dict:
-        return {"label": label, "unit": unit, "desc": desc, "error": reason}
+    def _err(label: str, unit: str, desc: str, reason: str = "unavailable", region: str = "US") -> dict:
+        return {"label": label, "unit": unit, "desc": desc, "error": reason, "region": region}
 
     results = []
 
-    # ── Fed Funds Rate ────────────────────────────────────────────────────────
+    # ── US: Fed Funds Rate ────────────────────────────────────────────────────
     d = fetch_fred_series("FEDFUNDS")
-    results.append(_ok("Fed Funds Rate", "%", "US-Leitzins (Federal Reserve)", d)
-                   if d else _err("Fed Funds Rate", "%", "US-Leitzins (Federal Reserve)"))
+    results.append(_ok("Fed Funds Rate", "%", "US-Leitzins (Federal Reserve)", d, "US")
+                   if d else _err("Fed Funds Rate", "%", "US-Leitzins (Federal Reserve)", "fred_unavailable", "US"))
 
-    # ── CPI YoY ───────────────────────────────────────────────────────────────
+    # ── US: CPI YoY ───────────────────────────────────────────────────────────
     d = fetch_fred_cpi_yoy()
-    results.append(_ok("CPI YoY", "%", "Inflationsrate USA (YoY)", d)
-                   if d else _err("CPI YoY", "%", "Inflationsrate USA (YoY)"))
+    results.append(_ok("CPI YoY", "%", "Inflationsrate USA (YoY)", d, "US")
+                   if d else _err("CPI YoY", "%", "Inflationsrate USA (YoY)", "fred_unavailable", "US"))
 
-    # ── Unemployment ──────────────────────────────────────────────────────────
+    # ── US: Unemployment ──────────────────────────────────────────────────────
     d = fetch_fred_series("UNRATE")
-    results.append(_ok("Arbeitslosigkeit", "%", "US-Arbeitslosenquote", d)
-                   if d else _err("Arbeitslosigkeit", "%", "US-Arbeitslosenquote"))
+    results.append(_ok("Arbeitslosigkeit", "%", "US-Arbeitslosenquote", d, "US")
+                   if d else _err("Arbeitslosigkeit", "%", "US-Arbeitslosenquote", "fred_unavailable", "US"))
 
-    # ── Industrial Production YoY (INDPRO) ───────────────────────────────────
-    # ISM PMI (NAPM) removed from FRED in 2024 due to ISM license withdrawal
+    # ── US: Industrial Production YoY (INDPRO) ───────────────────────────────
     d = fetch_fred_indpro_yoy()
-    results.append(_ok("Industrieproduktion (YoY)", "%", "US-Industrieproduktion Year-over-Year", d)
-                   if d else _err("Industrieproduktion (YoY)", "%", "US-Industrieproduktion Year-over-Year"))
+    results.append(_ok("Industrieproduktion (YoY)", "%", "US-Industrieproduktion Year-over-Year", d, "US")
+                   if d else _err("Industrieproduktion (YoY)", "%", "US-Industrieproduktion Year-over-Year", "fred_unavailable", "US"))
 
-    # ── M2 Money Supply ───────────────────────────────────────────────────────
+    # ── US: M2 Money Supply ───────────────────────────────────────────────────
     d = fetch_fred_series("M2SL")
-    results.append(_ok("M2 Geldmenge", "Mrd. $", "US-Geldmenge M2", d)
-                   if d else _err("M2 Geldmenge", "Mrd. $", "US-Geldmenge M2"))
+    results.append(_ok("M2 Geldmenge", "Mrd. $", "US-Geldmenge M2", d, "US")
+                   if d else _err("M2 Geldmenge", "Mrd. $", "US-Geldmenge M2", "fred_unavailable", "US"))
 
-    # ── US Dollar Index (Yahoo Finance DX-Y.NYB) ─────────────────────────────
-    # TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source (EODHD upgrade or Tiingo) before commercial launch
+    # ── US: Dollar Index (Yahoo Finance) ─────────────────────────────────────
+    # TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source before commercial launch
     dxy = fetch_yahoo_quote("DX-Y.NYB")
     if dxy:
-        v = dxy["price"]
+        v   = dxy["price"]
         chg = dxy["change"]
         results.append({
             "label": "US Dollar Index", "unit": "Punkte", "desc": "US Dollar Index (DXY)",
-            "value": v, "change": chg, "change_pct": dxy["change_pct"],
+            "value": v, "change": chg, "change_pct": dxy["change_pct"], "region": "US",
             "trend": "up" if chg > 0.5 else "down" if chg < -0.5 else "neutral",
         })
     else:
-        results.append(_err("US Dollar Index", "Punkte", "US Dollar Index (DXY)", "yahoo_unavailable"))
+        results.append(_err("US Dollar Index", "Punkte", "US Dollar Index (DXY)", "yahoo_unavailable", "US"))
+
+    # ── EU: ECB Main Refinancing Rate ─────────────────────────────────────────
+    d = fetch_ecb_series("FM", "D.U2.EUR.4F.KR.MRR_FR.LEV")
+    results.append(_ok("ECB Leitzins", "%", "EZB Hauptrefinanzierungssatz", d, "EU")
+                   if d else _err("ECB Leitzins", "%", "EZB Hauptrefinanzierungssatz", "ecb_unavailable", "EU"))
+
+    # ── EU: Euro Area HICP Inflation ──────────────────────────────────────────
+    d = fetch_ecb_series("ICP", "M.U2.N.000000.4.ANR")
+    results.append(_ok("EU Inflation (HICP)", "%", "Eurozone Inflation YoY (HICP)", d, "EU")
+                   if d else _err("EU Inflation (HICP)", "%", "Eurozone Inflation YoY (HICP)", "ecb_unavailable", "EU"))
+
+    # ── EU: Euro Area Unemployment ────────────────────────────────────────────
+    d = fetch_ecb_series("LFSI", "M.I9.S.UNEHRT.TOTAL0.15_74.T")
+    results.append(_ok("EU Arbeitslosigkeit", "%", "Eurozone-Arbeitslosenquote", d, "EU")
+                   if d else _err("EU Arbeitslosigkeit", "%", "Eurozone-Arbeitslosenquote", "ecb_unavailable", "EU"))
 
     output = {"timestamp": datetime.utcnow().isoformat(), "indicators": results}
     cache.set(cache_key, output)
     return output
+
+
+@app.get("/global-indices")
+def global_indices():
+    """
+    Current values for major global stock indices via EODHD.
+    Includes plausibility checks — impossible values returned as error objects.
+    Regions: EU, Asia, Global. Cached 5 min.
+    """
+    cache_key = "global_indices:v1"
+    cached    = cache.get(cache_key, ttl_seconds=300)
+    if cached is not None:
+        return cached
+
+    tickers = [item["ticker"] for item in GLOBAL_INDEX_ITEMS]
+    snaps   = fetch_realtime(tickers)
+
+    out = []
+    for item in GLOBAL_INDEX_ITEMS:
+        ticker = item["ticker"]
+        label  = item["label"]
+        region = item["region"]
+        snap   = snaps.get(ticker)
+
+        if not snap:
+            logger.warning("Global index MISS %-15s (%s): no data", label, ticker)
+            out.append({"label": label, "ticker": ticker, "region": region, "error": "no_data"})
+            continue
+
+        value  = snap["price"]
+        bounds = GLOBAL_INDEX_PLAUSIBILITY.get(label)
+        if bounds and not (bounds[0] <= value <= bounds[1]):
+            logger.error(
+                "Global index PLAUSIBILITY FAIL %-15s: %.2f not in [%.0f, %.0f]",
+                label, value, bounds[0], bounds[1],
+            )
+            out.append({
+                "label": label, "ticker": ticker, "region": region,
+                "error": "implausible_value", "raw_value": value,
+            })
+            continue
+
+        out.append({
+            "label":      label,
+            "ticker":     ticker,
+            "value":      value,
+            "change":     snap["change"],
+            "change_pct": snap["change_pct"],
+            "region":     region,
+        })
+        logger.info("Global index OK %-15s (%s): %.2f", label, ticker, value)
+
+    result = {"timestamp": datetime.utcnow().isoformat(), "indices": out}
+    cache.set(cache_key, result)
+    return result
 
 
 # ─── Sector Holdings ─────────────────────────────────────────────────────────
