@@ -1,5 +1,5 @@
 """
-APEX Markets — Backend API v5 (EODHD edition)
+APEX Markets — Backend API v6 (EODHD + Yahoo Finance + FRED edition)
 """
 import os
 import re
@@ -14,6 +14,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from auth import verify_jwt
 from supabase_client import supabase as sb_client
+from yahoo_finance import fetch_yahoo_quote   # TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source (EODHD upgrade or Tiingo) before commercial launch
+from fred_api import fetch_fred_series, fetch_fred_cpi_yoy, fetch_fred_yield_history
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -45,19 +47,46 @@ SECTOR_ETFS = {
 #   Crypto         : BTC-USD.CC
 #   Forex          : EURUSD.FOREX
 #   Indices        : GDAXI.INDX, ATX.INDX, STOXX50E.INDX
-MACRO_TICKERS = {
-    "S&P 500":         "GSPC.INDX",
-    "Gold":            "GLD",
-    "WTI_Crude":       "BNO",          # United States Brent Oil Fund; UKOIL.COMMODITY unavailable on current plan
-    "10Y_Treasury":    "TYX.INDX",     # 30Y yield proxy; TNX.INDX unavailable on current plan
-    "Volatility":      "VIXY",
-    "US_Dollar":       "UUP",
-    "Bitcoin":         "BTC-USD.CC",
-    "EUR/USD":         "EURUSD.FOREX",
-    "DAX":             "GDAXI.INDX",
-    "Euro Stoxx 50":   "STOXX50E.INDX",
-    "ATX":             "ATX.INDX",
+
+# EODHD — indices, crypto, forex (working correctly on current plan)
+MACRO_TICKERS_EODHD = {
+    "S&P 500":       "GSPC.INDX",
+    "Volatility":    "VIXY",
+    "Bitcoin":       "BTC-USD.CC",
+    "EUR/USD":       "EURUSD.FOREX",
+    "DAX":           "GDAXI.INDX",
+    "Euro Stoxx 50": "STOXX50E.INDX",
+    "ATX":           "ATX.INDX",
 }
+
+# Yahoo Finance — commodities and DXY (ETF surrogates removed)
+# TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source (EODHD upgrade or Tiingo) before commercial launch
+MACRO_TICKERS_YAHOO = {
+    "Gold":        "GC=F",      # Gold Spot Futures (~$4500)
+    "Brent_Crude": "BZ=F",      # Brent Crude Futures (~$109)
+    "WTI_Crude":   "CL=F",      # WTI Crude Futures (~$107)
+    "US_Dollar":   "DX-Y.NYB",  # US Dollar Index DXY (~99)
+}
+
+# FRED — US Treasury yields (replaces broken EODHD TYX/IRX proxies)
+MACRO_TICKERS_FRED = {
+    "10Y_Treasury": "DGS10",
+    "30Y_Treasury": "DGS30",
+}
+
+# Plausibility bounds {label: (min, max)} — return error if value is outside range
+MACRO_PLAUSIBILITY = {
+    "Gold":        (500,  10000),
+    "Brent_Crude": (20,   300),
+    "WTI_Crude":   (20,   300),
+    "US_Dollar":   (70,   150),
+    "10Y_Treasury":(0,    15),
+    "30Y_Treasury":(0,    15),
+    "Volatility":  (5,    100),
+}
+
+# Keep legacy alias so any code still referencing MACRO_TICKERS doesn't break
+MACRO_TICKERS = {**MACRO_TICKERS_EODHD}
 
 SCREEN_UNIVERSE = [
     # Technology
@@ -825,57 +854,103 @@ def screener_top(limit: int = Query(20, ge=1, le=50)):
     return {"timestamp": full["timestamp"], "data_date": data_date, "results": results[:limit]}
 
 
+def _plausibility_check(label: str, ticker: str, value: float) -> dict | None:
+    """Returns error dict if value is outside expected range, else None."""
+    bounds = MACRO_PLAUSIBILITY.get(label)
+    if bounds is None:
+        return None
+    lo, hi = bounds
+    if not (lo <= value <= hi):
+        logger.error(
+            "Plausibility FAIL %-15s (%s): %.4f not in [%.0f, %.0f]",
+            label, ticker, value, lo, hi,
+        )
+        return {"label": label, "ticker": ticker, "error": "implausible_value", "raw_value": value}
+    return None
+
+
 @app.get("/macro")
 def macro():
     """
-    Macro indicators — single batch real-time call covers all tickers including
-    crypto (BTC-USD.CC), forex (EURUSD.FOREX), and indices (GDAXI.INDX, etc.).
-    Cached 5 min; cache is invalidated if fewer than half the tickers resolved.
+    Macro indicators — mixed sources:
+      EODHD : indices, crypto, forex (S&P 500, DAX, Euro Stoxx 50, ATX, EUR/USD, Bitcoin, Volatility)
+      Yahoo  : Gold (GC=F), Brent_Crude (BZ=F), WTI_Crude (CL=F), US_Dollar (DX-Y.NYB)
+      FRED   : 10Y_Treasury (DGS10), 30Y_Treasury (DGS30)
+    Cached 5 min. Plausibility checks guard against implausible values.
+    TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source (EODHD upgrade or Tiingo) before commercial launch
     """
-    cache_key = "macro:indicators"
+    cache_key = "macro:v2"
     cached    = cache.get(cache_key, ttl_seconds=300)
     if cached is not None:
-        present   = {i["label"] for i in cached.get("indicators", [])}
-        non_null  = len(present)
-        required  = {"WTI_Crude", "10Y_Treasury"}
-        if non_null >= len(MACRO_TICKERS) // 2 and required.issubset(present):
-            return cached
-        logger.warning("Macro cache incomplete (present=%d, missing=%s) — re-fetching",
-                       non_null, required - present)
-
-    tickers = list(MACRO_TICKERS.values())
-    snaps   = fetch_realtime(tickers)
+        return cached
 
     out = []
-    for label, ticker in MACRO_TICKERS.items():
+
+    # ── EODHD batch: indices, crypto, forex ─────────────────────────────────
+    snaps = fetch_realtime(list(MACRO_TICKERS_EODHD.values()))
+    for label, ticker in MACRO_TICKERS_EODHD.items():
         snap = snaps.get(ticker)
         if snap:
-            value      = snap["price"]
-            change     = snap["change"]
-            change_pct = snap["change_pct"]
-
-            # EODHD CBOE yield indices (TNX, TYX, FVX, IRX) report values ×10
-            # in the previousClose field while the close field is already correct.
-            # Recompute change/change_pct from the normalised previous_close.
-            if ticker in ("TNX.INDX", "TYX.INDX", "FVX.INDX", "IRX.INDX"):
-                if value > 20:                       # close also ×10 — divide
-                    value = round(value / 10, 4)
-                prev = snap.get("previous_close", value)
-                if prev > 20:
-                    prev = round(prev / 10, 4)
-                change     = round(value - prev, 4)
-                change_pct = round((change / prev * 100) if prev else 0, 4)
-
-            out.append({
-                "label":      label,
-                "ticker":     ticker,
-                "value":      value,
-                "change":     change,
-                "change_pct": change_pct,
-            })
-            logger.info("Macro OK   %-15s (%s): %.4f", label, ticker, value)
+            value = snap["price"]
+            err   = _plausibility_check(label, ticker, value)
+            if err:
+                out.append(err)
+            else:
+                out.append({
+                    "label":      label,
+                    "ticker":     ticker,
+                    "value":      value,
+                    "change":     snap["change"],
+                    "change_pct": snap["change_pct"],
+                })
+            logger.info("Macro EODHD OK   %-15s (%s): %.4f", label, ticker, value)
         else:
-            logger.warning("Macro MISS %-15s (%s): no data from EODHD", label, ticker)
+            logger.warning("Macro EODHD MISS %-15s (%s): no data", label, ticker)
+
+    # ── Yahoo Finance: Gold, Brent_Crude, WTI_Crude, US_Dollar ──────────────
+    # TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source (EODHD upgrade or Tiingo) before commercial launch
+    for label, yf_symbol in MACRO_TICKERS_YAHOO.items():
+        quote = fetch_yahoo_quote(yf_symbol)
+        if quote:
+            value = quote["price"]
+            err   = _plausibility_check(label, yf_symbol, value)
+            if err:
+                out.append(err)
+            else:
+                out.append({
+                    "label":      label,
+                    "ticker":     yf_symbol,
+                    "value":      value,
+                    "change":     quote["change"],
+                    "change_pct": quote["change_pct"],
+                })
+            logger.info("Macro Yahoo OK   %-15s (%s): %.4f", label, yf_symbol, value)
+        else:
+            out.append({"label": label, "ticker": yf_symbol, "error": "yahoo_unavailable"})
+            logger.warning("Macro Yahoo MISS %-15s (%s): no data", label, yf_symbol)
+
+    # ── FRED: 10Y_Treasury, 30Y_Treasury ────────────────────────────────────
+    for label, fred_id in MACRO_TICKERS_FRED.items():
+        data = fetch_fred_series(fred_id)
+        if data:
+            value = data["value"]
+            err   = _plausibility_check(label, fred_id, value)
+            if err:
+                out.append(err)
+            else:
+                prev   = data["prev_value"]
+                change = round(value - prev, 4)
+                out.append({
+                    "label":      label,
+                    "ticker":     fred_id,
+                    "value":      value,
+                    "change":     change,
+                    "change_pct": round((change / prev * 100) if prev else 0.0, 4),
+                })
+            logger.info("Macro FRED OK    %-15s (%s): %.4f", label, fred_id, value)
+        else:
+            out.append({"label": label, "ticker": fred_id, "error": "fred_unavailable"})
+            logger.warning("Macro FRED MISS  %-15s (%s): no data", label, fred_id)
 
     result = {"timestamp": datetime.utcnow().isoformat(), "indicators": out}
     cache.set(cache_key, result)
@@ -995,70 +1070,68 @@ def portfolio_analyze(req: PortfolioRequest):
 
 # ─── Yield Curve & Macro Indicators ──────────────────────────────────────────
 
-# CBOE INDX tickers — available on current plan; values are ×10 and need /10 scaling
-YIELD_CURVE_TICKERS = {
-    "3M":  "IRX.INDX",
-    "5Y":  "FVX.INDX",
-    "10Y": "TNX.INDX",
-    "30Y": "TYX.INDX",
+# FRED series for full 7-maturity yield curve (replaces broken CBOE INDX proxies)
+YIELD_FRED_SERIES = {
+    "3M":  "DGS3MO",
+    "6M":  "DGS6MO",
+    "1Y":  "DGS1",
+    "2Y":  "DGS2",
+    "5Y":  "DGS5",
+    "10Y": "DGS10",
+    "30Y": "DGS30",
 }
-
-# FRED tickers are not available on the current EODHD plan.
-# ref_value/ref_change/ref_change_pct/ref_trend are returned as reference fallbacks.
-MACRO_INDICATORS_CFG = [
-    {"label": "Fed Funds Rate",   "ticker": "FEDFUNDS.FRED", "unit": "%",       "desc": "US-Leitzins (Federal Reserve)",
-     "ref_value": 5.33,  "ref_change": 0.0,  "ref_change_pct": 0.0,   "ref_trend": "neutral"},
-    {"label": "CPI YoY",          "ticker": "CPIAUCSL.FRED", "unit": "%",       "desc": "Inflationsrate USA (YoY)",
-     "ref_value": 3.2,   "ref_change": -0.1, "ref_change_pct": -0.1,  "ref_trend": "down"},
-    {"label": "Arbeitslosigkeit", "ticker": "UNRATE.FRED",   "unit": "%",       "desc": "US-Arbeitslosenquote",
-     "ref_value": 3.9,   "ref_change": 0.1,  "ref_change_pct": 2.56,  "ref_trend": "up"},
-    {"label": "ISM PMI",          "ticker": "NAPM.FRED",     "unit": "Punkte",  "desc": "ISM Einkaufsmanagerindex Verarb.",
-     "ref_value": 48.7,  "ref_change": -0.4, "ref_change_pct": -0.81, "ref_trend": "down"},
-    {"label": "M2 Geldmenge",     "ticker": "M2SL.FRED",     "unit": "Mrd. $",  "desc": "US-Geldmenge M2",
-     "ref_value": 20985, "ref_change": 32.0, "ref_change_pct": 0.15,  "ref_trend": "up"},
-    # UUP tracks DXY; scale_factor converts UUP price (~27) to approximate DXY (~104)
-    {"label": "US Dollar Index",  "ticker": "UUP",           "unit": "Punkte",  "desc": "US Dollar Index (DXY)",
-     "scale_factor": 3.82},
-]
 
 
 @app.get("/yield-curve")
 def yield_curve():
-    cache_key = "yield_curve:full"
+    """
+    Full 7-maturity US Treasury yield curve from FRED (DGS series).
+    Maturities: 3M, 6M, 1Y, 2Y, 5Y, 10Y, 30Y — all live from FRED.
+    Spread: 2Y10Y (10Y minus 2Y). Status based on 2Y10Y spread.
+    Historical snapshots (3m_ago ≈ 63 trading days, 1y_ago ≈ 252 trading days).
+    Cached 1 hour.
+    """
+    cache_key = "yield_curve:v2"
     cached    = cache.get(cache_key, ttl_seconds=3600)
     if cached is not None:
         return cached
 
-    frm, to = _date_range(420)
     cur, m3, y1 = {}, {}, {}
     fetched = 0
 
-    for mat, ticker in YIELD_CURVE_TICKERS.items():
-        try:
-            df     = fetch_eod(ticker, frm, to)
-            series = df["Close"].dropna()
-            if len(series) == 0:
-                continue
-            # CBOE INDX tickers report values ×10; divide to get actual yield %
-            cur[mat] = round(float(series.iloc[-1]) / 10, 3)
-            fetched += 1
-            if len(series) >= 63:
-                m3[mat] = round(float(series.iloc[-63]) / 10, 3)
-            if len(series) >= 252:
-                y1[mat] = round(float(series.iloc[-252]) / 10, 3)
-        except Exception:
-            pass
+    for mat, series_id in YIELD_FRED_SERIES.items():
+        history = fetch_fred_yield_history(series_id, limit=400)
+        if not history:
+            logger.warning("Yield curve MISS %s (%s): no FRED data", mat, series_id)
+            continue
+
+        cur[mat] = history[0]["value"]
+        fetched += 1
+
+        if len(history) > 63:
+            m3[mat] = history[63]["value"]
+        if len(history) > 252:
+            y1[mat] = history[252]["value"]
+
+        logger.info("Yield curve OK %s (%s): %.3f%%", mat, series_id, cur[mat])
 
     if fetched == 0:
-        return None  # frontend falls back to DEMO_YIELD
+        logger.error("Yield curve: no FRED data available for any maturity")
+        return {"error": "yield_curve_unavailable", "timestamp": datetime.utcnow().isoformat()}
 
     y10    = cur.get("10Y")
-    y5     = cur.get("5Y")
-    spread = round(y10 - y5, 3) if y10 is not None and y5 is not None else None
-    status = ("Invers"    if spread is not None and spread < -0.10
-              else "Flach"   if spread is not None and spread < 0.25
-              else "Normal"  if spread is not None
-              else "Unbekannt")
+    y2     = cur.get("2Y")
+    spread = round(y10 - y2, 3) if y10 is not None and y2 is not None else None
+
+    if spread is not None:
+        if spread < -0.1:
+            status = "Invers"
+        elif spread < 0.2:
+            status = "Flach"
+        else:
+            status = "Normal"
+    else:
+        status = "Unbekannt"
 
     result = {
         "maturities":   ["3M", "6M", "1Y", "2Y", "5Y", "10Y", "30Y"],
@@ -1075,82 +1148,77 @@ def yield_curve():
 
 @app.get("/macro-indicators")
 def macro_indicators():
-    cache_key = "macro_indicators:full"
+    """
+    Live US macro indicators via FRED API and Yahoo Finance.
+    No demo / reference values — if a source fails, an error object is returned.
+    Trend: 'up' if current > previous + 0.5, 'down' if < previous - 0.5, else 'neutral'.
+    Cached 1 hour.
+    TODO PRE-LAUNCH: DXY via Yahoo Finance — Replace with licensed source before commercial launch
+    """
+    cache_key = "macro_indicators:v2"
     cached    = cache.get(cache_key, ttl_seconds=3600)
     if cached is not None:
         return cached
 
-    frm, to = _date_range(420)
+    def _trend(current: float, prev: float) -> str:
+        diff = current - prev
+        if diff > 0.5:
+            return "up"
+        if diff < -0.5:
+            return "down"
+        return "neutral"
+
+    def _ok(label: str, unit: str, desc: str, data: dict) -> dict:
+        v, p = data["value"], data["prev_value"]
+        return {
+            "label": label, "unit": unit, "desc": desc,
+            "value": v, "change": data["change"], "change_pct": data["change_pct"],
+            "trend": _trend(v, p),
+        }
+
+    def _err(label: str, unit: str, desc: str, reason: str = "fred_unavailable") -> dict:
+        return {"label": label, "unit": unit, "desc": desc, "error": reason}
+
     results = []
 
-    for cfg in MACRO_INDICATORS_CFG:
-        label  = cfg["label"]
-        ticker = cfg["ticker"]
-        unit   = cfg["unit"]
-        desc   = cfg["desc"]
+    # ── Fed Funds Rate ────────────────────────────────────────────────────────
+    d = fetch_fred_series("FEDFUNDS")
+    results.append(_ok("Fed Funds Rate", "%", "US-Leitzins (Federal Reserve)", d)
+                   if d else _err("Fed Funds Rate", "%", "US-Leitzins (Federal Reserve)"))
 
-        # FRED tickers unavailable on current EODHD plan — return reference fallback immediately
-        if ticker.endswith(".FRED"):
-            results.append({
-                "label": label, "ticker": ticker, "unit": unit, "desc": desc,
-                "value": cfg["ref_value"], "change": cfg["ref_change"],
-                "change_pct": cfg["ref_change_pct"], "trend": cfg["ref_trend"],
-                "is_reference": True,
-            })
-            continue
+    # ── CPI YoY ───────────────────────────────────────────────────────────────
+    d = fetch_fred_cpi_yoy()
+    results.append(_ok("CPI YoY", "%", "Inflationsrate USA (YoY)", d)
+                   if d else _err("CPI YoY", "%", "Inflationsrate USA (YoY)"))
 
-        # Live fetch for non-FRED tickers (UUP etc.)
-        scale = cfg.get("scale_factor", 1.0)
-        try:
-            series = pd.Series(dtype=float)
-            snap   = _fetch_rt_one(ticker)
-            if snap and snap.get("price"):
-                try:
-                    df     = fetch_eod(ticker, frm, to)
-                    series = df["Close"].dropna() if not df.empty else pd.Series(dtype=float)
-                except Exception:
-                    pass
-                trend = "neutral"
-                if len(series) >= 90:
-                    ra = float(series.iloc[-30:].mean())
-                    pa = float(series.iloc[-90:-60].mean())
-                    d  = (ra - pa) / pa if pa else 0
-                    trend = "up" if d > 0.005 else "down" if d < -0.005 else "neutral"
-                results.append({
-                    "label": label, "ticker": ticker, "unit": unit, "desc": desc,
-                    "value": round(snap["price"] * scale, 2),
-                    "change": round(snap["change"] * scale, 4),
-                    "change_pct": snap["change_pct"],  # % stays unchanged
-                    "trend": trend,
-                })
-                continue
+    # ── Unemployment ──────────────────────────────────────────────────────────
+    d = fetch_fred_series("UNRATE")
+    results.append(_ok("Arbeitslosigkeit", "%", "US-Arbeitslosenquote", d)
+                   if d else _err("Arbeitslosigkeit", "%", "US-Arbeitslosenquote"))
 
-            df = fetch_eod(ticker, frm, to)
-            if df.empty:
-                continue
-            series = df["Close"].dropna()
-            if len(series) < 2:
-                continue
+    # ── ISM PMI (NAPM, fallback NAPMNOI) ─────────────────────────────────────
+    d = fetch_fred_series("NAPM") or fetch_fred_series("NAPMNOI")
+    results.append(_ok("ISM PMI", "Punkte", "ISM Einkaufsmanagerindex Verarb.", d)
+                   if d else _err("ISM PMI", "Punkte", "ISM Einkaufsmanagerindex Verarb."))
 
-            current  = float(series.iloc[-1])
-            previous = float(series.iloc[-2])
-            change_abs = round(current - previous, 4)
-            change_pct = round((change_abs / previous * 100), 4) if previous else 0
+    # ── M2 Money Supply ───────────────────────────────────────────────────────
+    d = fetch_fred_series("M2SL")
+    results.append(_ok("M2 Geldmenge", "Mrd. $", "US-Geldmenge M2", d)
+                   if d else _err("M2 Geldmenge", "Mrd. $", "US-Geldmenge M2"))
 
-            trend = "neutral"
-            if len(series) >= 90:
-                ra   = float(series.iloc[-30:].mean())
-                pa   = float(series.iloc[-90:-60].mean())
-                diff = (ra - pa) / pa if pa else 0
-                trend = "up" if diff > 0.005 else "down" if diff < -0.005 else "neutral"
-
-            results.append({
-                "label": label, "ticker": ticker, "unit": unit, "desc": desc,
-                "value": round(current, 3), "change": change_abs, "change_pct": change_pct,
-                "trend": trend,
-            })
-        except Exception as e:
-            results.append({"label": label, "ticker": ticker, "unit": unit, "desc": desc, "error": str(e)})
+    # ── US Dollar Index (Yahoo Finance DX-Y.NYB) ─────────────────────────────
+    # TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source (EODHD upgrade or Tiingo) before commercial launch
+    dxy = fetch_yahoo_quote("DX-Y.NYB")
+    if dxy:
+        v = dxy["price"]
+        chg = dxy["change"]
+        results.append({
+            "label": "US Dollar Index", "unit": "Punkte", "desc": "US Dollar Index (DXY)",
+            "value": v, "change": chg, "change_pct": dxy["change_pct"],
+            "trend": "up" if chg > 0.5 else "down" if chg < -0.5 else "neutral",
+        })
+    else:
+        results.append(_err("US Dollar Index", "Punkte", "US Dollar Index (DXY)", "yahoo_unavailable"))
 
     output = {"timestamp": datetime.utcnow().isoformat(), "indicators": results}
     cache.set(cache_key, output)
