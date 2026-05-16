@@ -105,7 +105,7 @@ GLOBAL_INDEX_ITEMS = [
 GLOBAL_INDEX_PLAUSIBILITY = {
     "DAX":           (5_000,  30_000),
     "Euro Stoxx 50": (2_000,   8_000),
-    "FTSE 100":      (  500,  2_000),   # ISF.LSE ETF price in GBX (pence)
+    "FTSE 100":      (5_000, 15_000),   # ISF.LSE × 10 approximation of FTSE 100 index level
     "Nikkei 225":   (15_000,  70_000),
     "Hang Seng":    (10_000,  40_000),
     "ATX":           (1_000,   8_000),
@@ -1313,7 +1313,7 @@ def global_indices():
     Includes plausibility checks — impossible values returned as error objects.
     Regions: EU, Asia, Global. Cached 5 min.
     """
-    cache_key = "global_indices:v2"
+    cache_key = "global_indices:v3"
     cached    = cache.get(cache_key, ttl_seconds=300)
     if cached is not None:
         return cached
@@ -1334,6 +1334,15 @@ def global_indices():
             continue
 
         value  = snap["price"]
+        change = snap["change"]
+        note   = None
+
+        # ISF.LSE tracks FTSE 100 at ~1:10 (GBX pence). Scale up to approximate index level.
+        if ticker == "ISF.LSE":
+            value  = round(value  * 10, 2)
+            change = round(change * 10, 4)
+            note   = "Berechnet aus ISF.LSE × 10 (Tracking ETF, ±0.5% Tracking-Error)"
+
         bounds = GLOBAL_INDEX_PLAUSIBILITY.get(label)
         if bounds and not (bounds[0] <= value <= bounds[1]):
             logger.error(
@@ -1346,14 +1355,17 @@ def global_indices():
             })
             continue
 
-        out.append({
+        entry = {
             "label":      label,
             "ticker":     ticker,
             "value":      value,
-            "change":     snap["change"],
+            "change":     change,
             "change_pct": snap["change_pct"],
             "region":     region,
-        })
+        }
+        if note:
+            entry["note"] = note
+        out.append(entry)
         logger.info("Global index OK %-15s (%s): %.2f", label, ticker, value)
 
     result = {"timestamp": datetime.utcnow().isoformat(), "indices": out}
