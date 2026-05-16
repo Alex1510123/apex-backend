@@ -94,7 +94,7 @@ MACRO_TICKERS = {**MACRO_TICKERS_EODHD}
 GLOBAL_INDEX_ITEMS = [
     {"label": "DAX",           "ticker": "GDAXI.INDX",   "region": "EU"},
     {"label": "Euro Stoxx 50", "ticker": "STOXX50E.INDX", "region": "EU"},
-    {"label": "FTSE 100",      "ticker": "EWU",          "region": "EU"},   # EWU = iShares MSCI UK ETF (FTSE.INDX nicht im EODHD-Plan)
+    {"label": "FTSE 100",      "ticker": "ISF.LSE",      "region": "EU"},   # ISF.LSE = iShares Core FTSE 100 ETF (GBX, London) — UKX.INDX/FTSE.INDX not on EODHD plan
     {"label": "Nikkei 225",    "ticker": "N225.INDX",    "region": "Asia"},
     {"label": "Hang Seng",     "ticker": "HSI.INDX",     "region": "Asia"},
     {"label": "ATX",           "ticker": "ATX.INDX",     "region": "EU"},
@@ -105,7 +105,7 @@ GLOBAL_INDEX_ITEMS = [
 GLOBAL_INDEX_PLAUSIBILITY = {
     "DAX":           (5_000,  30_000),
     "Euro Stoxx 50": (2_000,   8_000),
-    "FTSE 100":      (   20,    200),   # EWU ETF price in USD
+    "FTSE 100":      (  500,  2_000),   # ISF.LSE ETF price in GBX (pence)
     "Nikkei 225":   (15_000,  70_000),
     "Hang Seng":    (10_000,  40_000),
     "ATX":           (1_000,   8_000),
@@ -1313,7 +1313,7 @@ def global_indices():
     Includes plausibility checks — impossible values returned as error objects.
     Regions: EU, Asia, Global. Cached 5 min.
     """
-    cache_key = "global_indices:v1"
+    cache_key = "global_indices:v2"
     cached    = cache.get(cache_key, ttl_seconds=300)
     if cached is not None:
         return cached
