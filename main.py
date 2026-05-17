@@ -1389,18 +1389,14 @@ def sector_holdings(ticker: str):
     try:
         data = eodhd_get(f"/fundamentals/{eodhd_fmt}", {"filter": "Components"})
     except Exception:
-        if is_eu:
-            result = {"available": False, "reason": "Holdings für diesen ETF nicht im EODHD-Plan verfügbar"}
-            cache.set(cache_key, result)
-            return result
-        raise HTTPException(status_code=404, detail=f"Holdings not available for {t}")
+        result = {"available": False, "reason": "Holdings für diesen ETF nicht im EODHD-Plan verfügbar"}
+        cache.set(cache_key, result)
+        return result
 
     if not isinstance(data, dict) or not data:
-        if is_eu:
-            result = {"available": False, "reason": "Keine Holdings-Daten von EODHD"}
-            cache.set(cache_key, result)
-            return result
-        raise HTTPException(status_code=404, detail=f"No holdings data for {t}")
+        result = {"available": False, "reason": "Keine Holdings-Daten von EODHD"}
+        cache.set(cache_key, result)
+        return result
 
     holdings = []
     for code, comp in data.items():
@@ -1860,6 +1856,377 @@ def delete_memo(memo_id: str, user_id: str = Depends(verify_jwt)):
         raise HTTPException(status_code=404, detail="Memo nicht gefunden")
     sb_client.table("saved_memos").delete().eq("id", memo_id).execute()
     return {"ok": True}
+
+# ─── Academy ──────────────────────────────────────────────────────────────────
+
+class ProgressBody(BaseModel):
+    lesson_id: str
+    quiz_score: int = 0
+
+ACADEMY_TRACKS = [
+    {
+        "id": "foundation",
+        "title": "Foundation",
+        "subtitle": "Grundlagen des Investierens",
+        "description": "Verstehen Sie die Bausteine der Kapitalmärkte: Aktien, Börsen, Indizes und Bewertungsmethoden.",
+        "icon": "📚",
+        "color": "#4C2EE5",
+        "total_lessons": 10,
+        "status": "available",
+    },
+    {
+        "id": "technical",
+        "title": "Technische Analyse",
+        "subtitle": "Charts lesen und interpretieren",
+        "description": "Candlestick-Muster, Indikatoren und Trendanalyse.",
+        "icon": "📈",
+        "color": "#00d4a0",
+        "total_lessons": 8,
+        "status": "coming_soon",
+    },
+    {
+        "id": "macro",
+        "title": "Makroökonomie",
+        "subtitle": "Wirtschaft und Märkte verstehen",
+        "description": "Zinsen, Inflation, Konjunkturzyklen und globale Zusammenhänge.",
+        "icon": "🌍",
+        "color": "#d29922",
+        "total_lessons": 8,
+        "status": "coming_soon",
+    },
+]
+
+ACADEMY_LESSONS_DATA = {
+    "foundation": [
+        {
+            "id": "foundation-1.1",
+            "track_id": "foundation",
+            "title": "Was ist eine Aktie?",
+            "subtitle": "Eigenkapital, Stimmrechte und Dividenden",
+            "duration_min": 8,
+            "sort_order": 1,
+            "status": "available",
+            "learning_goals": [
+                "Verstehen, was eine Aktie rechtlich und wirtschaftlich darstellt",
+                "Den Unterschied zwischen Stammaktien und Vorzugsaktien kennen",
+                "Wissen, wie Dividenden entstehen und ausgezahlt werden",
+            ],
+            "sections": [
+                {
+                    "type": "text",
+                    "heading": "Was ist eine Aktie?",
+                    "body": "Eine Aktie ist ein Wertpapier, das einen Eigentumsanteil an einem Unternehmen verbrieft. Wenn Sie eine Aktie von Apple kaufen, werden Sie zu einem Miteigentümer von Apple Inc. — auch wenn Ihr Anteil nur einen winzigen Bruchteil des gesamten Unternehmens ausmacht.\n\nAktiengesellschaften (AG) teilen ihr Eigenkapital in gleich große Anteile auf, die als Aktien bezeichnet werden. Die Gesamtzahl dieser Anteile ergibt die sogenannte Aktienanzahl oder \"Shares Outstanding\"."
+                },
+                {
+                    "type": "info_box",
+                    "heading": "Kernbegriff: Aktie",
+                    "body": "Eine Aktie = ein Bruchteil des Eigenkapitals eines Unternehmens. Als Aktionär sind Sie Miteigentümer, haben Stimmrechte auf Hauptversammlungen und nehmen an Gewinnen (Dividenden) sowie Wertsteigerungen teil."
+                },
+                {
+                    "type": "live_widget",
+                    "widget_type": "ticker_card",
+                    "ticker": "AAPL",
+                    "label": "Apple Inc. — eines der wertvollsten Unternehmen der Welt"
+                },
+                {
+                    "type": "text",
+                    "heading": "Warum gehen Unternehmen an die Börse?",
+                    "body": "Wenn ein Unternehmen wächst und Kapital benötigt, kann es an die Börse gehen — ein Vorgang, der als Börsengang (IPO — Initial Public Offering) bezeichnet wird. Das Unternehmen gibt neue Aktien aus und erhält dafür frisches Kapital von Investoren.\n\nFür Anleger entsteht so die Möglichkeit, an der Wertentwicklung erfolgreicher Unternehmen zu partizipieren. Der Preis einer Aktie spiegelt dabei wider, was Marktteilnehmer bereit sind, für diesen Eigentumsanteil zu zahlen."
+                },
+                {
+                    "type": "info_box",
+                    "heading": "Stammaktie vs. Vorzugsaktie",
+                    "body": "Stammaktien (Common Shares) geben dem Inhaber Stimmrechte auf der Hauptversammlung. Vorzugsaktien (Preferred Shares) haben häufig kein Stimmrecht, dafür aber eine höhere Dividendenpriorität. Die meisten an der Börse gehandelten Aktien sind Stammaktien."
+                },
+                {
+                    "type": "app_link",
+                    "label": "→ Anwenden in Finscope: AAPL im Screener analysieren",
+                    "target_tab": "screener",
+                    "target_ticker": "AAPL"
+                },
+            ],
+            "quiz": [
+                {
+                    "id": "q1",
+                    "type": "multiple_choice",
+                    "question": "Was stellt eine Aktie rechtlich dar?",
+                    "options": [
+                        "Ein Darlehen an das Unternehmen",
+                        "Einen Eigentumsanteil am Unternehmen",
+                        "Eine Versicherungspolice gegen Kursverluste",
+                        "Ein Recht auf feste Zinszahlungen",
+                    ],
+                    "correct": 1,
+                    "explanation": "Richtig! Eine Aktie ist ein Eigentumsanteil. Als Aktionär sind Sie Miteigentümer des Unternehmens — mit allen Chancen und Risiken, die das mit sich bringt."
+                },
+                {
+                    "id": "q2",
+                    "type": "multiple_choice",
+                    "question": "Was ist eine Dividende?",
+                    "options": [
+                        "Eine Strafgebühr bei Kursverlusten",
+                        "Der Kursgewinn beim Verkauf einer Aktie",
+                        "Eine Gewinnausschüttung des Unternehmens an seine Aktionäre",
+                        "Die Differenz zwischen Kauf- und Verkaufspreis",
+                    ],
+                    "correct": 2,
+                    "explanation": "Korrekt. Eine Dividende ist ein Teil des Unternehmensgewinns, den das Management beschließt, an die Aktionäre auszuschütten. Nicht alle Unternehmen zahlen Dividenden — viele wachstumsstarke Firmen reinvestieren ihre Gewinne lieber."
+                },
+                {
+                    "id": "q3",
+                    "type": "multiple_choice",
+                    "question": "Was passiert bei einem IPO (Initial Public Offering)?",
+                    "options": [
+                        "Ein Unternehmen gibt neue Aktien aus und erhält Kapital von Investoren",
+                        "Ein Unternehmen kauft eigene Aktien vom Markt zurück",
+                        "Zwei Unternehmen fusionieren zu einem neuen Unternehmen",
+                        "Ein Unternehmen wird von der Börse genommen",
+                    ],
+                    "correct": 0,
+                    "explanation": "Genau. Beim IPO — dem Börsengang — bietet ein Unternehmen erstmals Aktien an der Börse an. Es erhält frisches Kapital, und Anleger erhalten die Möglichkeit, Miteigentümer zu werden."
+                },
+            ],
+        },
+        {
+            "id": "foundation-1.2",
+            "track_id": "foundation",
+            "title": "Wie funktioniert die Börse?",
+            "subtitle": "Marktmechanismen, Ordertypen und Liquidität",
+            "duration_min": 10,
+            "sort_order": 2,
+            "status": "available",
+            "learning_goals": [
+                "Verstehen, wie Käufer und Verkäufer an der Börse zusammentreffen",
+                "Die wichtigsten Ordertypen (Market, Limit, Stop) kennen",
+                "Den Bid-Ask-Spread verstehen und seine Bedeutung einschätzen",
+            ],
+            "sections": [
+                {
+                    "type": "text",
+                    "heading": "Die Börse als organisierter Marktplatz",
+                    "body": "Eine Börse ist ein regulierter Marktplatz, auf dem Wertpapiere wie Aktien, Anleihen und ETFs gehandelt werden. Die bekanntesten Börsen der Welt sind die New York Stock Exchange (NYSE) und die NASDAQ in den USA sowie die Deutsche Börse (XETRA) in Frankfurt.\n\nModerne Börsen funktionieren elektronisch: Millionen von Kauf- und Verkaufsaufträgen werden von Computern in Millisekunden verarbeitet und zusammengeführt."
+                },
+                {
+                    "type": "info_box",
+                    "heading": "Bid & Ask — das Herzstück jedes Marktes",
+                    "body": "Der Bid-Kurs ist der höchste Preis, den ein Käufer gerade zu zahlen bereit ist. Der Ask-Kurs (auch Brief) ist der niedrigste Preis, zu dem ein Verkäufer gerade verkaufen möchte. Die Differenz zwischen beiden nennt sich Spread. Ein enger Spread bedeutet hohe Liquidität."
+                },
+                {
+                    "type": "live_widget",
+                    "widget_type": "mini_chart",
+                    "ticker": "SPY",
+                    "label": "S&P 500 ETF (SPY) — der meistgehandelte ETF der Welt"
+                },
+                {
+                    "type": "text",
+                    "heading": "Ordertypen: Wie Sie handeln",
+                    "body": "**Market Order:** Eine Market Order wird sofort zum aktuellen Marktpreis ausgeführt. Sie ist schnell, aber Sie haben keine Kontrolle über den genauen Preis.\n\n**Limit Order:** Sie legen einen Maximalpreis (beim Kauf) oder Minimalpreis (beim Verkauf) fest. Die Order wird nur ausgeführt, wenn der Marktpreis Ihren Limit erreicht.\n\n**Stop-Loss Order:** Wenn der Kurs unter einen bestimmten Wert fällt, wird automatisch verkauft. Dient dem Verlustbegrenzen."
+                },
+                {
+                    "type": "info_box",
+                    "heading": "Wann ist die Börse geöffnet?",
+                    "body": "NYSE/NASDAQ: Montag–Freitag, 9:30–16:00 Uhr Eastern Time (15:30–22:00 Uhr MEZ). XETRA (Frankfurt): 9:00–17:30 Uhr MEZ. Außerhalb dieser Zeiten gibt es Pre-Market und After-Hours Handel mit geringerer Liquidität."
+                },
+                {
+                    "type": "app_link",
+                    "label": "→ Anwenden in Finscope: Aktuelle Marktdaten im Dashboard",
+                    "target_tab": "dashboard",
+                    "target_ticker": None
+                },
+            ],
+            "quiz": [
+                {
+                    "id": "q1",
+                    "type": "multiple_choice",
+                    "question": "Was ist der Bid-Ask-Spread?",
+                    "options": [
+                        "Die jährliche Rendite einer Aktie",
+                        "Die Differenz zwischen dem höchsten Kaufpreis und dem niedrigsten Verkaufspreis",
+                        "Die Verwaltungsgebühr eines ETFs",
+                        "Der Unterschied zwischen Eröffnungs- und Schlusskurs",
+                    ],
+                    "correct": 1,
+                    "explanation": "Genau. Der Bid-Ask-Spread ist die Differenz zwischen dem Bid (höchster Kaufpreis) und dem Ask (niedrigster Verkaufspreis). Ein enger Spread signalisiert hohe Liquidität und niedrige Transaktionskosten."
+                },
+                {
+                    "id": "q2",
+                    "type": "multiple_choice",
+                    "question": "Was ist der Vorteil einer Limit Order gegenüber einer Market Order?",
+                    "options": [
+                        "Sie wird immer sofort ausgeführt",
+                        "Sie gibt dem Anleger Kontrolle über den Ausführungspreis",
+                        "Sie ist immer günstiger als eine Market Order",
+                        "Sie schützt automatisch vor Kursverlusten",
+                    ],
+                    "correct": 1,
+                    "explanation": "Richtig. Mit einer Limit Order legen Sie den Maximalpreis (Kauf) oder Mindestpreis (Verkauf) fest. Sie vermeiden Preisüberraschungen, riskieren aber, dass die Order nicht ausgeführt wird, wenn der Marktpreis Ihr Limit nicht erreicht."
+                },
+                {
+                    "id": "q3",
+                    "type": "multiple_choice",
+                    "question": "Was ist Liquidität an der Börse?",
+                    "options": [
+                        "Das Bargeld, das ein Unternehmen in der Kasse hat",
+                        "Die Möglichkeit, ein Wertpapier schnell zu einem fairen Preis zu kaufen oder zu verkaufen",
+                        "Die Dividendenrendite einer Aktie",
+                        "Der Buchwert des Eigenkapitals",
+                    ],
+                    "correct": 1,
+                    "explanation": "Korrekt. Liquidität beschreibt, wie leicht ein Wertpapier gehandelt werden kann, ohne den Kurs stark zu beeinflussen. Hochliquide Wertpapiere wie Apple-Aktien oder SPY-ETFs haben enge Spreads und hohe Handelsvolumen."
+                },
+            ],
+        },
+        {
+            "id": "foundation-1.3",
+            "track_id": "foundation",
+            "title": "Verstehe den S&P 500",
+            "subtitle": "Aufbau, Gewichtung und historische Bedeutung",
+            "duration_min": 7,
+            "sort_order": 3,
+            "status": "available",
+            "learning_goals": [
+                "Den Aufbau und die Funktion des S&P 500 verstehen",
+                "Das Konzept der marktkapitalisierungsgewichteten Indizes kennen",
+                "Die wichtigsten Sektoren des S&P 500 benennen können",
+            ],
+            "sections": [
+                {
+                    "type": "text",
+                    "heading": "Der S&P 500 — Maßstab der US-Wirtschaft",
+                    "body": "Der S&P 500 (Standard & Poor's 500) ist der wichtigste Aktienindex der USA und gilt weltweit als Referenzmaßstab für die Entwicklung des Aktienmarkts. Er umfasst die 500 größten börsennotierten US-Unternehmen nach Marktkapitalisierung.\n\nDer Index wird von S&P Dow Jones Indices verwaltet und quartalsweise überprüft. Unternehmen, die nicht mehr die Kriterien erfüllen, werden durch neue ersetzt."
+                },
+                {
+                    "type": "live_widget",
+                    "widget_type": "ticker_card",
+                    "ticker": "SPY",
+                    "label": "SPDR S&P 500 ETF Trust (SPY) — bildet den S&P 500 nach"
+                },
+                {
+                    "type": "info_box",
+                    "heading": "Marktkapitalisierungsgewichtung",
+                    "body": "Im S&P 500 werden Unternehmen nach ihrer Marktkapitalisierung gewichtet. Marktkapitalisierung = Aktienkurs × Anzahl ausstehender Aktien. Größere Unternehmen wie Apple, Microsoft und NVIDIA haben deshalb einen höheren Einfluss auf die Indexentwicklung als kleinere Unternehmen."
+                },
+                {
+                    "type": "text",
+                    "heading": "Die 11 Sektoren des S&P 500",
+                    "body": "Der S&P 500 ist in 11 Sektoren aufgeteilt. Derzeit (Stand 2025) dominiert Technologie mit über 30% Gewichtung, gefolgt von Finanzwesen und Gesundheit.\n\nDiese Sektorverteilung ist für Anleger wichtig, weil sie zeigt, welche Branchen den US-Markt antreiben — und welche Risiken damit verbunden sind. Wenn Technologieaktien fallen, fällt der S&P 500 meist stärker als andere Indizes."
+                },
+                {
+                    "type": "app_link",
+                    "label": "→ Anwenden in Finscope: Sektor-Rotation im Sektoren-Tab analysieren",
+                    "target_tab": "sektoren",
+                    "target_ticker": None
+                },
+            ],
+            "quiz": [
+                {
+                    "id": "q1",
+                    "type": "multiple_choice",
+                    "question": "Wie viele Unternehmen sind im S&P 500 enthalten?",
+                    "options": ["100", "500", "1000", "30"],
+                    "correct": 1,
+                    "explanation": "Richtig! Der S&P 500 umfasst die 500 größten börsennotierten US-Unternehmen nach Marktkapitalisierung."
+                },
+                {
+                    "id": "q2",
+                    "type": "multiple_choice",
+                    "question": "Was bedeutet marktkapitalisierungsgewichteter Index?",
+                    "options": [
+                        "Alle Unternehmen haben das gleiche Gewicht",
+                        "Größere Unternehmen haben einen stärkeren Einfluss auf den Index",
+                        "Der Index wird täglich neu gewichtet",
+                        "Nur profitable Unternehmen werden berücksichtigt",
+                    ],
+                    "correct": 1,
+                    "explanation": "Genau. Bei einem marktkapitalisierungsgewichteten Index wie dem S&P 500 bestimmt die Marktkapitalisierung (Kurs × Aktienanzahl) das Gewicht. Apple ist daher deutlich einflussreicher als ein kleineres Unternehmen."
+                },
+                {
+                    "id": "q3",
+                    "type": "multiple_choice",
+                    "question": "Welcher Sektor hat derzeit das größte Gewicht im S&P 500?",
+                    "options": ["Gesundheit", "Energie", "Technologie", "Finanzen"],
+                    "correct": 2,
+                    "explanation": "Korrekt. Technologie dominiert den S&P 500 mit über 30% Gewichtung (Stand 2025). Das bedeutet: Wenn Tech-Aktien wie Apple, Microsoft und NVIDIA fallen, zieht das den gesamten Index nach unten."
+                },
+            ],
+        },
+        # 7 coming soon stubs
+        *[
+            {
+                "id": f"foundation-1.{i}",
+                "track_id": "foundation",
+                "title": title,
+                "subtitle": sub,
+                "duration_min": 8,
+                "sort_order": i,
+                "status": "coming_soon",
+                "learning_goals": [],
+                "sections": [],
+                "quiz": [],
+            }
+            for i, title, sub in [
+                (4, "KGV und Unternehmensbewertung", "Wie Anleger den fairen Wert einer Aktie bestimmen"),
+                (5, "Dividenden und Dividendenrendite", "Passives Einkommen durch Aktienanlagen"),
+                (6, "Portfolio-Diversifikation", "Risiko streuen durch Streuung der Anlagen"),
+                (7, "Risikomanagement Grundlagen", "Verluste begrenzen, Chancen wahren"),
+                (8, "Technische Analyse Einführung", "Charts lesen und Trends erkennen"),
+                (9, "Fundamentalanalyse", "Unternehmen anhand von Kennzahlen bewerten"),
+                (10, "Makroökonomie für Anleger", "Zinsen, Inflation und ihre Auswirkungen auf Aktien"),
+            ]
+        ],
+    ]
+}
+
+
+@app.get("/academy/tracks")
+def get_tracks():
+    return ACADEMY_TRACKS
+
+
+@app.get("/academy/lessons/{track_id}")
+def get_lessons(track_id: str):
+    lessons = ACADEMY_LESSONS_DATA.get(track_id)
+    if lessons is None:
+        raise HTTPException(status_code=404, detail=f"Track '{track_id}' nicht gefunden")
+    return [
+        {k: v for k, v in l.items() if k not in ("sections", "quiz")}
+        for l in lessons
+    ]
+
+
+@app.get("/academy/lesson/{lesson_id}")
+def get_lesson(lesson_id: str):
+    for track_lessons in ACADEMY_LESSONS_DATA.values():
+        for l in track_lessons:
+            if l["id"] == lesson_id:
+                if l["status"] == "coming_soon":
+                    raise HTTPException(status_code=403, detail="Diese Lesson ist noch nicht verfügbar")
+                return l
+    raise HTTPException(status_code=404, detail=f"Lesson '{lesson_id}' nicht gefunden")
+
+
+@app.get("/academy/progress")
+def get_progress(user_id: str = Depends(verify_jwt)):
+    result = (
+        sb_client.table("academy_progress")
+        .select("lesson_id,completed_at,quiz_score")
+        .eq("user_id", user_id)
+        .execute()
+    )
+    return result.data
+
+
+@app.post("/academy/progress", status_code=201)
+def save_progress(body: ProgressBody, user_id: str = Depends(verify_jwt)):
+    try:
+        sb_client.table("academy_progress").upsert(
+            {"user_id": user_id, "lesson_id": body.lesson_id, "quiz_score": body.quiz_score},
+            on_conflict="user_id,lesson_id"
+        ).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return {"ok": True}
+
 
 # ─── Run ──────────────────────────────────────────────────────────────────────
 
