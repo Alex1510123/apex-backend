@@ -15,18 +15,18 @@
   "sections": [
     {
       "type": "text",
-      "heading": "P/E — die wichtigste Bewertungskennzahl",
-      "body": "Das Kurs-Gewinn-Verhältnis (KGV, englisch: Price-to-Earnings Ratio oder P/E) ist die meistgenutzte Kennzahl zur Aktienbewertung weltweit. Es gibt Ihnen Auskunft darüber, wie viel Anleger bereit sind, für jeden Euro (oder Dollar) Unternehmensgewinn zu zahlen.\n\n**Berechnung:** P/E = Aktienkurs / Gewinn pro Aktie (EPS)\n\n**Beispiel:** Apple notiert bei 200 Dollar, der Gewinn pro Aktie beträgt 6,25 Dollar. P/E = 200 / 6,25 = 32. Das bedeutet: Anleger zahlen aktuell den 32-fachen Jahresgewinn für eine Apple-Aktie. Anders ausgedrückt: Bei gleichbleibendem Gewinn würde es 32 Jahre dauern, bis Sie Ihren Kaufpreis allein durch Gewinne zurückbekommen hätten.\n\nNatürlich wächst der Gewinn bei erfolgreichen Unternehmen jedes Jahr — weshalb Anleger bereit sind, ein Vielfaches des aktuellen Gewinns zu zahlen. Das „Forward P/E" verwendet den geschätzten Gewinn des nächsten Jahres und ist oft aussagekräftiger als das historische P/E."
+      "heading": "P/E - die wichtigste Bewertungskennzahl",
+      "body": "Das Kurs-Gewinn-Verhältnis (KGV, englisch: Price-to-Earnings Ratio oder P/E) ist die meistgenutzte Kennzahl zur Aktienbewertung weltweit. Es gibt Ihnen Auskunft darüber, wie viel Anleger bereit sind, für jeden Euro (oder Dollar) Unternehmensgewinn zu zahlen.\n\n**Berechnung:** P/E = Aktienkurs / Gewinn pro Aktie (EPS)\n\n**Beispiel:** Apple notiert bei 200 Dollar, der Gewinn pro Aktie beträgt 6,25 Dollar. P/E = 200 / 6,25 = 32. Das bedeutet: Anleger zahlen aktuell den 32-fachen Jahresgewinn für eine Apple-Aktie. Anders ausgedrückt: Bei gleichbleibendem Gewinn würde es 32 Jahre dauern, bis Sie Ihren Kaufpreis allein durch Gewinne zurückbekommen hätten.\n\nNatürlich wächst der Gewinn bei erfolgreichen Unternehmen jedes Jahr -- weshalb Anleger bereit sind, ein Vielfaches des aktuellen Gewinns zu zahlen. Das 'Forward P/E' verwendet den geschätzten Gewinn des nächsten Jahres und ist oft aussagekräftiger als das historische P/E."
     },
     {
       "type": "text",
       "heading": "Was ein hohes oder niedriges P/E bedeutet",
-      "body": "Ein P/E-Ratio ist niemals isoliert zu betrachten — es braucht immer einen Kontext: Sektor, Wachstumsrate und Zinsniveau.\n\n**Hohes P/E (z.B. 30–80):** Anleger erwarten starkes zukünftiges Wachstum. Die Aktie ist „teuer" auf Basis heutiger Gewinne, aber möglicherweise fair bewertet, wenn das Wachstum eintritt. Typisch für Technologie- und Wachstumsaktien.\n\n**Niedriges P/E (z.B. 5–15):** Entweder ist die Aktie günstig (Value-Aktie) — oder der Markt erwartet sinkende Gewinne, oder das Unternehmen hat strukturelle Probleme. Typisch für Banken, Energieversorger, zyklische Industrien.\n\n**KGV-Vergleich ist relativ:** Ein P/E von 20 ist für eine Airline extrem hoch, für ein Softwareunternehmen könnte es preiswert sein. Vergleichen Sie immer innerhalb desselben Sektors.\n\n**Zinsniveaus beeinflussen das P/E:** Bei niedrigen Zinsen sind Anleger bereit, höhere P/Es zu zahlen (Anleihen als Alternative weniger attraktiv). Bei steigenden Zinsen sinken die tolerierten P/Es — das ist der Hauptgrund, warum Technologieaktien 2022 stark litten."
+      "body": "Ein P/E-Ratio ist niemals isoliert zu betrachten -- es braucht immer einen Kontext: Sektor, Wachstumsrate und Zinsniveau.\n\n**Hohes P/E (z.B. 30-80):** Anleger erwarten starkes zukünftiges Wachstum. Die Aktie ist 'teuer' auf Basis heutiger Gewinne, aber möglicherweise fair bewertet, wenn das Wachstum eintritt. Typisch für Technologie- und Wachstumsaktien.\n\n**Niedriges P/E (z.B. 5-15):** Entweder ist die Aktie günstig (Value-Aktie) -- oder der Markt erwartet sinkende Gewinne, oder das Unternehmen hat strukturelle Probleme. Typisch für Banken, Energieversorger, zyklische Industrien.\n\n**KGV-Vergleich ist relativ:** Ein P/E von 20 ist für eine Airline extrem hoch, für ein Softwareunternehmen könnte es preiswert sein. Vergleichen Sie immer innerhalb desselben Sektors.\n\n**Zinsniveaus beeinflussen das P/E:** Bei niedrigen Zinsen sind Anleger bereit, höhere P/Es zu zahlen (Anleihen als Alternative weniger attraktiv). Bei steigenden Zinsen sinken die tolerierten P/Es -- das ist der Hauptgrund, warum Technologieaktien 2022 stark litten."
     },
     {
       "type": "text",
-      "heading": "P/B — der Kurs im Verhältnis zum Buchwert",
-      "body": "Das Kurs-Buchwert-Verhältnis (Price-to-Book, P/B) setzt den Aktienkurs ins Verhältnis zum bilanziellen Buchwert pro Aktie. Der Buchwert entspricht dem Eigenkapital — also allem, was dem Unternehmen nach Abzug aller Schulden gehört.\n\n**Berechnung:** P/B = Aktienkurs / Buchwert pro Aktie\n\n**Interpretation:**\n- **P/B < 1:** Die Aktie notiert unter ihrem Buchwert — theoretisch kaufen Sie Werte unter dem Preis, den das Unternehmen in der Liquidation einbringen würde. Das kann eine Chance sein (Value-Aktie), aber auch ein Signal für strukturelle Probleme.\n- **P/B 1–3:** Typisch für reife, stabile Unternehmen mit solider Profitabilität.\n- **P/B > 5:** Oft bei Asset-Light-Unternehmen (Software, Beratung), die hauptsächlich immaterielles Kapital (Marke, IP, Talente) besitzen, das in der Bilanz kaum auftaucht.\n\nDas P/B ist besonders nützlich für Banken und Industrieunternehmen, bei denen physisches Kapital eine größere Rolle spielt. Für Software-Unternehmen verliert es an Aussagekraft."
+      "heading": "P/B - der Kurs im Verhältnis zum Buchwert",
+      "body": "Das Kurs-Buchwert-Verhältnis (Price-to-Book, P/B) setzt den Aktienkurs ins Verhältnis zum bilanziellen Buchwert pro Aktie. Der Buchwert entspricht dem Eigenkapital -- also allem, was dem Unternehmen nach Abzug aller Schulden gehört.\n\n**Berechnung:** P/B = Aktienkurs / Buchwert pro Aktie\n\n**Interpretation:**\n- **P/B < 1:** Die Aktie notiert unter ihrem Buchwert -- theoretisch kaufen Sie Werte unter dem Preis, den das Unternehmen in der Liquidation einbringen würde. Das kann eine Chance sein (Value-Aktie), aber auch ein Signal für strukturelle Probleme.\n- **P/B 1-3:** Typisch für reife, stabile Unternehmen mit solider Profitabilität.\n- **P/B > 5:** Oft bei Asset-Light-Unternehmen (Software, Beratung), die hauptsächlich immaterielles Kapital (Marke, IP, Talente) besitzen, das in der Bilanz kaum auftaucht.\n\nDas P/B ist besonders nützlich für Banken und Industrieunternehmen, bei denen physisches Kapital eine größere Rolle spielt. Für Software-Unternehmen verliert es an Aussagekraft."
     },
     {
       "type": "info_box",
@@ -37,21 +37,21 @@
       "type": "live_widget",
       "widget_type": "ticker_card",
       "ticker": "AAPL",
-      "label": "Apple Inc. — Bewertungskennzahlen in Echtzeit"
+      "label": "Apple Inc. - Bewertungskennzahlen in Echtzeit"
     },
     {
       "type": "text",
-      "heading": "Marktkapitalisierung — was ein Unternehmen „wert" ist",
-      "body": "Die Marktkapitalisierung (Market Cap) ist der einfachste Maßstab für die Größe eines Unternehmens an der Börse.\n\n**Berechnung:** Market Cap = Aktienkurs × Anzahl ausstehender Aktien\n\n**Kategorien:**\n- **Mega Cap (>200 Mrd. USD):** Apple, Microsoft, Nvidia, Aramco. Die größten und oft liquidesten Unternehmen der Welt.\n- **Large Cap (10–200 Mrd. USD):** Etablierte Konzerne, Indexmitglieder, solide Dividendenzahler.\n- **Mid Cap (2–10 Mrd. USD):** Wachstumsstarke Unternehmen mit mehr Upside, aber auch mehr Risiko.\n- **Small Cap (<2 Mrd. USD):** Höheres Wachstumspotenzial, aber auch höhere Ausfallwahrscheinlichkeit.\n\nDie Marktkapitalisierung spiegelt wider, was der Gesamtmarkt für das Unternehmen „heute" zu zahlen bereit ist — nicht unbedingt, was es „wirklich" wert ist. Daher kann sie von fundamentalen Werten abweichen — manchmal massiv."
+      "heading": "Marktkapitalisierung - was ein Unternehmen wert ist",
+      "body": "Die Marktkapitalisierung (Market Cap) ist der einfachste Maßstab für die Größe eines Unternehmens an der Börse.\n\n**Berechnung:** Market Cap = Aktienkurs x Anzahl ausstehender Aktien\n\n**Kategorien:**\n- **Mega Cap (>200 Mrd. USD):** Apple, Microsoft, Nvidia, Aramco. Die größten und oft liquidesten Unternehmen der Welt.\n- **Large Cap (10-200 Mrd. USD):** Etablierte Konzerne, Indexmitglieder, solide Dividendenzahler.\n- **Mid Cap (2-10 Mrd. USD):** Wachstumsstarke Unternehmen mit mehr Upside, aber auch mehr Risiko.\n- **Small Cap (<2 Mrd. USD):** Höheres Wachstumspotenzial, aber auch höhere Ausfallwahrscheinlichkeit.\n\nDie Marktkapitalisierung spiegelt wider, was der Gesamtmarkt für das Unternehmen heute zu zahlen bereit ist -- nicht unbedingt, was es wirklich wert ist. Daher kann sie von fundamentalen Werten abweichen."
     },
     {
       "type": "text",
       "heading": "Sektor-typische Bewertungs-Ranges",
-      "body": "Damit Sie einschätzen können, ob ein P/E hoch oder niedrig ist, helfen diese Orientierungswerte:\n\n| Sektor | Typisches P/E | Typisches P/B |\n|--------|-------------|-------------|\n| Technologie/Software | 25–50 | 5–20 |\n| Gesundheit/Pharma | 18–30 | 3–8 |\n| Finanzen/Banken | 8–15 | 0,7–2,0 |\n| Energie | 10–20 | 1–3 |\n| Versorger | 14–22 | 1–2 |\n| Industrie | 15–25 | 2–5 |\n\nDiese Ranges verschieben sich mit dem Zinsniveau und der wirtschaftlichen Phase — sie sind Orientierung, keine festen Grenzen."
+      "body": "Damit Sie einschätzen können, ob ein P/E hoch oder niedrig ist, helfen diese Orientierungswerte:\n\nTechnologie/Software: P/E typisch 25-50, P/B typisch 5-20\nGesundheit/Pharma: P/E typisch 18-30, P/B typisch 3-8\nFinanzen/Banken: P/E typisch 8-15, P/B typisch 0,7-2,0\nEnergie: P/E typisch 10-20, P/B typisch 1-3\nVersorger: P/E typisch 14-22, P/B typisch 1-2\nIndustrie: P/E typisch 15-25, P/B typisch 2-5\n\nDiese Ranges verschieben sich mit dem Zinsniveau und der wirtschaftlichen Phase -- sie sind Orientierung, keine festen Grenzen."
     },
     {
       "type": "app_link",
-      "label": "→ Apple Fundamentaldaten im Research-Tab analysieren",
+      "label": "-> Apple Fundamentaldaten im Research-Tab analysieren",
       "target_tab": "research"
     }
   ],
@@ -67,7 +67,7 @@
         "Den Unterschied zwischen Marktkapitalisierung und Buchwert"
       ],
       "correct": 1,
-      "explanation": "Richtig. Das P/E zeigt, wie viel Vielfaches des Jahresgewinns Anleger für die Aktie zahlen. Ein P/E von 30 bedeutet: Der Markt zahlt den 30-fachen Jahresgewinn — weil er erwartet, dass der Gewinn in Zukunft stark wächst."
+      "explanation": "Richtig. Das P/E zeigt, wie viel Vielfaches des Jahresgewinns Anleger für die Aktie zahlen. Ein P/E von 30 bedeutet: Der Markt zahlt den 30-fachen Jahresgewinn -- weil er erwartet, dass der Gewinn in Zukunft stark wächst."
     },
     {
       "id": "q2",
@@ -80,7 +80,7 @@
         "Versorger"
       ],
       "correct": 2,
-      "explanation": "Korrekt. Technologie- und Wachstumsunternehmen haben typisch hohe P/Es (25–50 oder höher), weil Anleger bereit sind, hohe Bewertungen für zukünftiges Gewinnwachstum zu zahlen. Banken hingegen haben oft P/Es von 8–15."
+      "explanation": "Korrekt. Technologie- und Wachstumsunternehmen haben typisch hohe P/Es (25-50 oder höher), weil Anleger bereit sind, hohe Bewertungen für zukünftiges Gewinnwachstum zu zahlen. Banken hingegen haben oft P/Es von 8-15."
     },
     {
       "id": "q3",
@@ -93,12 +93,12 @@
         "Der Kurs ist in den letzten 12 Monaten gefallen"
       ],
       "correct": 2,
-      "explanation": "Richtig. P/B < 1 bedeutet, der Marktpreis liegt unter dem Eigenkapital des Unternehmens in der Bilanz. Theoretisch kaufen Sie Werte unter Buchwert — das kann attraktiv sein, signalisiert aber oft auch, dass der Markt strukturelle Probleme beim Unternehmen sieht."
+      "explanation": "Richtig. P/B < 1 bedeutet, der Marktpreis liegt unter dem Eigenkapital des Unternehmens in der Bilanz. Theoretisch kaufen Sie Werte unter Buchwert -- das kann attraktiv sein, signalisiert aber oft auch, dass der Markt strukturelle Probleme beim Unternehmen sieht."
     },
     {
       "id": "q4",
       "type": "open_question",
-      "question": "Apple hat P/E 32, Microsoft P/E 35, Alphabet (Google) P/E 24. Welches scheint am günstigsten — und warum reicht diese Analyse nicht?",
+      "question": "Apple hat P/E 32, Microsoft P/E 35, Alphabet (Google) P/E 24. Welches scheint am günstigsten -- und warum reicht diese Analyse nicht?",
       "explanation": "Auf Basis des P/E wirkt Alphabet mit 24 am günstigsten. Aber die reine P/E-Zahl reicht nicht: Entscheidend sind Wachstumsrate (höheres Wachstum rechtfertigt höheres P/E), Free Cashflow-Qualität, Wettbewerbsposition und Kapitalrendite. Ein Unternehmen mit P/E 24 und 5% Gewinnwachstum kann teurer sein als eines mit P/E 35 und 25% Gewinnwachstum."
     }
   ]

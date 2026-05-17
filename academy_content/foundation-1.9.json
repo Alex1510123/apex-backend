@@ -15,38 +15,38 @@
   "sections": [
     {
       "type": "text",
-      "heading": "ROE — wie effizient arbeitet das Management?",
-      "body": "Die Eigenkapitalrendite (Return on Equity, ROE) ist die wichtigste Kennzahl zur Beurteilung der Managementqualität. Sie gibt an, wie effizient ein Unternehmen das von seinen Aktionären eingesetzte Kapital nutzt, um Gewinne zu erwirtschaften.\n\n**Berechnung:** ROE = Jahresgewinn / Eigenkapital × 100\n\n**Orientierungswerte:**\n- **>25%:** Exzellent — das Unternehmen hat einen dauerhaften Wettbewerbsvorteil (Moat)\n- **15–25%:** Gut — solide Kapitalrendite, meist profitabler Sektor oder starke Marktposition\n- **<10%:** Schwach — das Management schöpft zu wenig aus dem vorhandenen Kapital\n\n**Ein extremes Beispiel:** Apple erzielte zuletzt eine ROE von über 150%. Das klingt absurd hoch — ist aber das Ergebnis von Apples massiven Aktienrückkäufen, die das bilanzielle Eigenkapital minimieren. Bei der Interpretation von ROE ist daher immer auch die Verschuldung im Blick zu behalten.\n\nWarren Buffett sucht bevorzugt nach Unternehmen mit dauerhaft hohem ROE (>15%), weil das auf einen echten Wettbewerbsvorteil hindeutet: Sie können Kapital reinvestieren und dabei weiterhin überdurchschnittliche Renditen erzielen."
+      "heading": "ROE - wie effizient arbeitet das Management?",
+      "body": "Die Eigenkapitalrendite (Return on Equity, ROE) ist die wichtigste Kennzahl zur Beurteilung der Managementqualität. Sie gibt an, wie effizient ein Unternehmen das von seinen Aktionären eingesetzte Kapital nutzt, um Gewinne zu erwirtschaften.\n\n**Berechnung:** ROE = Jahresgewinn / Eigenkapital x 100\n\n**Orientierungswerte:**\n- **>25%:** Exzellent -- das Unternehmen hat einen dauerhaften Wettbewerbsvorteil (Moat)\n- **15-25%:** Gut -- solide Kapitalrendite, meist profitabler Sektor oder starke Marktposition\n- **<10%:** Schwach -- das Management schöpft zu wenig aus dem vorhandenen Kapital\n\n**Ein extremes Beispiel:** Apple erzielte zuletzt eine ROE von über 150%. Das klingt absurd hoch -- ist aber das Ergebnis von Apples massiven Aktienrückkäufen, die das bilanzielle Eigenkapital minimieren. Bei der Interpretation von ROE ist daher immer auch die Verschuldung im Blick zu behalten.\n\nWarren Buffett sucht bevorzugt nach Unternehmen mit dauerhaft hohem ROE (>15%), weil das auf einen echten Wettbewerbsvorteil hindeutet: Sie können Kapital reinvestieren und dabei weiterhin überdurchschnittliche Renditen erzielen."
     },
     {
       "type": "text",
-      "heading": "Free Cashflow — der wahre Unternehmensgewinn",
-      "body": "Der Gewinn (Net Income) in der Gewinn-und-Verlust-Rechnung lässt sich durch Bilanzierungswahlrechte beeinflussen. Der Free Cashflow (FCF) ist robuster — er misst, wie viel echtes Geld das Unternehmen tatsächlich nach allen Ausgaben und Investitionen produziert.\n\n**Berechnung:** FCF = Operativer Cashflow − Investitionen (Capex)\n\n**Warum FCF wichtiger ist als Gewinn:**\n- Unternehmen können Gewinne durch Abschreibungswahlrechte oder Rückstellungen „optimieren"\n- Cashflow lässt sich nicht so leicht manipulieren — Geld ist Geld\n- FCF ist die Basis für Dividenden, Aktienrückkäufe und Wachstumsinvestitionen\n\n**FCF-Yield:** FCF / Marktkapitalisierung × 100. Eine FCF-Yield von >5% gilt als attraktiv — das Unternehmen generiert signifikanten Cash relativ zu seinem Börsenwert.\n\n**Warnzeichen:** Ein Unternehmen mit steigendem Gewinn, aber fallendem FCF könnte Buchgewinne ausweisen, ohne echten Cash zu erwirtschaften. Das ist ein ernstes Warnsignal."
+      "heading": "Free Cashflow - der wahre Unternehmensgewinn",
+      "body": "Der Gewinn (Net Income) in der Gewinn-und-Verlust-Rechnung lässt sich durch Bilanzierungswahlrechte beeinflussen. Der Free Cashflow (FCF) ist robuster -- er misst, wie viel echtes Geld das Unternehmen tatsächlich nach allen Ausgaben und Investitionen produziert.\n\n**Berechnung:** FCF = Operativer Cashflow - Investitionen (Capex)\n\n**Warum FCF wichtiger ist als Gewinn:**\n- Unternehmen können Gewinne durch Abschreibungswahlrechte oder Rückstellungen 'optimieren'\n- Cashflow lässt sich nicht so leicht manipulieren -- Geld ist Geld\n- FCF ist die Basis für Dividenden, Aktienrückkäufe und Wachstumsinvestitionen\n\n**FCF-Yield:** FCF / Marktkapitalisierung x 100. Eine FCF-Yield von >5% gilt als attraktiv -- das Unternehmen generiert signifikanten Cash relativ zu seinem Börsenwert.\n\n**Warnzeichen:** Ein Unternehmen mit steigendem Gewinn, aber fallendem FCF könnte Buchgewinne ausweisen, ohne echten Cash zu erwirtschaften. Das ist ein ernstes Warnsignal."
     },
     {
       "type": "text",
-      "heading": "Verschuldung — Debt-to-Equity-Ratio",
-      "body": "Schulden sind kein inhärentes Problem — sie können die Eigenkapitalrendite hebeln und das Wachstum beschleunigen. Zu viele Schulden jedoch erhöhen das Insolvenzrisiko, besonders in wirtschaftlichen Abschwüngen.\n\n**Debt-to-Equity (D/E):** Gesamtschulden / Eigenkapital\n\n**Orientierungswerte:**\n- **D/E < 0,5:** Konservativ — niedriges Insolvenzrisiko, aber möglicherweise ungenutztes Hebelungspotenzial\n- **D/E 0,5–1,5:** Gesund — sinnvolle Nutzung von Fremdkapital\n- **D/E > 2,0:** Erhöhtes Risiko — muss durch starken Cash-Flow und stabile Einnahmen gerechtfertigt sein\n- **D/E > 4,0:** Kritisch — das Unternehmen ist stark fremdfinanziert\n\n**Sektorabhängigkeit beachten:** Versorger und Immobilienunternehmen (REITs) haben strukturell hohe D/E-Ratios (oft 2–4), weil ihre stabilen, regulierten Einnahmen hohe Verschuldung sicher tragen. Technologieunternehmen sollten kaum Schulden haben.\n\n**Net Debt:** Schulden abzüglich Cash und kurzfristiger Geldanlagen. Ein Unternehmen mit 5 Mrd. Schulden und 6 Mrd. Cash hat eine Net Cash-Position — die Schulden sind kein Risiko."
+      "heading": "Verschuldung - Debt-to-Equity-Ratio",
+      "body": "Schulden sind kein inhärentes Problem -- sie können die Eigenkapitalrendite hebeln und das Wachstum beschleunigen. Zu viele Schulden jedoch erhöhen das Insolvenzrisiko, besonders in wirtschaftlichen Abschwüngen.\n\n**Debt-to-Equity (D/E):** Gesamtschulden / Eigenkapital\n\n**Orientierungswerte:**\n- **D/E < 0,5:** Konservativ -- niedriges Insolvenzrisiko, aber möglicherweise ungenutztes Hebelungspotenzial\n- **D/E 0,5-1,5:** Gesund -- sinnvolle Nutzung von Fremdkapital\n- **D/E > 2,0:** Erhöhtes Risiko -- muss durch starken Cash-Flow und stabile Einnahmen gerechtfertigt sein\n- **D/E > 4,0:** Kritisch -- das Unternehmen ist stark fremdfinanziert\n\n**Sektorabhängigkeit beachten:** Versorger und Immobilienunternehmen (REITs) haben strukturell hohe D/E-Ratios (oft 2-4), weil ihre stabilen, regulierten Einnahmen hohe Verschuldung sicher tragen. Technologieunternehmen sollten kaum Schulden haben.\n\n**Net Debt:** Schulden abzüglich Cash und kurzfristiger Geldanlagen. Ein Unternehmen mit 5 Mrd. Schulden und 6 Mrd. Cash hat eine Net Cash-Position -- die Schulden sind kein Risiko."
     },
     {
       "type": "text",
-      "heading": "Profit-Margen — Effizienz auf jeder Ebene",
-      "body": "Die Marge eines Unternehmens zeigt, wie viel vom Umsatz nach verschiedenen Kostenstufen übrig bleibt.\n\n**Bruttomarge (Gross Margin):** (Umsatz − Kosten der verkauften Waren) / Umsatz\nZeigt, wie viel direkte Marge das Kernprodukt erzielt. Software: oft 70–90%. Einzelhandel: 25–40%.\n\n**Operative Marge (EBIT-Marge):** Betriebsgewinn / Umsatz\nBerücksichtigt auch Vertriebs- und Verwaltungskosten. Gibt die Qualität des Kerngeschäfts wieder.\n\n**Nettomarge:** Jahresgewinn / Umsatz\nNach Zinsen und Steuern. Der ultimative Effizienzmaßstab.\n\n**Orientierungswerte:**\n| Branche | Nettomarge |  \n|---------|------------|  \n| Software/Cloud | 15–35% |  \n| Pharma | 10–25% |  \n| Industrie | 5–12% |  \n| Einzelhandel | 2–5% |  \n| Airlines | 1–5% |  \n\nSteigende Margen über Zeit sind eines der stärksten Signale für ein Unternehmen mit dauerhaftem Wettbewerbsvorteil."
+      "heading": "Profit-Margen - Effizienz auf jeder Ebene",
+      "body": "Die Marge eines Unternehmens zeigt, wie viel vom Umsatz nach verschiedenen Kostenstufen übrig bleibt.\n\n**Bruttomarge (Gross Margin):** (Umsatz - Kosten der verkauften Waren) / Umsatz. Zeigt, wie viel direkte Marge das Kernprodukt erzielt. Software: oft 70-90%. Einzelhandel: 25-40%.\n\n**Operative Marge (EBIT-Marge):** Betriebsgewinn / Umsatz. Berücksichtigt auch Vertriebs- und Verwaltungskosten. Gibt die Qualität des Kerngeschäfts wieder.\n\n**Nettomarge:** Jahresgewinn / Umsatz. Nach Zinsen und Steuern. Der ultimative Effizienzmaßstab.\n\n**Orientierungswerte nach Branche:**\nSoftware/Cloud: Nettomarge 15-35%\nPharma: Nettomarge 10-25%\nIndustrie: Nettomarge 5-12%\nEinzelhandel: Nettomarge 2-5%\nAirlines: Nettomarge 1-5%\n\nSteigende Margen über Zeit sind eines der stärksten Signale für ein Unternehmen mit dauerhaftem Wettbewerbsvorteil."
     },
     {
       "type": "live_widget",
       "widget_type": "ticker_card",
       "ticker": "MSFT",
-      "label": "Microsoft — Benchmark für Unternehmensqualität"
+      "label": "Microsoft - Benchmark für Unternehmensqualität"
     },
     {
       "type": "info_box",
       "heading": "Qualitäts-Checklist für Aktien",
-      "body": "ROE dauerhaft >15% ✓  Free Cashflow positiv und wachsend ✓  Debt/Equity < 1,5 (außer Versorger/Immobilien) ✓  Steigende Bruttomargen über 3–5 Jahre ✓  Nettomarge über Sektordurchschnitt ✓  Je mehr Haken, desto höher die Qualität des Unternehmens."
+      "body": "ROE dauerhaft >15% -- Free Cashflow positiv und wachsend -- Debt/Equity < 1,5 (außer Versorger/Immobilien) -- Steigende Bruttomargen über 3-5 Jahre -- Nettomarge über Sektordurchschnitt. Je mehr Punkte erfüllt, desto höher die Qualität des Unternehmens."
     },
     {
       "type": "app_link",
-      "label": "→ Microsoft Qualitätskennzahlen im Research-Tab prüfen",
+      "label": "-> Microsoft Qualitätskennzahlen im Research-Tab prüfen",
       "target_tab": "research"
     }
   ],
@@ -62,7 +62,7 @@
         "Über 100%"
       ],
       "correct": 1,
-      "explanation": "Richtig. Ein ROE von dauerhaft über 15% gilt als gut und deutet auf einen echten Wettbewerbsvorteil hin. Über 25% ist exzellent. Warren Buffett sucht explizit nach Unternehmen mit langfristig hohem ROE als Zeichen für einen durable competitive moat."
+      "explanation": "Richtig. Ein ROE von dauerhaft über 15% gilt als gut und deutet auf einen echten Wettbewerbsvorteil hin. Über 25% ist exzellent. Warren Buffett sucht explizit nach Unternehmen mit langfristig hohem ROE als Zeichen für einen dauerhaften Competitive Moat."
     },
     {
       "id": "q2",
@@ -75,7 +75,7 @@
         "Die Gesamtverschuldung abzüglich des Eigenkapitals"
       ],
       "correct": 2,
-      "explanation": "Korrekt. Free Cashflow = Operativer Cashflow − Investitionen (Capex). Er zeigt, wie viel echtes Geld nach allen nötigen Ausgaben generiert wird. Im Gegensatz zum bilanziellen Gewinn lässt sich FCF kaum durch Bilanzierungswahlrechte beeinflussen."
+      "explanation": "Korrekt. Free Cashflow = Operativer Cashflow - Investitionen (Capex). Er zeigt, wie viel echtes Geld nach allen nötigen Ausgaben generiert wird. Im Gegensatz zum bilanziellen Gewinn lässt sich FCF kaum durch Bilanzierungswahlrechte beeinflussen."
     },
     {
       "id": "q3",
@@ -88,13 +88,13 @@
         "Pharmaunternehmen"
       ],
       "correct": 2,
-      "explanation": "Richtig. Versorger und REITs haben strukturell hohe Verschuldung (D/E oft 2–4), weil ihre stabilen, regulierten Einnahmeströme (Strom- oder Mietverträge) es erlauben, hohe Fremdkapitalquoten sicher zu tragen."
+      "explanation": "Richtig. Versorger und REITs haben strukturell hohe Verschuldung (D/E oft 2-4), weil ihre stabilen, regulierten Einnahmeströme (Strom- oder Mietverträge) es erlauben, hohe Fremdkapitalquoten sicher zu tragen."
     },
     {
       "id": "q4",
       "type": "open_question",
       "question": "Warum ist der Free Cashflow oft aussagekräftiger als der ausgewiesene Bilanzgewinn?",
-      "explanation": "Der Bilanzgewinn kann durch Bilanzierungswahlrechte beeinflusst werden: Abschreibungsperioden, Rückstellungen, aktivierte Entwicklungskosten. Der Free Cashflow misst dagegen den tatsächlichen Geldfluss — was das Unternehmen wirklich produziert, nachdem alle Kosten und Investitionen bezahlt sind. Geld lässt sich nicht so leicht kreativ bilanzieren."
+      "explanation": "Der Bilanzgewinn kann durch Bilanzierungswahlrechte beeinflusst werden: Abschreibungsperioden, Rückstellungen, aktivierte Entwicklungskosten. Der Free Cashflow misst dagegen den tatsächlichen Geldfluss -- was das Unternehmen wirklich produziert, nachdem alle Kosten und Investitionen bezahlt sind. Geld lässt sich nicht so leicht kreativ bilanzieren."
     }
   ]
 }
