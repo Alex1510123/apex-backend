@@ -1,0 +1,95 @@
+{
+  "id": "foundation-1.5",
+  "track_id": "foundation",
+  "title": "Sektoren verstehen",
+  "subtitle": "Defensive, zyklische Branchen und Konjunkturrotation",
+  "duration_min": 9,
+  "sort_order": 5,
+  "status": "available",
+  "learning_goals": [
+    "Die 11 GICS-Sektoren kennen und einordnen",
+    "Defensive und zyklische Sektoren unterscheiden",
+    "Verstehen, wie Sektoren im Konjunkturzyklus rotieren",
+    "Warum Sektor-Allocation ein zentraler Renditetreiber ist"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Was ist ein Sektor?",
+      "body": "Die Wirtschaft besteht aus Tausenden verschiedener Unternehmen — von Apple bis Pfizer, von ExxonMobil bis JPMorgan. Um diese Vielfalt zu strukturieren, hat das Global Industry Classification Standard (GICS) System eine Taxonomie entwickelt, die heute von fast allen professionellen Investoren verwendet wird.\n\nEin Sektor fasst Unternehmen zusammen, die ähnlichen Geschäftstätigkeiten nachgehen und deren Aktien auf ähnliche wirtschaftliche Kräfte reagieren. Wenn die Zinsen steigen, werden Banken oft attraktiver und Wachstumsaktien teurer. Wenn der Ölpreis klettert, profitieren Energieunternehmen, während Airlines leiden. Diese systematischen Muster sind der Grund, warum Sektoren für jeden ernsthaften Anleger eine Schlüsselrolle spielen."
+    },
+    {
+      "type": "text",
+      "heading": "Die 11 GICS-Sektoren",
+      "body": "Der GICS-Standard unterteilt den Aktienmarkt in 11 Sektoren:\n\n**Technologie (Technology):** Software, Hardware, Halbleiter. Apple, Microsoft, Nvidia.\n\n**Gesundheit (Health Care):** Pharma, Medizintechnik, Krankenversicherer. Johnson & Johnson, UnitedHealth.\n\n**Finanzen (Financials):** Banken, Versicherungen, Asset Manager. JPMorgan, Berkshire Hathaway.\n\n**Nicht-Basiskonsumgüter (Consumer Discretionary):** Alles, was Verbraucher gerne, aber nicht unbedingt kaufen. Amazon, Tesla, Nike.\n\n**Basiskonsumgüter (Consumer Staples):** Lebensnotwendiges: Lebensmittel, Getränke, Haushaltsprodukte. Nestlé, Coca-Cola, Procter & Gamble.\n\n**Industrie (Industrials):** Maschinen, Luft- und Raumfahrt, Logistik. Caterpillar, Boeing, FedEx.\n\n**Energie (Energy):** Öl, Gas, Erneuerbare. ExxonMobil, Shell, NextEra.\n\n**Rohstoffe (Materials):** Metalle, Chemie, Papier. BHP, BASF, Linde.\n\n**Versorger (Utilities):** Strom, Wasser, Gas. Dominion Energy, E.ON.\n\n**Immobilien (Real Estate):** REITs und Immobilienentwickler. American Tower, Prologis.\n\n**Kommunikation (Communication Services):** Telekommunikation und Medien. Alphabet, Meta, Deutsche Telekom."
+    },
+    {
+      "type": "info_box",
+      "heading": "Defensiv vs. Zyklisch — der wichtigste Unterschied",
+      "body": "Defensive Sektoren (Basiskonsumgüter, Gesundheit, Versorger) entwickeln sich relativ stabil — Menschen kaufen Zahnpasta und nehmen Medikamente auch in der Rezession. Zyklische Sektoren (Industrie, Energie, Rohstoffe, Technologie) sind stark an den Konjunkturzyklus gekoppelt: Sie boomen im Aufschwung und leiden in der Rezession überproportional."
+    },
+    {
+      "type": "live_widget",
+      "widget_type": "ticker_card",
+      "ticker": "XLK",
+      "label": "Technology Select Sector SPDR (XLK) — der größte US-Sektor-ETF"
+    },
+    {
+      "type": "text",
+      "heading": "Sektor-Rotation im Konjunkturzyklus",
+      "body": "Professionelle Anleger nutzen ein Konzept namens Sektor-Rotation: Sie verschieben ihr Kapital in diejenigen Sektoren, die in der aktuellen Konjunkturphase strukturell bevorteilt sind.\n\n**Frühzyklus (Erholung nach Rezession):** Zinsen fallen, Kreditbedingungen lockern sich. Technologie, Nicht-Basiskonsumgüter und Finanztitel outperformen typisch, da Anleger bereit sind, höhere Bewertungen für Wachstum zu zahlen.\n\n**Mitte-Zyklus (solides Wirtschaftswachstum):** Industrie und Materialien profitieren von hoher Kapazitätsauslastung und steigenden Rohstoffpreisen. Unternehmensgewinne wachsen breit.\n\n**Spätzyklus (Wirtschaft überhitzt, Inflation steigt):** Energie und Finanztitel (durch steigende Zinsen) entwickeln sich oft stark. Rohstoffpreise klettern.\n\n**Rezession:** Defensive Sektoren — Gesundheit, Basiskonsumgüter und Versorger — verlieren deutlich weniger als der Gesamtmarkt. Sie sind der sichere Hafen in schwierigen Zeiten."
+    },
+    {
+      "type": "text",
+      "heading": "Warum Sektor-Allocation entscheidend ist",
+      "body": "Die Entscheidung, welche Sektoren Sie über- oder untergewichten, ist einer der wichtigsten Renditetreiber in einem Portfolio. Studien zeigen, dass die Asset Allocation — also die Verteilung auf Sektoren und Anlageklassen — langfristig über 90% der Portfoliorendite erklärt, während die Einzelaktienselektion weniger als 10% beiträgt.\n\nSelbst als Privatanleger muss man die Sektor-Rotation nicht perfekt timen. Was wichtig ist: zu wissen, ob das eigene Portfolio verstärkt in zyklischen Sektoren konzentriert ist (höheres Risiko) oder gut diversifiziert über mehrere Sektoren hinweg (stabilere Erträge). Finscope zeigt Ihnen genau diese Analyse in Echtzeit."
+    },
+    {
+      "type": "app_link",
+      "label": "→ Sektor-Rotation in Finscope analysieren",
+      "target_tab": "sektoren"
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Welcher Sektor gilt als defensiv?",
+      "options": [
+        "Technologie",
+        "Energie",
+        "Gesundheit",
+        "Industrie"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. Der Gesundheitssektor gilt als defensiv, weil Menschen Medikamente und medizinische Leistungen auch in wirtschaftlich schwierigen Zeiten benötigen. Die Nachfrage schwankt kaum mit dem Konjunkturzyklus."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Welcher Sektor outperformt typisch im Spätzyklus?",
+      "options": [
+        "Technologie",
+        "Basiskonsumgüter",
+        "Energie",
+        "Immobilien"
+      ],
+      "correct": 2,
+      "explanation": "Korrekt. Im Spätzyklus steigen die Rohstoffpreise — Inflation nimmt zu, die Wirtschaft läuft heiß. Energieunternehmen profitieren direkt von höheren Öl- und Gaspreisen und sind daher in dieser Phase oft stärkste Performer."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "question": "Wie viele GICS-Sektoren gibt es?",
+      "options": ["8", "10", "11", "13"],
+      "correct": 2,
+      "explanation": "Richtig. Das GICS-System (Global Industry Classification Standard) unterteilt den Aktienmarkt in genau 11 Sektoren — von Technologie bis Immobilien. Diese Klassifikation wird von den meisten professionellen Investoren weltweit verwendet."
+    },
+    {
+      "id": "q4",
+      "type": "open_question",
+      "question": "Welche 2–3 Sektoren würden Sie in einer Rezession übergewichten und warum?",
+      "explanation": "In einer Rezession übergewichten professionelle Anleger typisch: Gesundheit (inelastische Nachfrage nach Medikamenten), Basiskonsumgüter (Lebensmittel und Hygiene werden immer gebraucht) und Versorger (Strom und Wasser sind nicht optional). Diese Sektoren verlieren zwar auch, aber deutlich weniger als zyklische Branchen."
+    }
+  ]
+}

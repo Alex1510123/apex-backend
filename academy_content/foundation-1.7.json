@@ -1,0 +1,105 @@
+{
+  "id": "foundation-1.7",
+  "track_id": "foundation",
+  "title": "Risiko und Rendite — die Grundgleichung",
+  "subtitle": "Volatilität, Sharpe-Ratio und smarte Diversifikation",
+  "duration_min": 10,
+  "sort_order": 7,
+  "status": "available",
+  "learning_goals": [
+    "Verstehen, warum höhere Rendite immer mit höherem Risiko einhergeht",
+    "Volatilität als Risikoindikator lesen und einordnen",
+    "Die Sharpe-Ratio als Maß für risikoadjustierte Rendite kennen",
+    "Wie Diversifikation Risiko reduziert ohne Rendite aufzugeben"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Die Grundgleichung: Kein Free Lunch",
+      "body": "Es gibt eine eherne Regel in der Finanzwelt: Es gibt keinen Free Lunch. Höhere Renditeerwartung ist immer mit höherem Risiko verbunden. Ein Staatsanleihe der Bundesrepublik Deutschland, die jährlich 2% Zins zahlt, ist nahezu risikolos — aber eben auch renditeschwach. Eine Start-up-Aktie kann in einem Jahr verzehnfachen — oder auf null fallen.\n\nDiesen Zusammenhang formalisierte Harry Markowitz in den 1950er-Jahren in seiner Modern Portfolio Theory, wofür er 1990 den Wirtschaftsnobelpreis erhielt. Sein zentrales Ergebnis: Anleger werden für das Übernehmen von Risiko entschädigt — aber nur für systematisches Risiko, nicht für idiosynkratisches (vermeidbares) Risiko.\n\nPraktisch bedeutet das für Sie: Definieren Sie zunächst Ihre Risikotoleranz — wie viel temporären Verlust können Sie emotional und finanziell verkraften? Daraus ergibt sich Ihr optimales Rendite-Risiko-Verhältnis."
+    },
+    {
+      "type": "text",
+      "heading": "Volatilität — wie man Risiko misst",
+      "body": "Das gängigste Maß für Risiko ist die Volatilität, gemessen als Standardabweichung der täglichen oder jährlichen Renditen. Eine hohe Standardabweichung bedeutet, dass der Kurs stark schwankt — sowohl nach oben als auch nach unten.\n\nTypische Richtwerte:\n- **Staatsanleihen (kurzlaufend):** 2–5% annualisierte Volatilität\n- **Unternehmensanleihen (Investment Grade):** 5–8%\n- **Aktien (diversifiziertes Portfolio):** 12–20%\n- **Einzelne Technologieaktien:** 25–50%\n- **Kryptowährungen:** 60–100%\n\nDer S&P 500 hat historisch eine Jahresvolatilität von etwa 15%. Was bedeutet das konkret? Wenn der S&P 500 im Schnitt 10% pro Jahr steigt, werden Sie in rund zwei Dritteln aller Jahre eine Rendite zwischen -5% und +25% erleben. Extreme Ausreißer (wie 2008 mit -37% oder 2013 mit +32%) sind möglich, aber statistisch seltener."
+    },
+    {
+      "type": "text",
+      "heading": "Sharpe-Ratio — Rendite pro Risikoeinheit",
+      "body": "Die Sharpe-Ratio beantwortet die wichtigere Frage: Werde ich für das Risiko, das ich trage, auch angemessen entlohnt?\n\n**Formel:** Sharpe = (Portfoliorendite − Risikofreier Zins) / Volatilität\n\n**Beispiel:** Ein Portfolio erzielt 12% Rendite bei 15% Volatilität. Der risikofreie Zins beträgt 4%. Sharpe = (12% − 4%) / 15% = 0,53.\n\n**Interpretationsrahmen:**\n- **<0:** Schlechter als eine risikolose Anlage — das Portfolio lohnt sich nicht\n- **0,3–0,6:** Durchschnittlich, typisch für den S&P 500 langfristig\n- **0,6–1,0:** Gut — solide risikoadjustierte Rendite\n- **>1,0:** Exzellent — selten und oft nicht dauerhaft aufrechtzuerhalten\n\nWarren Buffetts Berkshire Hathaway erzielte über Jahrzehnte eine Sharpe-Ratio von etwa 0,75 — ein Außergewöhnlicher Wert für so einen langen Zeitraum."
+    },
+    {
+      "type": "info_box",
+      "heading": "Volatilität ist nicht dasselbe wie permanenter Verlust",
+      "body": "Der wichtigste mentale Shift für Langzeitanleger: Volatilität ist temporär. Wenn Ihr Portfolio 20% fällt, ist das ein Buchverlust — kein realer Verlust, solange Sie nicht verkaufen. Ein permanenter Verlust entsteht nur, wenn das Unternehmen pleitegeht oder Sie in Panik verkaufen. Langfristig ausgerichtete Anleger können Volatilität als Freund betrachten: Sie eröffnet Kaufgelegenheiten."
+    },
+    {
+      "type": "text",
+      "heading": "Diversifikation — das einzige kostenlose Mittagessen",
+      "body": "Harry Markowitz nannte Diversifikation das einzige „Freie Mittagessen“ in der Finanzwelt: Durch das Kombinieren von Anlagen, die nicht perfekt miteinander korrelieren, reduzieren Sie das Risiko, ohne im gleichen Maß Rendite aufzugeben.\n\n**Wie es funktioniert:** Wenn Technologieaktien fallen, steigen oft Staatsanleihen (Flucht in sichere Anlagen). Wenn Energieaktien sinken, bleiben Gesundheitsaktien oft stabil. Indem Sie verschiedene, unkorrelierte Anlagen halten, glätten Sie die Gesamtschwankung Ihres Portfolios.\n\n**Wie viel Diversifikation bringt was?**\n- 1 Aktie: 100% des idiosynkratischen Risikos\n- 10 Aktien: Reduktion auf ~50%\n- 20–30 Aktien (gut gewählt): Reduktion auf ~20% — das Marktrisiko ist dann dominierend\n- ETF auf den S&P 500 (500 Aktien): Idiosynkratisches Risiko nahezu eliminiert\n\nDas Marktrisiko — also dass der gesamte Markt fällt — kann durch Diversifikation innerhalb einer Anlageklasse nicht eliminiert werden. Dafür brauchen Sie internationale und Anlageklassen-übergreifende Diversifikation."
+    },
+    {
+      "type": "text",
+      "heading": "Maximum Drawdown — die Frage der Extremfälle",
+      "body": "Die Volatilität misst die durchschnittliche Schwankung — aber was ist mit dem schlimmsten Fall? Der Maximum Drawdown (MDD) misst den größten kumulativen Verlust von einem Höchststand bis zum nächsten Tief in einem gegebenen Zeitraum.\n\nEin Portfolio mit einem MDD von -45% hat irgendwann von seinem Höchststand aus 45% verloren — auch wenn es sich später erholt hat. Für viele Anleger ist der MDD die eigentlich relevante Größe: Wie viel könnte ich maximal verlieren, ohne dass ich emotional oder finanziell handlungsunfähig werde?\n\nFaustregel: Ihr Portfolio-MDD sollte niemals so hoch sein, dass Sie in der schlimmsten Phase verkaufen müssen oder wollen."
+    },
+    {
+      "type": "live_widget",
+      "widget_type": "ticker_card",
+      "ticker": "SPY",
+      "label": "S&P 500 ETF (SPY) — Benchmark für risikoadjustierte Portfolioanalyse"
+    },
+    {
+      "type": "app_link",
+      "label": "→ Risikometriken Ihres Portfolios im Portfolio-Tab analysieren",
+      "target_tab": "portfolio"
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Was misst die Volatilität einer Aktie?",
+      "options": [
+        "Die jährliche Dividendenrendite",
+        "Die Schwankungsbreite der Renditen über Zeit",
+        "Den maximalen Kursgewinn in einem Jahr",
+        "Die Liquidität an der Börse"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Volatilität, gemessen als Standardabweichung der Renditen, zeigt wie stark ein Kurs schwankt. Hohe Volatilität bedeutet große Ausschläge in beide Richtungen — mehr Chancen, aber auch mehr Risiko."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was sagt eine Sharpe-Ratio von 1,0 aus?",
+      "options": [
+        "Das Portfolio verliert Geld",
+        "Die Rendite ist gleich der Volatilität (abzügl. risikofreier Zins)",
+        "Das Portfolio ist vollständig diversifiziert",
+        "Der maximale Drawdown beträgt 1%"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Eine Sharpe-Ratio von 1,0 bedeutet: Für jede Einheit Risiko (Volatilität) erhalten Sie genau eine Einheit Mehrrendite über dem risikofreien Zins. Das gilt als sehr gut — der langfristige S&P 500 erreicht typisch nur etwa 0,5."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "question": "Welche Anlage hat typisch die niedrigste Volatilität?",
+      "options": [
+        "Einzelne Technologieaktien",
+        "Emerging-Market-ETFs",
+        "Kurzlaufende Staatsanleihen",
+        "Gold"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. Kurzlaufende Staatsanleihen (z.B. 3-Monats-T-Bills der USA) haben eine Volatilität von nahezu 0% — der Kurs schwankt kaum, weil die Laufzeit kurz und der Emittent (Staat) als sehr sicher gilt."
+    },
+    {
+      "id": "q4",
+      "type": "open_question",
+      "question": "Warum reicht es nicht aus, 5 Technologieaktien zu kaufen, um diversifiziert zu sein?",
+      "explanation": "5 Technologieaktien eliminieren das idiosynkratische Risiko einzelner Unternehmen kaum, weil sie stark miteinander korrelieren — alle fallen tendenziell gleichzeitig, wenn der Tech-Sektor unter Druck kommt (z.B. durch Zinserhöhungen). Echte Diversifikation erfordert verschiedene Sektoren, Regionen und idealerweise Anlageklassen mit geringer Korrelation zueinander."
+    }
+  ]
+}

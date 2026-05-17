@@ -1,0 +1,90 @@
+{
+  "id": "foundation-1.6",
+  "track_id": "foundation",
+  "title": "Bullen, Bären, Korrekturen",
+  "subtitle": "Marktphasen erkennen und ruhig bleiben",
+  "duration_min": 9,
+  "sort_order": 6,
+  "status": "available",
+  "learning_goals": [
+    "Bullen- und Bärenmarkt klar definieren können",
+    "Den Unterschied zwischen Korrektur, Crash und Bärenmarkt kennen",
+    "Historische Markteinbrüche einordnen können",
+    "Wissen, wie Privatanleger in schwierigen Marktphasen handeln sollten"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Der Bullenmarkt — die anhaltende Aufwärtsbewegung",
+      "body": "Ein Bullenmarkt (Bull Market) ist eine Phase anhaltend steigender Aktienkurse — üblicherweise definiert als ein Anstieg von mindestens 20% vom jüngsten Tief über einen Zeitraum von mehreren Monaten oder Jahren. Der Begriff stammt aus der Bildsprache des Stierkampfes: Der Stier greift mit den Hörnern von unten nach oben an — genau wie steigende Kurse.\n\nBullenmärkte entstehen typisch in Phasen wirtschaftlichen Wachstums, sinkender Zinsen oder nach einer Rezession, wenn Anleger optimistisch auf die Zukunft blicken. Der längste Bullenmarkt der Geschichte dauerte von 2009 bis 2020 — über 11 Jahre, in denen der S&P 500 um über 400% stieg.\n\nWichtig zu verstehen: Auch in Bullenmärkten gibt es temporäre Rücksetzer. Korrekturen von 5–15% sind vollkommen normal und sollten Sie als Anleger nicht aus dem Konzept bringen."
+    },
+    {
+      "type": "text",
+      "heading": "Der Bärenmarkt — der Gegenpol",
+      "body": "Ein Bärenmarkt (Bear Market) ist das Gegenteil: ein Kursverfall von mindestens 20% vom letzten Höchststand, der sich typisch über mehrere Monate oder Jahre erstreckt. Der Bär greift mit den Pranken von oben nach unten — fallende Kurse.\n\nBärenmärkte gehen häufig mit wirtschaftlichen Rezessionen einher, aber nicht immer. Sie können auch durch externe Schocks (Pandemie, Finanzkrise), überbewertete Märkte oder abrupte Zinserhöhungen ausgelöst werden.\n\nDie Dauer eines Bärenmarkts ist schwer vorherzusagen. Historisch dauerten sie im Schnitt etwa 9–15 Monate, obwohl der Dotcom-Bärenmarkt von 2000–2002 über 2,5 Jahre andauerte. Das schmerzt — aber die historische Perspektive ist klar: Jeder Bärenmarkt endete letztlich mit einem neuen Bullenmarkt."
+    },
+    {
+      "type": "text",
+      "heading": "Korrektur vs. Crash vs. Bärenmarkt",
+      "body": "Diese drei Begriffe werden häufig verwechselt. Hier die klare Abgrenzung:\n\n**Korrektur (-10% bis -20%):** Eine normale, gesunde Marktbereinigung. Sie tritt im Schnitt einmal pro Jahr auf und hält meist nur wenige Wochen. Korrekturen gehören zum normalen Marktbetrieb dazu.\n\n**Crash (schneller Einbruch >10% in wenigen Tagen):** Ein plötzlicher, panikgetriebener Kursverfall. Berühmt: Black Monday 1987 (-22% an einem Tag) oder der COVID-Crash im März 2020. Crashes sind intensiv, dauern aber oft kürzer als Bärenmärkte.\n\n**Bärenmarkt (>-20% über Monate):** Ein struktureller, anhaltender Kursverfall, der oft von einer wirtschaftlichen Abschwungsphase begleitet wird. Er braucht länger zur Erholung als ein Crash."
+    },
+    {
+      "type": "info_box",
+      "heading": "Historisch gesehen: Nach jedem Bärenmarkt folgte ein neuer Bullenmarkt",
+      "body": "Seit 1928 hat der S&P 500 jeden einzelnen Bärenmarkt nicht nur überstanden, sondern anschließend neue Höchststände erreicht. Anleger, die in jedem Bärenmarkt verkauft haben, haben die anschließende Erholung verpasst. Anleger, die investiert geblieben sind, wurden langfristig belohnt."
+    },
+    {
+      "type": "text",
+      "heading": "Vier historische Bärenmärkte im Überblick",
+      "body": "**Dotcom-Crash 2000–2002 (-49%):** Der NASDAQ fällt um 78%. Technologieaktien, die zu enormen Bewertungen gehandelt wurden, brechen ein. Dauer: über 2,5 Jahre. Der Markt erholt sich erst bis 2007 vollständig.\n\n**Finanzkrise 2007–2009 (-57%):** Die schwerste Krise seit der Großen Depression. Ausgelöst durch faule Hypothekenkredite und fehlerhafte Finanzprodukte. Der S&P 500 verliert 57% von seinem Höchststand. Dauer: 17 Monate bis zum Tief im März 2009.\n\n**COVID-Crash 2020 (-34%):** Der schnellste Bärenmarkt der Geschichte. In nur 33 Handelstagen verliert der S&P 500 34%. Doch die Erholung ist ebenso rasant: Bis August 2020 erreicht der Index neue Höchststände.\n\n**Bärenmarkt 2022 (-25%):** Ausgelöst durch rasante Zinserhöhungen der Fed zur Bekämpfung der Inflation. Technologieaktien leiden besonders stark. Der NASDAQ verliert über 33%."
+    },
+    {
+      "type": "live_widget",
+      "widget_type": "phase_card",
+      "region": "US",
+      "label": "Aktuelle US-Marktphase — wo stehen wir heute?"
+    },
+    {
+      "type": "text",
+      "heading": "Was Privatanleger in Bärenmärkten tun sollten",
+      "body": "Die emotionalste Frage des Investierens: Was tun, wenn die Kurse fallen? Wissenschaft und Geschichte liefern eine klare Antwort.\n\n**Sparplan weiterlaufen lassen:** Wer regelmäßig investiert (Cost-Averaging), kauft in Bärenmärkten automatisch mehr Anteile zum günstigeren Preis. Das senkt den durchschnittlichen Einkaufspreis und verbessert langfristig die Rendite.\n\n**Keine Panik-Verkäufe:** Studien von Fidelity und Vanguard zeigen konsistent: Anleger, die in Bärenmärkten verkaufen und versuchen, den Wiedereinsteig zu timen, erzielen deutlich schlechtere Renditen als diejenigen, die einfach investiert bleiben.\n\n**Antizyklisch denken:** Warren Buffett formuliert es so: „Sein Sie gierig, wenn andere ängstlich sind.“ Bärenmärkte sind die besten Kaufgelegenheiten für langfristig denkende Anleger."
+    },
+    {
+      "type": "app_link",
+      "label": "→ Aktuelle Marktphase in Finscope analysieren",
+      "target_tab": "sektoren"
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Ab welchem Kursverlust spricht man von einem Bärenmarkt?",
+      "options": ["-5%", "-10%", "-20%", "-30%"],
+      "correct": 2,
+      "explanation": "Richtig. Ein Bärenmarkt ist per Definition ein Kursverfall von mindestens 20% vom letzten Höchststand. Ein Minus von 10% ist eine Korrektur — schmerzhaft, aber völlig normal und häufig."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Wie lange dauerte der COVID-Crash 2020 bis zum Tief?",
+      "options": ["Etwa 2 Wochen", "Etwa 5 Wochen", "Etwa 3 Monate", "Etwa 6 Monate"],
+      "correct": 1,
+      "explanation": "Korrekt. Der COVID-Crash war der schnellste Bärenmarkt der Geschichte: In nur 33 Handelstagen (circa 5 Wochen) verlor der S&P 500 34% vom Höchststand. Die anschließende Erholung war ebenso rasant."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "question": "Wie hoch war der maximale Verlust des S&P 500 in der Finanzkrise 2007–2009?",
+      "options": ["-34%", "-45%", "-57%", "-75%"],
+      "correct": 2,
+      "explanation": "Richtig. Die Finanzkrise war die schwerste Krise seit der Großen Depression: Der S&P 500 verlor von seinem Höchststand im Oktober 2007 bis zum Tief im März 2009 etwa 57%. Wer damals durchgehalten hat, erlebte anschließend einen der längsten Bullmärkte der Geschichte."
+    },
+    {
+      "id": "q4",
+      "type": "open_question",
+      "question": "Sie haben 10.000 Euro im Sparplan investiert. Der Markt fällt um 30%. Was tun Sie?",
+      "explanation": "Die wissenschaftlich und historisch fundierte Antwort: Sparplan weiterlaufen lassen und nicht verkaufen. Bei fallenden Kursen kaufen Sie mehr Anteile für denselben Betrag (Cost-Averaging). Wer in Panik verkauft, realisiert den Verlust und verpasst die Erholung. Wer durchhält, profitiert langfristig vom Aufschwung, der historisch auf jeden Bärenmarkt folgte."
+    }
+  ]
+}

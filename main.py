@@ -3,6 +3,7 @@ APEX Markets — Backend API v6 (EODHD + Yahoo Finance + FRED edition)
 """
 import os
 import re
+import json
 import time
 import logging
 import requests
@@ -2150,32 +2151,35 @@ ACADEMY_LESSONS_DATA = {
                 },
             ],
         },
-        # 7 coming soon stubs
-        *[
-            {
-                "id": f"foundation-1.{i}",
-                "track_id": "foundation",
-                "title": title,
-                "subtitle": sub,
-                "duration_min": 8,
-                "sort_order": i,
-                "status": "coming_soon",
-                "learning_goals": [],
-                "sections": [],
-                "quiz": [],
-            }
-            for i, title, sub in [
-                (4, "KGV und Unternehmensbewertung", "Wie Anleger den fairen Wert einer Aktie bestimmen"),
-                (5, "Dividenden und Dividendenrendite", "Passives Einkommen durch Aktienanlagen"),
-                (6, "Portfolio-Diversifikation", "Risiko streuen durch Streuung der Anlagen"),
-                (7, "Risikomanagement Grundlagen", "Verluste begrenzen, Chancen wahren"),
-                (8, "Technische Analyse Einführung", "Charts lesen und Trends erkennen"),
-                (9, "Fundamentalanalyse", "Unternehmen anhand von Kennzahlen bewerten"),
-                (10, "Makroökonomie für Anleger", "Zinsen, Inflation und ihre Auswirkungen auf Aktien"),
-            ]
-        ],
     ]
 }
+
+
+def _load_academy_content():
+    """Load lesson JSON files from academy_content/ and merge into ACADEMY_LESSONS_DATA."""
+    import glob as _glob
+    content_dir = os.path.join(os.path.dirname(__file__), "academy_content")
+    existing_ids = {
+        l["id"]
+        for lessons in ACADEMY_LESSONS_DATA.values()
+        for l in lessons
+    }
+    for filepath in sorted(_glob.glob(os.path.join(content_dir, "*.json"))):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                lesson = json.load(f)
+            if lesson.get("id") in existing_ids:
+                continue
+            track_id = lesson.get("track_id", "foundation")
+            ACADEMY_LESSONS_DATA.setdefault(track_id, []).append(lesson)
+            existing_ids.add(lesson["id"])
+        except Exception as exc:
+            print(f"Warning: could not load {filepath}: {exc}")
+    for track_lessons in ACADEMY_LESSONS_DATA.values():
+        track_lessons.sort(key=lambda l: l.get("sort_order", 999))
+
+
+_load_academy_content()
 
 
 @app.get("/academy/tracks")
@@ -2226,6 +2230,70 @@ def save_progress(body: ProgressBody, user_id: str = Depends(verify_jwt)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     return {"ok": True}
+
+
+@app.get("/academy/dashboard")
+def get_academy_dashboard(user_id: str = Depends(verify_jwt)):
+    from datetime import date as _date
+    all_available = [
+        l for lessons in ACADEMY_LESSONS_DATA.values() for l in lessons
+        if l["status"] == "available"
+    ]
+    lesson_by_id = {l["id"]: l for l in all_available}
+
+    try:
+        rows = (
+            sb_client.table("academy_progress")
+            .select("lesson_id,completed_at,quiz_score")
+            .eq("user_id", user_id)
+            .execute()
+        ).data or []
+    except Exception:
+        rows = []
+
+    completed_ids = {r["lesson_id"] for r in rows}
+    today_str = _date.today().isoformat()
+    today_rows = [r for r in rows if (r.get("completed_at") or "")[:10] == today_str]
+    today_minutes = sum(
+        lesson_by_id[r["lesson_id"]]["duration_min"]
+        for r in today_rows if r["lesson_id"] in lesson_by_id
+    )
+
+    track_completions: dict[str, int] = {}
+    for r in rows:
+        if r["lesson_id"] in lesson_by_id:
+            tid = lesson_by_id[r["lesson_id"]]["track_id"]
+            track_completions[tid] = track_completions.get(tid, 0) + 1
+
+    active_tracks = list(track_completions.keys())
+    search_tracks = active_tracks if active_tracks else ["foundation"]
+
+    next_lesson = None
+    for tid in search_tracks:
+        for l in ACADEMY_LESSONS_DATA.get(tid, []):
+            if l["status"] == "available" and l["id"] not in completed_ids:
+                next_lesson = {k: l[k] for k in ("id", "title", "subtitle", "track_id", "duration_min", "sort_order")}
+                break
+        if next_lesson:
+            break
+
+    track_progress = {
+        tid: {
+            "completed": sum(1 for l in lessons if l["status"] == "available" and l["id"] in completed_ids),
+            "available": sum(1 for l in lessons if l["status"] == "available"),
+        }
+        for tid, lessons in ACADEMY_LESSONS_DATA.items()
+    }
+
+    return {
+        "total_completed": len(completed_ids),
+        "total_available": len(all_available),
+        "today_minutes": today_minutes,
+        "today_lessons": [r["lesson_id"] for r in today_rows],
+        "active_tracks": active_tracks,
+        "next_lesson": next_lesson,
+        "track_progress": track_progress,
+    }
 
 
 # ─── Run ──────────────────────────────────────────────────────────────────────

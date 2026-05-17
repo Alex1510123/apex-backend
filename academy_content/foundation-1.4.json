@@ -1,0 +1,95 @@
+{
+  "id": "foundation-1.4",
+  "track_id": "foundation",
+  "title": "Was sind Indizes?",
+  "subtitle": "S&P 500, DAX und die Logik hinter Marktbarometern",
+  "duration_min": 10,
+  "sort_order": 4,
+  "status": "available",
+  "learning_goals": [
+    "Verstehen, wie Indizes berechnet und zusammengesetzt werden",
+    "Den Unterschied zwischen Preis- und Performance-Index kennen",
+    "Die wichtigsten globalen Indizes und ihre Eigenschaften einordnen",
+    "Warum Indizes als Benchmarks für Fonds und ETFs dienen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Die Grundidee: Was ein Index misst",
+      "body": "Ein Aktienindex ist ein statistisches Maß, das die Kursentwicklung einer definierten Gruppe von Wertpapieren abbildet. Stellen Sie sich vor, Sie möchten wissen, wie es der deutschen Wirtschaft heute geht — anstatt 40 Aktien einzeln zu überprüfen, schauen Sie einfach auf den DAX. Er bündelt all diese Information in einer einzigen Zahl.\n\nDie Idee ist einfach: Man wählt eine repräsentative Auswahl von Unternehmen aus einem bestimmten Markt oder Sektor, berechnet einen gewichteten Durchschnittskurs und verfolgt, wie sich dieser Wert über Zeit verändert. Das Ergebnis ist ein Barometer für den Zustand des gesamten Marktes — oder eines bestimmten Segments davon.\n\nIndizes sind keine handelbaren Instrumente selbst — Sie können den DAX nicht kaufen. Aber Sie können über ETFs (Exchange Traded Funds) nahezu identisch in einen Index investieren und so eins zu eins an seiner Entwicklung teilhaben."
+    },
+    {
+      "type": "text",
+      "heading": "Wie Indizes berechnet werden",
+      "body": "Nicht alle Indizes werden gleich berechnet. Es gibt drei wesentliche Methoden:\n\n**Marktkapitalisierungsgewichtung (die häufigste Methode):** Hier bestimmt die Marktkapitalisierung — also Aktienkurs multipliziert mit der Anzahl ausstehender Aktien — das Gewicht eines Unternehmens im Index. Apple mit einer Marktkapitalisierung von über 3 Billionen Dollar hat daher deutlich mehr Einfluss auf den S&P 500 als ein Unternehmen mit 10 Milliarden Dollar. Diese Methode nutzen S&P 500, NASDAQ 100, Euro Stoxx 50 und der DAX.\n\n**Preisgewichtung:** Beim Dow Jones Industrial Average (DJIA) und beim japanischen Nikkei 225 bestimmt schlicht der Aktienkurs das Gewicht. Eine Aktie bei 500 Dollar hat fünfmal mehr Einfluss als eine bei 100 Dollar — unabhängig davon, wie groß das Unternehmen tatsächlich ist. Diese Methode gilt heute als überholt.\n\n**Gleichgewichtung:** Jedes Unternehmen erhält dasselbe Gewicht, unabhängig von Größe oder Kurs. Diese Variante wird für spezielle Faktor-Indizes genutzt, hat aber im Mainstream keine breite Verwendung."
+    },
+    {
+      "type": "info_box",
+      "heading": "Preisindex vs. Performance-Index",
+      "body": "Ein entscheidender Unterschied: Der S&P 500 ist ein Preisindex — er berücksichtigt keine Dividenden. Der DAX hingegen ist ein Performance-Index (Total Return), bei dem Dividenden rechnerisch reinvestiert werden. Das erklärt, warum der DAX im langfristigen Vergleich oft besser aussieht als es dem tatsächlichen Kurserfolg entspricht. Der kursbasierte DAX (KDAX) wäre der korrekte Vergleich mit dem S&P 500."
+    },
+    {
+      "type": "live_widget",
+      "widget_type": "ticker_card",
+      "ticker": "SPY",
+      "label": "S&P 500 ETF (SPY) — Spiegel des US-Aktienmarkts"
+    },
+    {
+      "type": "text",
+      "heading": "Die wichtigsten globalen Indizes",
+      "body": "**S&P 500 (USA):** 500 der größten US-Unternehmen, marktkapitalisierungsgewichtet. Der wichtigste Referenzindex der Welt. Er repräsentiert rund 80% der US-Marktkapitalisierung.\n\n**NASDAQ 100 (USA):** Die 100 größten Nicht-Finanz-Unternehmen der NASDAQ, dominiert von Technologiekonzernen wie Apple, Microsoft und Nvidia. Höhere Volatilität, höheres Wachstumspotenzial.\n\n**DAX 40 (Deutschland):** Die 40 größten deutschen Aktiengesellschaften, gelistet auf XETRA. Performance-Index, also inklusive Dividenden.\n\n**Euro Stoxx 50 (Europa):** 50 führende Unternehmen aus der Eurozone — von Frankreich über Deutschland bis Spanien.\n\n**Nikkei 225 (Japan):** 225 japanische Unternehmen, preisgewichtet. Einer der ältesten Indizes der Welt.\n\n**MSCI World:** Kein handelbarer Index, sondern ein Benchmark. Umfasst rund 1.600 Unternehmen aus 23 Industrieländern und wird häufig als Maßstab für globale Aktienportfolios verwendet."
+    },
+    {
+      "type": "text",
+      "heading": "Warum Indizes als Benchmarks dienen",
+      "body": "Fondsmanager, Vermögensverwalter und Privatanleger nutzen Indizes als Vergleichsmaßstab. Die Kernfrage lautet: Schlägt mein Portfolio den Markt?\n\nWenn ein aktiver Fonds jährlich 8% Rendite erzielt, klingt das gut — bis man feststellt, dass der S&P 500 im selben Zeitraum 12% gemacht hat. Der Fonds hat dann den Benchmark deutlich verfehlt.\n\nDiese Erkenntnis hat die Investmentwelt revolutioniert: Heute sind ETFs (Exchange Traded Funds), die einfach einen Index nachbilden, die dominierende Anlageklasse. Über 10 Billionen Dollar sind weltweit in passiven Indexfonds investiert — denn langfristig schlägt die Mehrheit der aktiv verwalteten Fonds ihren Benchmark nicht.\n\nFür Sie als Anleger bedeutet das: Kennen Sie Ihren Benchmark. Wenn Sie in europäische Aktien investieren, ist der Euro Stoxx 50 Ihr Maßstab. Für globale Portfolios dient der MSCI World als Referenz."
+    },
+    {
+      "type": "app_link",
+      "label": "→ Globale Indizes im Makro-Tab ansehen",
+      "target_tab": "makro"
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Wie wird der DAX gewichtet?",
+      "options": [
+        "Preisgewichtet — je höher der Aktienkurs, desto größer das Gewicht",
+        "Gleichgewichtet — jedes Unternehmen hat denselben Anteil",
+        "Marktkapitalisierungsgewichtet — größere Unternehmen haben mehr Einfluss",
+        "Zufällig — das Gewicht wechselt monatlich"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. Der DAX ist wie die meisten modernen Indizes marktkapitalisierungsgewichtet. Das Gewicht eines Unternehmens ergibt sich aus seinem Börsenwert (Kurs × Aktienanzahl). SAP als größtes DAX-Unternehmen hat daher mehr Einfluss als kleinere Konzerne."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Welcher Index ist ein Performance-Index, der Dividenden einrechnet?",
+      "options": [
+        "S&P 500",
+        "NASDAQ 100",
+        "DAX 40",
+        "Dow Jones Industrial Average"
+      ],
+      "correct": 2,
+      "explanation": "Korrekt. Der DAX ist ein Total-Return-Index: Dividenden werden rechnerisch reinvestiert. Daher ist ein direkter Vergleich des DAX mit dem S&P 500 (Preisindex) irreführend — der kursbasierte DAX (KDAX) wäre der korrekte Vergleich."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "question": "Wie viele Unternehmen umfasst der S&P 500?",
+      "options": ["100", "250", "500", "1.000"],
+      "correct": 2,
+      "explanation": "Richtig. Der S&P 500 enthält 500 der größten börsennotierten US-Unternehmen. Er repräsentiert etwa 80% der gesamten US-Marktkapitalisierung und gilt als der wichtigste Aktienindex der Welt."
+    },
+    {
+      "id": "q4",
+      "type": "open_question",
+      "question": "Erklären Sie, warum der DAX langfristig oft besser aussieht als der S&P 500, obwohl die US-Wirtschaft stärker wächst.",
+      "explanation": "Der Hauptgrund: Der DAX ist ein Performance-Index (inklusive Dividenden), der S&P 500 ein Preisindex (ohne Dividenden). Da DAX-Unternehmen traditionell hohe Dividenden zahlen, entsteht ein rechnerischer Vorteil. Beim Vergleich des kursbasierten DAX mit dem S&P 500 kehrt sich das Bild oft um — die US-Wirtschaftsstärke spiegelt sich dann klarer wider."
+    }
+  ]
+}
