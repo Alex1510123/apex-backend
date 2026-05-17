@@ -2707,6 +2707,377 @@ async def use_streak_freeze(request: Request):
     return {"ok": True}
 
 
+# ─── Academy — Helpers ────────────────────────────────────────────────────────
+
+def _get_sector_summary() -> str:
+    try:
+        data = cache.get("sectors:full", ttl_seconds=3600)
+        if data:
+            secs = data.get("sectors", [])
+            if secs:
+                best  = secs[0]
+                worst = secs[-1]
+                return (
+                    f"Bester Sektor heute: {best.get('name')} "
+                    f"({best.get('perf_1d', 0):+.1f}%, ETF: {best.get('ticker')}). "
+                    f"Schlechtester Sektor: {worst.get('name')} "
+                    f"({worst.get('perf_1d', 0):+.1f}%, ETF: {worst.get('ticker')})."
+                )
+    except Exception:
+        pass
+    return "S&P 500 Sektoren mit gemischter Performance. Referenz: SPY als Benchmark."
+
+
+def _claude_json(prompt: str, max_tokens: int = 500) -> dict:
+    resp = requests.post(
+        "https://api.anthropic.com/v1/messages",
+        headers={
+            "Content-Type":      "application/json",
+            "x-api-key":         ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+        },
+        json={
+            "model":      "claude-sonnet-4-5-20250929",
+            "max_tokens": max_tokens,
+            "messages":   [{"role": "user", "content": prompt}],
+        },
+        timeout=40,
+    )
+    if not resp.ok:
+        err = resp.json() if resp.content else {}
+        raise HTTPException(status_code=502, detail=err.get("error", {}).get("message", f"Anthropic {resp.status_code}"))
+    raw = resp.json()["content"][0]["text"].strip()
+    raw = re.sub(r"^```(?:json)?\n?", "", raw).strip()
+    raw = re.sub(r"\n?```$", "", raw).strip()
+    try:
+        return json.loads(raw)
+    except Exception:
+        raise HTTPException(status_code=502, detail="Ungueltige JSON-Antwort von Claude")
+
+
+# ─── Academy — Daily Challenge ────────────────────────────────────────────────
+
+@app.get("/academy/daily-challenge/today")
+async def daily_challenge_today(user_id: str = ""):
+    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+
+    try:
+        existing = sb_client.table("daily_challenges") \
+            .select("*").eq("date", today_str).eq("is_boss", False).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    if existing.data:
+        challenge = existing.data[0]
+    else:
+        sector_summary = _get_sector_summary()
+        prompt = (
+            "Generiere eine praezise Finanz-Frage auf Deutsch basierend auf diesen Marktdaten: "
+            f"{sector_summary} "
+            "Die Frage soll einen konkreten Marktbezug haben und in 3-5 Saetzen beantwortbar sein. "
+            "Antworte NUR als JSON (kein Markdown, keine Codeblocks):\n"
+            '{"question": "<die Frage>", "context": "<1-2 Saetze Marktkontext>", '
+            '"market_ticker": "<relevantes ETF/Ticker-Symbol>"}'
+        )
+        gen = _claude_json(prompt, max_tokens=400)
+        try:
+            row = sb_client.table("daily_challenges").insert({
+                "date":          today_str,
+                "question":      gen.get("question", ""),
+                "context":       gen.get("context", ""),
+                "market_ticker": gen.get("market_ticker", "SPY"),
+                "xp_reward":     75,
+                "is_boss":       False,
+            }).execute()
+            challenge = row.data[0]
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    already_attempted = False
+    if user_id:
+        try:
+            att = sb_client.table("daily_challenge_attempts") \
+                .select("id").eq("user_id", user_id).eq("challenge_id", challenge["id"]).execute()
+            already_attempted = len(att.data) > 0
+        except Exception:
+            pass
+
+    return {
+        "id":                challenge["id"],
+        "question":          challenge["question"],
+        "context":           challenge.get("context", ""),
+        "market_ticker":     challenge.get("market_ticker", "SPY"),
+        "xp_reward":         challenge.get("xp_reward", 75),
+        "already_attempted": already_attempted,
+    }
+
+
+@app.post("/academy/daily-challenge/submit")
+async def daily_challenge_submit(request: Request):
+    body         = await request.json()
+    user_id      = body.get("user_id", "")
+    challenge_id = body.get("challenge_id", "")
+    answer       = body.get("answer", "")
+
+    if not user_id or not challenge_id or not answer:
+        raise HTTPException(status_code=400, detail="user_id, challenge_id und answer erforderlich")
+
+    try:
+        ch = sb_client.table("daily_challenges").select("*").eq("id", challenge_id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    if not ch.data:
+        raise HTTPException(status_code=404, detail="Challenge nicht gefunden")
+    challenge = ch.data[0]
+
+    try:
+        att = sb_client.table("daily_challenge_attempts") \
+            .select("id").eq("user_id", user_id).eq("challenge_id", challenge_id).execute()
+        if att.data:
+            raise HTTPException(status_code=400, detail="Challenge bereits beantwortet")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    eval_prompt = (
+        "Du bist ein strenger aber fairer Finanz-Tutor. Bewerte die folgende Antwort eines Lernenden.\n\n"
+        f"Tages-Challenge: {challenge['question']}\n"
+        f"Kontext: {challenge.get('context', '')}\n"
+        f"Antwort des Lernenden: {answer}\n\n"
+        "Bewerte auf einer Skala von 0-100 und antworte NUR als JSON (kein Markdown):\n"
+        '{"score": <0-100>, "passed": <true wenn score >= 60>, '
+        '"feedback": "<1-2 Saetze Gesamtfeedback auf Deutsch>", '
+        '"strengths": "<was gut war, 1 Satz>", '
+        '"improvement": "<was verbessert werden koennte, 1 Satz, oder null wenn passed>"}'
+    )
+    result = _claude_json(eval_prompt, max_tokens=400)
+
+    try:
+        sb_client.table("daily_challenge_attempts").insert({
+            "user_id":      user_id,
+            "challenge_id": challenge_id,
+            "answer":       answer,
+            "score":        result.get("score", 0),
+            "passed":       result.get("passed", False),
+        }).execute()
+    except Exception:
+        pass
+
+    xp_earned = 0
+    if result.get("passed"):
+        xp_reward = challenge.get("xp_reward", 75)
+        try:
+            prog = sb_client.table("user_progress") \
+                .select("xp_total, xp_this_week").eq("user_id", user_id).execute()
+            if prog.data:
+                current_xp   = prog.data[0].get("xp_total", 0)
+                current_week = prog.data[0].get("xp_this_week", 0)
+                new_xp       = current_xp + xp_reward
+                sb_client.table("user_progress").update({
+                    "xp_total":     new_xp,
+                    "xp_this_week": current_week + xp_reward,
+                    "league":       _league_for_xp(new_xp),
+                }).eq("user_id", user_id).execute()
+                xp_earned = xp_reward
+        except Exception:
+            pass
+
+    return {**result, "xp_earned": xp_earned}
+
+
+# ─── Academy — Profile ────────────────────────────────────────────────────────
+
+@app.get("/academy/profile/{user_id}")
+async def get_profile(user_id: str):
+    try:
+        prog     = sb_client.table("user_progress").select("*").eq("user_id", user_id).execute()
+        achv     = sb_client.table("user_achievements").select("*").eq("user_id", user_id).execute()
+        lessons  = sb_client.table("academy_progress").select("id").eq("user_id", user_id).execute()
+        profile  = sb_client.table("profiles").select("user_id, display_name, created_at") \
+                       .eq("user_id", user_id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    profile_row = profile.data[0] if profile.data else {}
+    return {
+        "progress":     prog.data[0] if prog.data else {},
+        "achievements": achv.data or [],
+        "lesson_count": len(lessons.data) if lessons.data else 0,
+        "member_since": profile_row.get("created_at", ""),
+        "display_name": profile_row.get("display_name", ""),
+    }
+
+
+# ─── Academy — Weekly Boss ────────────────────────────────────────────────────
+
+def _monday_this_week() -> str:
+    today  = datetime.utcnow()
+    monday = today - timedelta(days=today.weekday())
+    return monday.strftime("%Y-%m-%d")
+
+def _sunday_this_week() -> str:
+    today  = datetime.utcnow()
+    sunday = today + timedelta(days=(6 - today.weekday()))
+    return sunday.replace(hour=23, minute=59, second=59).isoformat()
+
+
+@app.get("/academy/weekly-boss")
+async def weekly_boss(user_id: str = ""):
+    import uuid as _uuid
+    monday = _monday_this_week()
+
+    try:
+        existing = sb_client.table("daily_challenges") \
+            .select("*").eq("is_boss", True).gte("date", monday).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    if existing.data:
+        questions = sorted(existing.data, key=lambda x: x.get("boss_question_index", 0))
+    else:
+        sector_summary = _get_sector_summary()
+        prompt = (
+            "Erstelle eine Weekly Boss Challenge fuer Finanz-Profis auf Deutsch. "
+            "3 aufeinander aufbauende Fragen die zusammen ein komplexes Marktthema abdecken. "
+            f"Basierend auf: {sector_summary}\n"
+            "Antworte NUR als JSON (kein Markdown):\n"
+            '{"title": "<Titel der Boss Challenge>", "theme": "<Marktthema 3-5 Worte>", '
+            '"questions": ['
+            '{"question": "<Frage 1>", "context": "<Kontext 1>"},'
+            '{"question": "<Frage 2>", "context": "<Kontext 2>"},'
+            '{"question": "<Frage 3>", "context": "<Kontext 3>"}'
+            ']}'
+        )
+        gen      = _claude_json(prompt, max_tokens=800)
+        boss_id  = str(_uuid.uuid4())
+        today_str = datetime.utcnow().strftime("%Y-%m-%d")
+        title     = gen.get("title", "Weekly Boss Challenge")
+        theme     = gen.get("theme", "Marktanalyse")
+
+        questions = []
+        for i, q in enumerate(gen.get("questions", [])[:3]):
+            try:
+                row = sb_client.table("daily_challenges").insert({
+                    "date":                 today_str,
+                    "question":             q.get("question", ""),
+                    "context":              q.get("context", ""),
+                    "market_ticker":        "SPY",
+                    "xp_reward":            300,
+                    "is_boss":              True,
+                    "boss_id":              boss_id,
+                    "boss_question_index":  i,
+                    "boss_title":           title,
+                    "boss_theme":           theme,
+                }).execute()
+                questions.append(row.data[0])
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
+
+    if not questions:
+        raise HTTPException(status_code=500, detail="Keine Boss-Fragen verfuegbar")
+
+    boss_id  = questions[0].get("boss_id")
+    title    = questions[0].get("boss_title", "Weekly Boss Challenge")
+    theme    = questions[0].get("boss_theme", "Marktanalyse")
+
+    already_attempted = False
+    if user_id:
+        try:
+            att = sb_client.table("weekly_boss_attempts") \
+                .select("id").eq("user_id", user_id).eq("boss_id", boss_id).execute()
+            already_attempted = len(att.data) > 0
+        except Exception:
+            pass
+
+    return {
+        "boss_id":           boss_id,
+        "title":             title,
+        "theme":             theme,
+        "questions":         [{"question": q["question"], "context": q.get("context", "")} for q in questions],
+        "xp_reward":         300,
+        "available_until":   _sunday_this_week(),
+        "already_attempted": already_attempted,
+    }
+
+
+@app.post("/academy/weekly-boss/submit")
+async def weekly_boss_submit(request: Request):
+    body    = await request.json()
+    user_id = body.get("user_id", "")
+    boss_id = body.get("boss_id", "")
+    answers = body.get("answers", [])
+
+    if not user_id or not boss_id or len(answers) < 3:
+        raise HTTPException(status_code=400, detail="user_id, boss_id und 3 answers erforderlich")
+
+    try:
+        att = sb_client.table("weekly_boss_attempts") \
+            .select("id").eq("user_id", user_id).eq("boss_id", boss_id).execute()
+        if att.data:
+            raise HTTPException(status_code=400, detail="Boss bereits herausgefordert diese Woche")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    try:
+        qs = sb_client.table("daily_challenges") \
+            .select("*").eq("boss_id", boss_id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    if not qs.data or len(qs.data) < 3:
+        raise HTTPException(status_code=404, detail="Boss nicht gefunden")
+
+    questions = sorted(qs.data, key=lambda x: x.get("boss_question_index", 0))
+    theme     = questions[0].get("boss_theme", "Marktanalyse")
+
+    eval_prompt = (
+        f"Bewerte diese 3 Antworten zur Weekly Boss Challenge '{theme}'.\n\n"
+        f"Frage 1: {questions[0]['question']}\nAntwort 1: {answers[0]}\n\n"
+        f"Frage 2: {questions[1]['question']}\nAntwort 2: {answers[1]}\n\n"
+        f"Frage 3: {questions[2]['question']}\nAntwort 3: {answers[2]}\n\n"
+        "Bewerte jede Antwort auf 0-100 und antworte NUR als JSON (kein Markdown):\n"
+        '{"scores": [<score1>, <score2>, <score3>], "total_score": <summe 0-300>, '
+        '"passed": <true wenn total_score >= 180>, '
+        '"overall_feedback": "<2-3 Saetze Gesamtfeedback auf Deutsch>", '
+        '"question_feedback": ["<Feedback F1>", "<Feedback F2>", "<Feedback F3>"]}'
+    )
+    result = _claude_json(eval_prompt, max_tokens=600)
+
+    try:
+        sb_client.table("weekly_boss_attempts").insert({
+            "user_id":     user_id,
+            "boss_id":     boss_id,
+            "answers":     answers,
+            "scores":      result.get("scores", []),
+            "total_score": result.get("total_score", 0),
+            "passed":      result.get("passed", False),
+        }).execute()
+    except Exception:
+        pass
+
+    xp_earned = 0
+    if result.get("passed"):
+        try:
+            prog = sb_client.table("user_progress") \
+                .select("xp_total, xp_this_week").eq("user_id", user_id).execute()
+            if prog.data:
+                current_xp   = prog.data[0].get("xp_total", 0)
+                current_week = prog.data[0].get("xp_this_week", 0)
+                new_xp       = current_xp + 300
+                sb_client.table("user_progress").update({
+                    "xp_total":     new_xp,
+                    "xp_this_week": current_week + 300,
+                    "league":       _league_for_xp(new_xp),
+                }).eq("user_id", user_id).execute()
+                xp_earned = 300
+        except Exception:
+            pass
+
+    return {**result, "xp_earned": xp_earned}
+
+
 # ─── Run ──────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
