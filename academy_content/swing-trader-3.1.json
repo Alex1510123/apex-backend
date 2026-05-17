@@ -1,0 +1,71 @@
+{
+  "id": "swing-3.1",
+  "track_id": "swing-trader",
+  "title": "Support & Resistance",
+  "subtitle": "Horizontale Levels, psychologische Preise und Volumen-Bestätigung",
+  "duration_min": 8,
+  "sort_order": 4,
+  "status": "available",
+  "learning_goals": [
+    "Support- und Resistance-Levels technisch korrekt identifizieren",
+    "Psychologische Rundpreise und ihre Bedeutung fuer den Markt verstehen",
+    "Das Konzept der Role Reversal (alter Widerstand wird neuer Support) anwenden",
+    "Volumen als Bestaetigungsinstrument fuer echte Levels nutzen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Was Support und Resistance sind — und warum sie funktionieren",
+      "body": "Support und Resistance sind die Grundbausteine der technischen Analyse — und ihre Existenz hat eine solide verhaltenspsychologische Begründung. Support ist ein Preisniveau, bei dem die Nachfrage stark genug ist, um einen weiteren Kursrückgang aufzuhalten. Resistance ist das Gegenteil: ein Niveau, bei dem Verkaufsdruck einsetzt und den Kurs daran hindert, weiter zu steigen.\n\nWarum funktionieren diese Levels? Drei Gruppen von Marktteilnehmern reagieren auf historische Preise: Käufer, die zu einem bestimmten Niveau eingestiegen sind, freuen sich, wenn der Kurs nach einem Rückfall dorthin zurückkommt (Gelegenheit, mehr zu kaufen oder Break-even zu erreichen). Verkäufer, die 'zu früh' verkauft haben, wollen auf dem Weg zurück wieder einsteigen. Und Händler, die die Positionen weder Long noch Short hielten, sehen das Level als Referenzpunkt.\n\nPsychologische Rundpreise spielen dabei eine besondere Rolle: 100, 200, 500, 1.000 USD sind natürliche Konzentrationsgebiete für Stop-Loss-Orders und Limit-Orders. Apple (AAPL) bei 150 USD war 2022 und 2023 ein robuster Support-Bereich — mehrfach getestet, mehrfach gehalten. NVIDIA (NVDA) bei 500 USD war Ende 2023 psychologisch wichtig — der Durchbruch über diese Marke war mit massivem Volumen verbunden und bestätigte den Trend."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Role Reversal",
+      "body": "Role Reversal ist eines der mächtigsten Konzepte in der technischen Analyse: Wenn ein Resistance-Level nach oben durchbrochen wird, wird es zum Support — und umgekehrt. Ein ehemaliger Widerstand bei 150 USD (den die Aktie lange nicht überwinden konnte) wird nach dem Ausbruch zur Unterstützungszone, von der aus die Aktie abprallt, wenn sie dorthin zurückfällt. Dieses Konzept erklärt sich durch das veränderte psychologische Verhalten der Marktteilnehmer nach dem Bruch."
+    },
+    {
+      "type": "text",
+      "heading": "Volumen als Bestätigung und Multiple Timeframe-Analyse",
+      "body": "Ein Support- oder Resistance-Level ist nur so stark wie das Volumen, das es definiert hat. Ein Hoch oder Tief, das mit überdurchschnittlichem Volumen entstand, ist bedeutungsvoller als eines, das bei geringem Handelsvolumen geformt wurde. Warum? Hohes Volumen bedeutet, viele Marktteilnehmer haben zu diesem Preis gehandelt — was die Wahrscheinlichkeit erhöht, dass dieselben Teilnehmer bei einer Rückkehr zum Niveau reagieren.\n\nFür Swing-Trader ist die Multiple Timeframe-Analyse entscheidend: Ein Level, das sowohl im Wochenchart als auch im Tageschart als Support sichtbar ist, ist deutlich robuster als eines, das nur im 1-Stunden-Chart erscheint. Die Hierarchie: Wochenchart-Levels dominieren Tageschart-Levels dominieren Intraday-Levels. Eine Handelsstrategie, die auf dem Tageschart einen Aufwärtstrend identifiziert und auf dem 4-Stunden-Chart einen Test des Support-Levels als Einstiegspunkt nutzt, ist deutlich robuster als reine Intraday-Entscheidungen.\n\nPraktische Anwendung: Bevor Sie eine Swing-Position eingehen, prüfen Sie: Ist der Einstieg nahe einem starken Support (Long) oder Resistance (Short)? Wurde dieses Level mehrfach getestet (mindestens 2-3 Mal)? War das Volumen bei der Formierung des Levels überdurchschnittlich? Wenn alle drei Kriterien zutreffen, haben Sie ein solides technisches Fundament für die Position."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Cluster-Levels",
+      "body": "Die stärksten Support/Resistance-Zones sind Cluster: Bereiche, wo mehrere technische Kriterien zusammentreffen — z.B. eine horizontale historische Unterstützung, ein 200-Tage-Durchschnitt und ein Fibonacci-Retracement-Level alle bei ähnlichem Preisniveau. Je mehr unabhängige Indikatoren auf denselben Bereich hinweisen, desto bedeutungsvoller ist dieses Level."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "AAPL kämpfte 6 Monate lang mit der 150-USD-Marke als Widerstand. Dann brach die Aktie mit hohem Volumen über 150 USD aus. Was erwarten Techniker nun von diesem Level?",
+      "options": [
+        "Das Level ist nicht mehr relevant — nach dem Ausbruch werden Levels zurückgesetzt",
+        "150 USD wird nun als Support fungieren (Role Reversal) — bei einem Rückfall dorthin wird Nachfrage erwartet",
+        "150 USD wird nun zu einer noch stärkeren Resistance, weil das Niveau bekannt ist",
+        "Das Level ist nur relevant, wenn der Ausbruch ohne Volumen stattfand"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Role Reversal ist ein Grundprinzip der technischen Analyse: Ein durchbrochener Widerstand wird zum Support. Alle Trader, die auf dem Weg nach oben bei 150 USD 'verpasst' haben einzusteigen, sehen einen Rückfall dorthin als Kaufgelegenheit — was die Nachfrage bei 150 USD stärkt und das Level als Support etabliert."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Ein Resistance-Level wurde dreimal getestet, dreimal hielt es — aber immer bei sehr niedrigem Volumen. Wie beurteilen Sie die Stärke dieses Levels?",
+      "options": [
+        "Sehr stark — dreimaliger Test ohne Durchbruch bestätigt das Level eindeutig",
+        "Schwächer als erwartet — niedriges Volumen bei den Tests zeigt wenig Interesse; ein starker Volumen-Ausbruch könnte das Level leicht überwinden",
+        "Das Volumen ist beim Test eines Widerstands irrelevant, nur der Preis zählt",
+        "Dreimaliger Test ist ungewöhnlich und signalisiert eine bevorstehende Umkehr des Trends"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Volumen ist der Treibstoff hinter Preisbewegungen. Ein Level, das bei niedrigem Volumen gehalten hat, wurde nicht wirklich von vielen Marktteilnehmern 'verteidigt'. Bei einem Ausbruchsversuch mit hohem Volumen könnte der Widerstand leichter fallen, weil keine starke Kaufunterstützung das Level formt. Starke Levels entstehen bei hohem Volumen."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie betrachten eine Aktie, die seit 3 Monaten im Bereich 90-95 EUR seitwärts läuft. Der Bereich 90 EUR wurde viermal als Support gehalten, 95 EUR viermal als Resistance. Nun bricht die Aktie mit dem 3-fachen Durchschnittsvolumen über 95 EUR aus. Beschreiben Sie Ihre Handelsstrategie für die nächsten 5-10 Handelstage: Einstieg, Stop-Loss, Kursziel und die Überlegungen dahinter.",
+      "explanation": "Strategie: Einstieg entweder beim Ausbruch (aggressiv, höheres Risiko des False Breakouts) oder beim Retest von 95 EUR als neuem Support (konservativ, besseres R/R). Stop-Loss: unterhalb 90 EUR (altem Support) oder je nach Risikobereitschaft unter 93 EUR (Mitte der ehemaligen Range). Kursziel: Projektion der Range-Breite (95-90=5 EUR) nach oben → 100 EUR als erstes Ziel (psychologische Marke). Überlegungen: Hohes Volumen (3x Durchschnitt) ist starke Bestätigung. Catalysts prüfen (gab es Earnings, News?). Multiple Timeframe: im Wochenchart Trend prüfen. Position sizing: Stop-Loss-Abstand definiert Positionsgrösse (Depot-Risiko max. 1-2% pro Trade)."
+    }
+  ]
+}

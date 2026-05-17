@@ -1,0 +1,71 @@
+{
+  "id": "analyst-3.1",
+  "track_id": "analyst",
+  "title": "Free Cash Flow Analyse",
+  "subtitle": "FCF vs. Net Income, Capex und Owner Earnings",
+  "duration_min": 10,
+  "sort_order": 4,
+  "status": "available",
+  "learning_goals": [
+    "Free Cash Flow korrekt berechnen und von Net Income abgrenzen",
+    "Verstehen, warum FCF eine ehrlichere Messgrösse als Gewinn ist",
+    "Maintenance und Growth Capex unterscheiden",
+    "Buffetts Owner Earnings Konzept und FCF Yield als Bewertungsmetrik anwenden"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Warum Free Cash Flow ehrlicher ist als Net Income",
+      "body": "Der Jahresgewinn (Net Income) ist die meistzitierte Kennzahl in Finanzberichten — und gleichzeitig eine der am leichtesten manipulierbaren. Unternehmen können durch Abschreibungswahlrechte, Rückstellungen, Lagerbestandsbewertungen und andere Bilanzierungsspielräume den ausgewiesenen Gewinn erheblich beeinflussen. Der Free Cash Flow (FCF) ist schwerer zu manipulieren, weil er misst, was tatsächlich als Bargeld ins Unternehmen fließt.\n\nDie Grundformel: Free Cash Flow = Operating Cash Flow - Capital Expenditures (Capex). Der Operating Cash Flow (aus der Kapitalflussrechnung) nimmt den Nettogewinn und bereinigt ihn um nicht-zahlungswirksame Posten (Abschreibungen, Amortisierungen) sowie Veränderungen im Working Capital. Capex sind die Investitionen in Sachanlagen — Maschinen, Gebäude, Technologieinfrastruktur.\n\nApple ist das perfekte Fallbeispiel: Im Geschäftsjahr 2023 meldete Apple ein Net Income von etwa 97 Milliarden USD. Der Free Cash Flow lag bei rund 99 Milliarden USD — nahezu identisch. Das zeigt: Bei Apple entspricht der ausgewiesene Gewinn fast exakt dem tatsächlich generierten Cashflow. Das ist ein Zeichen hoher Bilanzqualität. Bei anderen Unternehmen kann die Differenz massiv sein — wenn ein Unternehmen 1 Milliarde Gewinn ausweist, aber nur 100 Millionen FCF generiert, werden Investitionen offensichtlich aus der Substanz finanziert."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Maintenance vs. Growth Capex",
+      "body": "Nicht alle Investitionen sind gleich. Maintenance Capex ist das Minimum an Investitionen, um das bestehende Geschäft am Laufen zu halten — Maschinenersatz, Gebäudeinstandhaltung. Growth Capex ist zusätzliche Investition, die künftiges Wachstum generieren soll. Ein Unternehmen mit hohem Growth Capex kann trotz niedrigem FCF wertvoll sein — wenn die Investitionen hohe Renditen versprechen. Ein Unternehmen mit hohem Maintenance Capex und niedrigem FCF ist dagegen im 'Hamsterrad'."
+    },
+    {
+      "type": "text",
+      "heading": "Buffetts Owner Earnings und FCF Yield",
+      "body": "Warren Buffett präsentierte in seinem Berkshire-Brief von 1986 das Konzept der 'Owner Earnings' — eine Variante des Free Cash Flow, die er für präziser hält: Owner Earnings = Net Income + Abschreibungen/Amortisierung - Maintenance Capex - Veränderung Working Capital. Der Schlüsselunterschied zum Standard-FCF: Buffett trennt Maintenance Capex (notwendig für Wettbewerbsfähigkeit) von Growth Capex (optional) und berücksichtigt nur den notwendigen Teil.\n\nFür die Bewertung ist der FCF Yield eine nützliche Metrik: FCF Yield = Free Cash Flow / Marktkapitalisierung. Ein FCF Yield von 5% bedeutet, dass das Unternehmen 5% seines Börsenwerts jährlich als freien Cashflow generiert — vergleichbar mit einer Anleiherendite, aber mit Wachstumspotenzial. Ein FCF Yield von 8-10% ist in der Regel attraktiv; unter 2% deutet auf Überbewertsein hin.\n\nEin häufiger Anfängerfehler: Wachstumsunternehmen mit negativem FCF pauschal ablehnen. Amazon hatte jahrelang einen negativen oder nahe null FCF, weil das Unternehmen massiv in Growth Capex investierte. Bezos' Strategie war explizit: Kurzfristig FCF opfern für langfristige Marktposition. Das Ergebnis war eine der größten Wertschöpfungen der Unternehmensgeschichte."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: FCF Conversion Rate",
+      "body": "FCF Conversion = Free Cash Flow / Net Income. Eine Rate nahe 100% (wie bei Apple) zeigt, dass der Gewinn qualitativ hochwertig ist — er entspricht echtem Cashflow. Eine Rate deutlich unter 50% ist ein Warnsignal: Entweder werden viele Investitionen als Capex verbucht (kann legitim sein bei Wachstumsunternehmen) oder der Gewinn enthält viele nicht-zahlungswirksame Komponenten, die die Qualität reduzieren."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Apple meldete 2023 ein Net Income von 97 Mrd. USD und einen FCF von 99 Mrd. USD. Was zeigt diese nahezu identische Zahl?",
+      "options": [
+        "Apple hat die Bücher manipuliert, um beide Zahlen anzugleichen",
+        "Apple generiert fast exakt so viel echten Cashflow wie es als Gewinn ausweist — ein Zeichen hoher Bilanzqualität",
+        "Apple investiert kaum in Capex, was langfristig ein Problem für Wachstum ist",
+        "Net Income und FCF sind immer identisch bei Technologieunternehmen"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Wenn Net Income und FCF nahezu identisch sind, bedeutet das: Der ausgewiesene Gewinn entspricht echtem Bargeldfluss — wenig aggressive Bilanzierung, gutes Working Capital Management. Bei vielen Unternehmen gibt es erhebliche Abweichungen, die auf Bilanzierungsspielräume oder hohen Investitionsbedarf hinweisen."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was ist der Unterschied zwischen Maintenance Capex und Growth Capex?",
+      "options": [
+        "Maintenance Capex sind Personalkosten, Growth Capex sind Sachkosten",
+        "Maintenance Capex ist notwendig, um das bestehende Geschäft zu erhalten; Growth Capex finanziert künftiges Wachstum",
+        "Growth Capex wird steuerlich anders behandelt als Maintenance Capex",
+        "Maintenance Capex erscheint in der GuV, Growth Capex in der Bilanz"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Diese Unterscheidung ist für die Qualitätsbeurteilung entscheidend. Hoher Maintenance Capex bedeutet, das Unternehmen muss viel investieren nur um wettbewerbsfähig zu bleiben — das begrenzt den echten FCF. Hoher Growth Capex hingegen kann positiv sein, wenn die Investitionsrenditen hoch sind. Buffett bevorzugt Unternehmen mit niedrigem Maintenance Capex (z.B. Softwareunternehmen)."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Unternehmen A meldet einen Jahresgewinn (Net Income) von 500 Millionen Euro, hat aber einen negativen Free Cash Flow von -200 Millionen Euro. Unternehmen B meldet einen Jahresgewinn von 200 Millionen Euro und einen FCF von 350 Millionen Euro. Welches Unternehmen ist aus Cash-Flow-Perspektive attraktiver — und warum? Gehen Sie auf mögliche Erklärungen für die Abweichungen ein.",
+      "explanation": "Unternehmen B ist cash-flow-attraktiver. FCF-Konversionsrate A: -40% (negativ!), B: 175% (FCF übersteigt Gewinn). Mögliche Erklaerungen für A: hohe Capex-Investitionen (könnte Growth Capex sein — dann nicht unbedingt schlecht), Aufbau von Working Capital, aggressive Umsatzbuchung ohne entsprechenden Cash-Eingang. Für B: niedrige Abschreibungen werden als Capex separat geführt, oder Working Capital sinkt (z.B. Vorauszahlungen von Kunden). Wichtig: immer Kapitalflussrechnung analysieren, nicht nur GuV. FCF ist schwerer zu manipulieren und zeigt tatsächliche Ertragskraft."
+    }
+  ]
+}

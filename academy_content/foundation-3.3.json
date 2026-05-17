@@ -1,0 +1,71 @@
+{
+  "id": "foundation-3.3",
+  "track_id": "foundation",
+  "title": "Diversifikation & Korrelation",
+  "subtitle": "Warum nicht alle Eier in einen Korb gehören",
+  "duration_min": 8,
+  "sort_order": 17,
+  "status": "available",
+  "learning_goals": [
+    "Den Korrelationskoeffizienten verstehen und interpretieren",
+    "Erklären, welche Asset-Klassen historisch gering korrelieren",
+    "Das Phänomen steigender Korrelation in Krisen (2022) verstehen",
+    "Die Grundidee der Modernen Portfoliotheorie und Efficient Frontier intuitiv erfassen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Korrelation — das Fundament der Diversifikation",
+      "body": "Diversifikation bedeutet nicht einfach, viele Dinge zu kaufen — sondern Dinge zu kaufen, die sich unterschiedlich verhalten. Das Kernkonzept ist die Korrelation: ein statistisches Maß von -1 bis +1, das beschreibt, wie zwei Assets sich zueinander bewegen.\n\nEine Korrelation von +1 bedeutet perfekte Gleichbewegung: Asset A und Asset B steigen und fallen immer zur selben Zeit, im selben Ausmaß. Zwei verschiedene Autohersteller haben oft eine Korrelation von 0,7 bis 0,9 — beide hängen am Automobilzyklus. Eine Korrelation von 0 bedeutet keine Beziehung: Die Renditen beider Assets sind unabhängig voneinander. Eine Korrelation von -1 bedeutet perfekte inverse Bewegung: Fällt A, steigt B.\n\nWarum ist das wichtig? Wer 10 Aktien aus demselben Sektor hält, denkt er sei diversifiziert — aber bei einer Branchenrezession fallen alle gleichzeitig. Echter Portfolioschutz entsteht nur durch Assets mit niedriger oder negativer Korrelation. Klassische Beispiele: Aktien und Anleihen hatten historisch eine leicht negative Korrelation (-0,2 bis -0,4) — in Aktiencrashes flohen Investoren in sichere Staatsanleihen, die dadurch stiegen. Aktien und Gold haben eine nahezu Null-Korrelation — Gold reagiert eher auf Inflation und Geopolitik als auf den Aktienmarkt."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Moderne Portfoliotheorie",
+      "body": "Harry Markowitz zeigte 1952, dass das Risiko eines Portfolios niedriger sein kann als das durchschnittliche Risiko seiner Einzelbestandteile — sofern diese nicht perfekt korrelieren. Durch die richtige Kombination gering korrelierter Assets erhält man bei gleicher Renditeerwartung ein geringeres Gesamtrisiko. Das Resultat ist die Efficient Frontier: die Menge aller optimalen Portfolios mit maximalem Rendite-Risiko-Verhältnis."
+    },
+    {
+      "type": "text",
+      "heading": "2022: Das Jahr, in dem Diversifikation versagte",
+      "body": "2022 war ein schmerzhaftes Lehrjahr für viele Anleger, die auf das klassische 60/40-Portfolio vertrauten — 60% Aktien, 40% Anleihen. Dieses Portfolio gilt seit Jahrzehnten als ausgewogene Strategie, weil Aktien und Anleihen typischerweise negativ korrelieren: Wenn Aktien fallen, steigen Anleihen als sicherer Hafen.\n\nDoch 2022 brach diese Beziehung zusammen. Die Ursache war die aggressive Zinserhöhung der Fed: Steigende Zinsen schaden gleichzeitig Aktien (höherer Diskontfaktor) und Anleihen (inverse Kurs-Rendite-Beziehung). Der S&P 500 fiel um 19,4%, der Bloomberg US Aggregate Bond Index (ein breiter Anleihenindex) verlor rund 13% — das schlechteste Ergebnis für Anleihen seit Jahrzehnten. Ein klassisches 60/40-Portfolio verlor 2022 etwa 16%.\n\nDas lehrt uns: Korrelationen sind nicht stabil. In Stressphasen, insbesondere wenn die ursache Liquiditätsentzug ist, steigen Korrelationen gegen 1 — alles fällt gleichzeitig. Echte Diversifikation erfordert daher eine breitere Asset-Klassen-Perspektive: Energie-Aktien (XLE +65% in 2022), Rohstoffe, Infrastruktur oder marktneutrale Strategien können Portfolios in solchen Umgebungen stabilisieren. Der Schlüssel ist zu verstehen, welcher Faktor (Inflation, Zinsen, Wachstum, Liquidität) den Markt antreibt — und welche Assets in diesem Regime gut performen."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Efficient Frontier",
+      "body": "Die Efficient Frontier ist die Menge der 'besten' Portfolios — jene Kombinationen von Assets, die bei einem gegebenen Risikoniveau die höchste Rendite erzielen (oder umgekehrt: bei einer gewünschten Rendite das geringste Risiko). Portfolios unterhalb der Frontier sind suboptimal — man trägt unnötiges Risiko für die erzielte Rendite."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Was bedeutet eine Korrelation von +0,9 zwischen zwei Aktien für die Diversifikation?",
+      "options": [
+        "Sehr gute Diversifikation, weil beide Aktien stark performen",
+        "Schlechte Diversifikation, weil beide Assets fast immer in dieselbe Richtung bewegen",
+        "Neutrale Diversifikation, weil 0,9 nahe bei 1 liegt aber nicht exakt 1 ist",
+        "Optimale Diversifikation für ein 2-Aktien-Portfolio"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Eine Korrelation von +0,9 bedeutet, dass die beiden Assets sich fast identisch verhalten. In einem Abschwung fallen beide nahezu gleichzeitig und gleich stark. Das bietet praktisch keinen Diversifikationsvorteil. Sinnvolle Diversifikation erfordert Assets mit Korrelationen deutlich unter 0,5 — idealerweise nahe Null oder negativ."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Warum verlor das klassische 60/40-Portfolio (60% Aktien, 40% Anleihen) 2022 rund 16%, obwohl Anleihen normalerweise als Schutz gegen Aktiencrashes gelten?",
+      "options": [
+        "Weil die Qualität der Unternehmensanleihen 2022 extrem schlecht war",
+        "Weil steigende Zinsen sowohl Aktien als auch Anleihen gleichzeitig schadeten, sodass die typisch negative Korrelation zusammenbrach",
+        "Weil das 60/40-Portfolio in den USA verboten wurde und Fonds liquidieren mussten",
+        "Weil Gold stieg und damit die Anleiherenditen drückte"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Der Zinsanstieg 2022 war die gemeinsame Ursache für Verluste sowohl bei Aktien (höherer Diskontfaktor) als auch bei Anleihen (inverse Kurs-Rendite-Beziehung). Wenn beide Asset-Klassen denselben Treiber haben, verschwindet ihr Diversifikationseffekt. Korrelationen sind nicht konstant — sie verändern sich je nach Marktregime."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Ein Anleger hat ein Portfolio aus 20 verschiedenen Aktien aus DAX und S&P 500 aufgebaut und glaubt, gut diversifiziert zu sein. Erklären Sie, warum dieses Portfolio in einem systemischen Marktcrash (wie 2008 oder 2020) trotzdem stark fallen könnte, und beschreiben Sie, welche Asset-Klassen er hinzufügen könnte, um echte Diversifikation zu erzielen.",
+      "explanation": "Kernpunkte: Aktien-only Portfolio hat hohe systemische Korrelation (alle fallen in einem Marktcrash). 20 Aktien diversifizieren idiosynkratisches Risiko (Einzeltitelrisiko) weg, aber nicht Marktrisiko. Ergänzende Asset-Klassen: Staatsanleihen (typisch neg. Korrelation, ausser 2022-Szenario), Gold (inflations- und krisenhedge), Rohstoffe (reagieren auf andere Faktoren als Aktien), REITs (Inflationsschutz), liquide alternative Strategien (marktneutral). Wichtig: regime-abhängige Korrelation erwähnen — was in normalen Zeiten diversifiziert, kann in Krisen korrelieren."
+    }
+  ]
+}

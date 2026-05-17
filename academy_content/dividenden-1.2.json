@@ -1,0 +1,71 @@
+{
+  "id": "div-1.2",
+  "track_id": "dividenden_investor",
+  "title": "Payout Ratio Analyse",
+  "subtitle": "Nachhaltige Ausschüttungsquote und FCF Payout Ratio",
+  "duration_min": 8,
+  "sort_order": 2,
+  "status": "available",
+  "learning_goals": [
+    "EPS Payout Ratio und FCF Payout Ratio berechnen und vergleichen",
+    "Nachhaltige Ausschuettungsquoten je Sektor kennen",
+    "Dividendenkürzungen als Warnsignal erkennen — und die typische Marktreaktion verstehen",
+    "AT&T 2022 als Fallstudie für das Risiko hoher Payout Ratios kennen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Payout Ratio — wie viel ein Unternehmen tatsächlich ausschütten kann",
+      "body": "Die Payout Ratio (Ausschüttungsquote) ist die wichtigste Kennzahl für die Nachhaltigkeit einer Dividende. Sie misst, welcher Anteil des Gewinns (oder Cash Flows) als Dividende ausgezahlt wird — und damit, wie viel Puffer das Unternehmen hat, bevor die Dividende bei einem Gewinnrückgang gefährdet wird.\n\nDie klassische Berechnung: EPS Payout Ratio = Dividende je Aktie / Earnings per Share (EPS). Wenn ein Unternehmen 2 Euro EPS ausweist und 1,50 Euro Dividende zahlt, beträgt die EPS Payout Ratio 75%. Das klingt hoch, aber ob das nachhaltig ist, hängt stark vom Sektor ab.\n\nSektorspezifische Normen: REITs (Real Estate Investment Trusts) müssen gesetzlich mindestens 90% ihres steuerpflichtigen Einkommens ausschütten — Payout Ratios von 80-100% sind daher strukturell normal. Versorger (Utilities) schütten typischerweise 60-80% aus — regulierte, stabile Cashflows erlauben das. Technologieunternehmen wie Microsoft oder Apple schütten nur 20-30% aus — sie reinvestieren den Rest für Wachstum. Für zyklische Unternehmen (Autos, Chemie, Industrie) sollte die Payout Ratio unter 50% liegen, damit sie in Abschwungphasen die Dividende halten können."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: FCF Payout Ratio",
+      "body": "Die FCF Payout Ratio = Dividende / Free Cash Flow — und sie ist ehrlicher als die EPS-Payout Ratio. EPS kann durch Buchhaltungseffekte erhöht oder reduziert werden. FCF ist real ausgegebenes Geld. Wenn ein Unternehmen eine EPS Payout Ratio von 60% hat, aber seine FCF Payout Ratio bei 110% liegt (es zahlt mehr Dividende als FCF generiert), ist die Dividende langfristig nicht aus eigenem Cash bedienbar. Regel: FCF Payout Ratio unter 75% gilt als komfortabel; über 90% ist gefährlich."
+    },
+    {
+      "type": "text",
+      "heading": "AT&T 2022 — die grösste Dividendenkürzung im Dow Jones",
+      "body": "AT&T (T) war jahrzehntelang ein Lieblingsinstrument für Einkommens-Investoren. Mit Dividendenrenditen von 6-8% schien AT&T unverzichtbar für jedes Dividenden-Portfolio. Das Unternehmen war sogar ein Dividend Aristocrat — hatte die Dividende 36 Jahre lang in Folge gesteigert.\n\nDann 2022 der Schock: AT&T kürzte die Dividende um etwa 47% — von ca. 2,08 USD auf 1,11 USD pro Aktie jährlich. Hintergrund: Die Übernahme von WarnerMedia für 85 Milliarden USD hatte AT&T mit massiven Schulden belastet. Die Entscheidung, WarnerMedia 2022 wieder auszugliedern (als Warner Bros. Discovery), erforderte diese drastische Dividendenanpassung. Die Aktie reagierte brutal: AT&T verlor nach Ankündigung der Kürzung und in den Folgemonaten insgesamt rund 50% gegenüber dem Vorkrisenniveau.\n\nWas hätten Analysten früher sehen können? Die FCF Payout Ratio von AT&T war bereits Jahre vor der Kürzung unbequem hoch — zeitweise über 100%, wenn man Free Cash Flow nach Capex berechnet. Die Verschuldung (Net Debt/EBITDA > 3x) war für ein reguliertes Telekommunikationsunternehmen an der Obergrenze. Die hohe Dividendenrendite von 7-8% war also tatsächlich eine Yield Trap — der Markt preiste das Risiko einer Kürzung bereits ein, aber viele Einkommens-Investoren ignorierten das Signal.\n\nIm Kontrast: Unilever zahlt seit über 30 Jahren eine konsistente oder steigende Dividende. Warum? Die Payout Ratio liegt konstant bei ca. 60-70% (EPS), die FCF Payout Ratio bei ca. 55-65%, und das diversifizierte Konsumgüterportfolio (Dove, Knorr, Hellmann's) generiert stabilen Cash Flow durch alle Zyklen."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Dividendenkürzung als Kurskatastrophe",
+      "body": "Dividendenkürzungen sind für Einkommens-Investoren oft katastrophal. Der direkte Effekt: weniger Dividende. Der indirekte Effekt: Massiver Kurseinbruch, weil alle Yield-orientierten Investoren die Aktie verkaufen und das Unternehmen das Vertrauen verliert. Historisch fallen Aktien bei einer Dividendenkürzung im Schnitt 15-25% am Ankündigungstag — und erholen sich oft monatelang nicht vollständig."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Unternehmen X hat einen EPS von 3 EUR und zahlt eine Dividende von 2,70 EUR. Der Free Cash Flow beträgt 1,50 EUR. Wie beurteilen Sie die Dividendensicherheit?",
+      "options": [
+        "Sehr sicher — EPS Payout Ratio von 90% ist für ein Unternehmen mit stabilen Gewinnen akzeptabel",
+        "Kritisch gefährdet — FCF Payout Ratio von 180% bedeutet, das Unternehmen zahlt mehr Dividende als es FCF generiert",
+        "Akzeptabel — die Diskrepanz zwischen EPS und FCF ist normal und vorübergehend",
+        "Unklar — man braucht mehr Informationen über den Sektor"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. FCF Payout Ratio = 2,70 / 1,50 = 180% — das Unternehmen zahlt fast doppelt so viel Dividende wie es Free Cash Flow generiert. Das ist strukturell unhaltbar. Entweder muss Schulden aufgenommen werden um die Dividende zu finanzieren, oder die Dividende muss gesenkt werden. EPS kann durch Abschreibungseffekte, Bilanzierungswahlrechte oder einmalige Gewinne den FCF massiv übersteigen — deshalb ist FCF die ehrlichere Basis."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "AT&T kürzte 2022 die Dividende um 47%, nachdem sie zuvor 36 Jahre lang Dividenden-Aristocrat war. Welches Warnsignal hätte man bereits Jahre zuvor erkennen können?",
+      "options": [
+        "AT&T's Aktie war zu günstig bewertet — niedriges KGV ist immer ein Warnsignal",
+        "AT&T's FCF Payout Ratio war über 100%, Net Debt/EBITDA über 3x, und die hohe Dividendenrendite von 7-8% preiste bereits ein erhöhtes Kürzungsrisiko ein",
+        "AT&T hatte zu viele verschiedene Geschäftsbereiche, was immer zu Dividendenkürzungen führt",
+        "Telekommunikationsunternehmen kürzen immer irgendwann ihre Dividende — das ist branchenspezifisch unvermeidbar"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Drei Warnsignale: 1) FCF Payout Ratio über 100% — die Dividende wurde aus Schulden finanziert, nicht aus Cash Flow. 2) Net Debt/EBITDA > 3x nach der WarnerMedia-Akquisition — zu hohe Verschuldung für ein kapitalintensives Telco. 3) Yield von 7-8% in einem Markt mit 3% Durchschnitt — der Markt signalisierte damit ein erhöhtes Kürzungsrisiko. Hohe Yields sind manchmal Kaufgelegenheiten, manchmal Warnungen. Der Fundamentalcheck entscheidet."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie analysieren zwei Versorgerunternehmen: Unternehmen A hat eine EPS Payout Ratio von 75%, FCF Payout Ratio 60%, Net Debt/EBITDA 2,8x, Dividendenwachstum 4% p.a. Unternehmen B: EPS Payout Ratio 95%, FCF Payout Ratio 120%, Net Debt/EBITDA 4,5x, Dividendenwachstum 6% p.a. Beide bieten eine aktuelle Yield von 5%. Welches würden Sie für ein dividendenorientiertes Portfolio bevorzugen — und warum?",
+      "explanation": "Klar Unternehmen A bevorzugen. Begründung: FCF Payout Ratio 60% vs. 120% — A zahlt Dividende aus echtem Cashflow, B zahlt mehr als es generiert (Schuldenfinanzierung der Dividende). Net Debt/EBITDA 2,8x vs. 4,5x — A hat mehr Puffer für Zinsanstieg oder Umsatzrückgang. A's 4% Dividendenwachstum ist nachhaltiger als B's 6% aus schwacher Cash-Basis. Bei B: Das höhere Dividendenwachstum ist eine Wachstumsstrategie, die auf Pump finanziert wird — bei steigenden Zinsen oder schwächeren Ergebnissen muss entweder die Investition oder die Dividende geopfert werden. Wahrscheinlichkeit einer Dividendenkürzung bei B ist signifikant höher. Lektion: Nicht dem Dividendenwachstum allein vertrauen — immer FCF Payout und Verschuldung prüfen."
+    }
+  ]
+}

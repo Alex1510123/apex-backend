@@ -1,0 +1,71 @@
+{
+  "id": "macro-1.5",
+  "track_id": "macro_investor",
+  "title": "Rezessions-Indikatoren erkennen",
+  "subtitle": "Leading vs. Lagging, PMI, Arbeitsmarkt und die Sahm Rule",
+  "duration_min": 9,
+  "sort_order": 5,
+  "status": "available",
+  "learning_goals": [
+    "Leading und Lagging Indikatoren klar unterscheiden",
+    "PMI-Werte unter 50 als Kontraktionssignal interpretieren",
+    "Die Sahm Rule als Rezessions-Echtzeit-Indikator anwenden",
+    "Den Conference Board LEI als vorauslaufenden Komposit-Indikator kennen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Vorlaufende vs. Nachlaufende Indikatoren — der entscheidende Unterschied",
+      "body": "In der Makroökonomie gibt es eine fundamentale Unterscheidung: Indikatoren, die zukünftige wirtschaftliche Entwicklungen ankündigen (Leading), und solche, die bereits Eingetretenes bestätigen (Lagging). Als Investor will man Leading-Indikatoren — sie geben Ihnen Vorlaufzeit für Portfolio-Entscheidungen.\n\nLeading Indikatoren verändern sich bevor sich die Wirtschaft verändert. Klassische Beispiele: Der Einkaufsmanagerindex (PMI) — Unternehmen planen ihre Produktion Monate voraus, der PMI spiegelt diese Pläne wider. Die Yield Curve — wie im vorigen Kapitel beschrieben. Konsumentenstimmung und Verbrauchervertrauen — zeigen künftige Kaufbereitschaft. Baubeginne — Bau hat lange Vorlaufzeiten, ein Rückgang signalisiert spätere wirtschaftliche Schwäche. Auftragseingang für langlebige Güter (Durable Goods Orders).\n\nLagging Indikatoren hingegen bestätigen, was bereits passiert ist. Das Bruttoinlandsprodukt (BIP) wird erst nach dem Quartalsende berechnet und dann noch mehrfach revidiert — bis zur endgültigen Zahl vergehen oft 6-9 Monate. Die Arbeitslosenquote ist das prototypische Lagging-Signal: Unternehmen entlassen Mitarbeiter erst als letzten Schritt in einer Abkühlung, wenn alle anderen Kostensenkungs-Massnahmen ausgeschöpft sind. Wenn die offizielle Arbeitslosigkeit stark steigt, ist die Rezession meistens schon mehrere Monate alt."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: PMI (Purchasing Managers Index)",
+      "body": "Der PMI basiert auf monatlichen Umfragen bei Einkaufsmanagern von Unternehmen. Über 50 = Expansion (mehr Unternehmen melden Wachstum als Kontraktion). Unter 50 = Kontraktion. Der ISM Manufacturing PMI und der S&P Global PMI sind die wichtigsten US-Varianten. Der Composite PMI (Industrie + Dienstleistungen) gibt das breiteste Bild. Wichtig: PMI misst Richtung, nicht Tempo — ein PMI von 48 ist schlechter als 52, aber nicht quantifizierbar in BIP-Prozentpunkte."
+    },
+    {
+      "type": "text",
+      "heading": "Die Sahm Rule — Echtzeit-Rezessionsdetektor",
+      "body": "Die Sahm Rule, entwickelt von der Ökonomin Claudia Sahm, ist einer der elegantesten und zuverlässigsten Echtzeit-Rezessionsindikatoren. Sie ist einfach: Wenn die gleitende 3-Monats-Durchschnittsarbeitslosenquote um 0,5 Prozentpunkte oder mehr über ihr Tief der letzten 12 Monate steigt, signalisiert das eine Rezession.\n\nDie Stärke der Sahm Rule liegt in ihrer Einfachheit und Zuverlässigkeit: Sie hat jede US-Rezession seit 1970 korrekt identifiziert, mit minimalem Rauschen. Wichtig: Die Sahm Rule ist kein Prognose-Indikator (wie PMI oder Yield Curve), sondern ein Echtzeit-Indikator — sie bestätigt eine laufende Rezession sehr früh, noch bevor das offizielle BIP-Wachstum negativ wird.\n\nIm Herbst 2022 warnte ein Bündel von Leading-Indikatoren: Der ISM Manufacturing PMI fiel unter 50 und blieb dort. Der Conference Board Leading Economic Index (LEI) — ein Komposit aus 10 vorlaufenden Indikatoren — fiel 14 Monate in Folge. Die Yield Curve war tief invertiert. Und dennoch: Der US-Arbeitsmarkt blieb robust, die Sahm Rule wurde nie ausgelöst, und eine Rezession blieb (bisher) aus. Das illustriert die Wichtigkeit, mehrere Indikatoren gemeinsam zu betrachten und keiner einzelnen Zahl zu vertrauen.\n\nFür Makro-Investoren: Wenn PMI unter 50 fällt und das Sahm Rule-Signal bei 0,3-0,4% steht (auf dem Weg zur Auslösung), ist das die Zeit für defensivere Positionierung — bevor die Rezession offiziell erklärt wird."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Conference Board LEI",
+      "body": "Der Leading Economic Index (LEI) des Conference Board ist ein Komposit aus 10 vorlaufenden Indikatoren: durchschnittliche Wochenarbeitsstunden in der Industrie, Erstanträge auf Arbeitslosenunterstützung, neue Aufträge für Konsumgüter, ISM-Auftragsindex, neue Baugenehmigungen, S&P 500 Performance, M2-Geldmenge, Spread 10-jährige Staatsanleihe zu Fed Funds Rate, durchschnittliche Verbrauchererwartungen und Leading Credit Index. 6 aufeinanderfolgende Monatsrückgänge gelten als Rezessionssignal."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Der ISM Manufacturing PMI fällt auf 46,5. Was bedeutet das wirtschaftlich?",
+      "options": [
+        "Die Industrie wächst, aber unter ihrem langjährigen Durchschnitt",
+        "46,5% der Industrie-Unternehmen berichten von Wachstum",
+        "Die verarbeitende Industrie kontrahiert — mehr Unternehmen melden Schrumpfung als Wachstum",
+        "Der Industriesektor schrumpft um 3,5% (100 - 46,5 = 53,5 minus 50)"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. PMI unter 50 bedeutet Kontraktion: Mehr Einkaufsmanager melden einen Rückgang ihrer Aktivität als einen Anstieg. Ein PMI von 46,5 ist deutlich kontraktiv. Wichtig: PMI misst nicht das Ausmass der Kontraktion in BIP-Prozentpunkten — er misst nur die Diffusion (Anteil der Unternehmen mit positivem vs. negativem Ausblick). Ein PMI von 46 ist schlechter als 48, aber der genaue Unterschied in BIP-Wachstum ist nicht direkt ableitbar."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Die Sahm Rule wird ausgelöst, wenn die Arbeitslosenquote um 0,5 Prozentpunkte über ihr 12-Monats-Tief steigt. Warum ist die Arbeitslosigkeit trotzdem ein Lagging Indikator?",
+      "options": [
+        "Weil die Arbeitslosenquote immer steigt, unabhängig vom Wirtschaftszyklus",
+        "Weil Entlassungen das letzte Mittel sind — Unternehmen senken zuerst Investitionen, Überstunden und Neueinstellungen, bevor sie entlassen. Wenn die Rate stark steigt, ist die Rezession bereits im Gange",
+        "Weil Arbeitslosendaten in den USA 6 Monate verzögert veröffentlicht werden",
+        "Weil die Sahm Rule nur für Rezessionen gilt, nicht für Abschwünge"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Unternehmen entlassen als letzten Schritt — nicht als ersten. Bei wirtschaftlicher Abkühlung reduzieren sie zunächst Neueinstellungen, dann Überstunden, dann temporäre Mitarbeiter. Erst wenn die Situation sich deutlich verschlechtert, kommt es zu Massenentlassungen. Wenn die Arbeitslosenquote also merklich steigt, ist die Wirtschaftsschwäche typischerweise schon mehrere Monate alt. Die Sahm Rule ist deshalb ein Early-Recognition-, kein Early-Warning-Signal."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie beobachten folgende Konstellation: ISM Manufacturing PMI 47,2 (3 Monate in Folge unter 50), Conference Board LEI -0,5% für 8 Monate in Folge, Sahm Rule bei 0,35% (noch nicht ausgelöst), S&P 500 ist in den letzten 3 Monaten um 5% gestiegen. Wie beurteilen Sie diese scheinbar widersprüchliche Konstellation, und wie passen Sie ein Aktien-Anleihen-Portfolio an?",
+      "explanation": "Analyse: Leading Indikatoren (PMI, LEI) signalisieren deutlich Abschwächung, aber der Aktienmarkt steigt. Das ist nicht ungewöhnlich — Aktienmärkte können 6-12 Monate nach Leading-Indikatoren hinterherhinken oder von Liquiditätsphänomenen getrieben sein. Sahm Rule noch nicht ausgelöst = kein Rezessions-Echtzeitsignal. Portfolio-Anpassung: Schrittweise (nicht schlagartig) defensiver werden. 1) Aktien-Untergewicht wachstumssensitiver Sektoren (XLY, XLF). 2) Aufbau defensiver Positionen (XLV, XLP, XLU). 3) Duration im Bond-Portfolio erhöhen (wenn Rezession kommt, senkt Fed Zinsen → Langläufer profitieren). 4) Liquidität erhöhen (Cash-Buffer für Nachkäufe wenn Markt dreht). Wichtig: Nicht komplett aus Aktien raus — falscher Alarm möglich, Markt kann weiter steigen. Graduelle Positionierung, nicht binäres Alles-oder-Nichts."
+    }
+  ]
+}

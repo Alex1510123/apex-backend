@@ -1,0 +1,71 @@
+{
+  "id": "analyst-3.7",
+  "track_id": "analyst",
+  "title": "Sektorspezifische Bewertung",
+  "subtitle": "Banken, Tech, Pharma — warum KGV allein nicht reicht",
+  "duration_min": 10,
+  "sort_order": 10,
+  "status": "available",
+  "learning_goals": [
+    "Verstehen, warum verschiedene Sektoren unterschiedliche Bewertungsmetriken erfordern",
+    "Banken mit P/B und ROE, Tech mit EV/Sales, Pharma mit Pipeline-Value korrekt analysieren",
+    "REITs mit FFO und Versicherungen mit Combined Ratio bewerten",
+    "Typische Bewertungsfehler durch falsche Sektormetriken vermeiden"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Warum ein universelles KGV für alle Sektoren unzureichend ist",
+      "body": "Das Kurs-Gewinn-Verhältnis (KGV) ist die bekannteste Bewertungsmetrik — aber es ist ein stumpfes Werkzeug, wenn man es auf alle Sektoren gleich anwendet. Verschiedene Geschäftsmodelle generieren Gewinne auf unterschiedliche Art, mit unterschiedlichen Risikostrukturen und Bilanzeigenschaften. Eine Bank, die mit 10x KGV handelt, ist nicht vergleichbar mit einem Technologieunternehmen bei 30x KGV — und ein REIT bei 5x KGV ist weder günstig noch teuer, wenn man das falsche Bewertungsmodell ansetzt.\n\nBanken sind das klassische Beispiel, wo KGV irreführt. Banken nutzen massiv Fremdkapital (Leverage) — ihr Eigenkapital ist oft nur 5-10% der Bilanzsumme, der Rest sind Kundeneinlagen und Fremdkapital. Dieser Leverage beeinflusst den Gewinn stark und macht EV/EBITDA oder KGV kaum vergleichbar. Die richtige Metrik: Price-to-Book (P/B Ratio) und Return on Equity (ROE). JP Morgan handelt typischerweise bei 1,5-2,0x Buchwert, Goldman Sachs bei ähnlichen Multiplikatoren. Ein P/B unter 1,0 bedeutet: Der Markt bewertet die Bankaktie unter dem Buchwert — das kann ein Kaufsignal sein (wenn ROE hoch genug ist) oder ein Signal struktureller Probleme.\n\nDie Faustregel: Eine Bank verdient ihr P/B-Multiple, wenn ihr ROE die Kapitalkosten übersteigt. JP Morgan mit einem ROE von 15-17% verdient ein P/B von 1,5-2x. Eine europäische Bank mit ROE von 5-8% verdient kaum ein P/B über 0,8x."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: EV/Sales fuer Wachstums-Tech",
+      "body": "Für Technologieunternehmen ohne oder mit minimalem Gewinn (frühe Phase, starke Reinvestition) ist EV/Sales die wichtigste Bewertungsmetrik. EV/Sales = Enterprise Value / Jahresumsatz. SaaS-Unternehmen mit 30% Wachstum können EV/Sales von 8-15x rechtfertigen. Sinkt das Wachstum auf 10%, kollabiert das Multiple auf 3-5x. Die Wachstumsrate ist damit der dominante Treiber der Bewertung."
+    },
+    {
+      "type": "text",
+      "heading": "Pharma, REITs und Versicherungen — Sonderfälle",
+      "body": "Pharma-Bewertungen sind komplex, weil der Unternehmenswert wesentlich von der Produktpipeline abhängt — nicht nur vom aktuellen Umsatz. Pfizer und BioNTech wurden 2020-2021 primär nach ihrem COVID-Impfstoff-Potenzial bewertet, nicht nach historischen Gewinnen. Pipeline-Analyse: Wie viele Medikamente befinden sich in Phase I, II, III der klinischen Studien? Welche Marktgrösse haben die Indikationen? Was ist die Erfolgswahrscheinlichkeit (historisch Phase-III-Erfolgsquote ca. 50-60%)? Erfahrene Pharma-Analysten berechnen einen 'rNPV' (risk-adjusted Net Present Value) der gesamten Pipeline — der dann den Bewertungsrahmen definiert.\n\nREITs (Real Estate Investment Trusts) dürfen nicht mit klassischem EPS oder KGV bewertet werden, weil hohe Abschreibungen auf Immobilien den buchhalterischen Gewinn stark drücken — ohne dass dieser Buchverlust einem echten Cashflow-Verlust entspricht. Die korrekte Metrik ist FFO (Funds From Operations): Net Income + Abschreibungen - Gewinne aus Immobilienverkäufen. Realty Income, eine der grössten US-REITs, kommuniziert primär AFFO (Adjusted FFO) als Bewertungsgrundlage.\n\nVersicherungsunternehmen werden über die Combined Ratio bewertet: (Schäden + Betriebskosten) / Prämieneinnahmen. Eine Combined Ratio unter 100% bedeutet, die Versicherung verdient operativ Geld (Underwriting Profit). Eine Ratio über 100% bedeutet, die Versicherung verliert im Kerngeschäft — muss aber durch Kapitalanlage-Erträge kompensiert werden. Berkshire Hathaways Versicherungssparte hatte über Jahrzehnte durchschnittlich eine Combined Ratio unter 97% — ein entscheidender Vorteil."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: FFO fuer REITs",
+      "body": "Funds From Operations (FFO) ist die standardisierte Bewertungsmetrik für REITs. Formel: Net Income + Abschreibungen auf Immobilien - Gewinne aus Immobilienverkäufen. Das Kurs-FFO-Verhältnis ist der REIT-Äquivalent des KGV. Ein Kurs-FFO von 15x bedeutet: Das 15-fache des jährlichen FFO als Marktpreis. REITs sind typischerweise schuldenlastig, deshalb betrachtet man auch Loan-to-Value und Zinsdeckungsquoten."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Warum ist das KGV keine geeignete Bewertungsmetrik für REITs?",
+      "options": [
+        "Weil REITs keine Gewinne ausweisen und das KGV daher nicht berechenbar ist",
+        "Weil hohe Gebäudeabschreibungen den buchhalterischen Gewinn stark drücken, ohne echten Cashflow-Verlust darzustellen",
+        "Weil REITs in Deutschland nicht an der Börse gehandelt werden",
+        "Weil das KGV nur für Unternehmen mit Dividenden geeignet ist"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Immobilien unterliegen nach Rechnungslegungsvorschriften hohen Abschreibungen — obwohl der tatsächliche Marktwert der Immobilien steigen kann. Diese Abschreibungen reduzieren den buchhalterischen Gewinn stark, ohne dass ein realer Cashflow-Abfluss stattfindet. FFO addiert diese Abschreibungen zurück und gibt ein realistischeres Bild der operativen Ertragskraft eines REITs."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "JP Morgan hat einen ROE von 17% und handelt mit einem P/B von 1,8x. Goldman Sachs hat einen ROE von 10% und handelt mit 1,1x P/B. Welches Unternehmen erscheint bewertungstechnisch attraktiver?",
+      "options": [
+        "Goldman Sachs, weil das P/B mit 1,1x deutlich niedriger ist",
+        "JP Morgan, weil der höhere ROE das höhere P/B rechtfertigt — und Goldman erscheint zu teuer für seinen ROE",
+        "Beide sind gleichwertig, da P/B und ROE sich gegenseitig aufheben",
+        "Goldman Sachs, weil jedes P/B unter 1,5x automatisch ein Kaufsignal ist"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Die Grundregel der Bankenbewertung: Das gerechtfertigte P/B steht im Verhältnis zum ROE über die Kapitalkosten. JP Morgan mit 17% ROE verdient ein P/B von 1,8x (ROE deutlich über Kapitalkosten von ca. 10%). Goldman mit 10% ROE und 1,1x P/B erscheint angemessen bewertet, aber nicht günstig — wenn ROE auf Kapitalkosten-Niveau liegt, sollte P/B nahe 1,0x sein."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Pfizer hatte 2020 ein KGV von über 20x — obwohl der COVID-Impfstoff noch nicht zugelassen war. Erklären Sie, warum Pharmaunternehmen primär nach Pipelinewert und nicht nach aktuellem KGV bewertet werden, und beschreiben Sie, welche Faktoren ein Analyst bei der Bewertung von Pfizers Pipeline 2020 hätte berücksichtigen müssen.",
+      "explanation": "Pharmaunternehmen-Wert liegt in der Zukunft: aktuelle Umsätze aus laufenden Produkten + NPV der Pipeline. KGV auf Basis aktueller Gewinne ignoriert den Pipeline-Wert. Für Pfizer 2020: Phase-III-Erfolgswahrscheinlichkeit des BNT162b2 (historisch ca. 50-60% für Phase III, aber mehr Datenpunkte schon verfügbar), adressierbarer Markt (globale Impfstoffnachfrage → hunderte Millionen Dosen), Pricing pro Dosis (initial 19,50 USD), Zeitrahmen bis zur Zulassung (Emergency Use Authorization beschleunigt), Patentlaufzeit und Folgeprodukte (Booster, neue Indikationen). Risikogewichteter NPV dieser Cashflows erklärt den Börsenwert besser als das historische KGV."
+    }
+  ]
+}

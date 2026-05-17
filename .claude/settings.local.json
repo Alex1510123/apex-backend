@@ -44,7 +44,9 @@
       "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Alexa\\\\Downloads\\\\apex-backend\\\\academy_content\")",
       "Bash(Out-Null)",
       "Bash(python -c \"import main; print\\('OK — lessons loaded:', sum\\(len\\(v\\) for v in main.ACADEMY_LESSONS_DATA.values\\(\\)\\), 'available:', sum\\(1 for v in main.ACADEMY_LESSONS_DATA.values\\(\\) for l in v if l['status']=='available'\\)\\)\")",
-      "Bash(python -c \"import json; json.load\\(open\\('analyst-2.1.json', encoding='utf-8'\\)\\); print\\('OK'\\)\")"
+      "Bash(python -c \"import json; json.load\\(open\\('analyst-2.1.json', encoding='utf-8'\\)\\); print\\('OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('syntax OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('main.py', encoding='utf-8'\\).read\\(\\)\\); print\\('syntax OK'\\)\")"
     ]
   }
 }

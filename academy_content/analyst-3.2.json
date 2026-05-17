@@ -1,0 +1,71 @@
+{
+  "id": "analyst-3.2",
+  "track_id": "analyst",
+  "title": "Kapitalstruktur & Verschuldung",
+  "subtitle": "Debt/Equity, Interest Coverage und Net Debt/EBITDA",
+  "duration_min": 10,
+  "sort_order": 5,
+  "status": "available",
+  "learning_goals": [
+    "Debt/Equity Ratio als Mass der Fremdkapitalnutzung berechnen und interpretieren",
+    "Interest Coverage Ratio als Sicherheitspuffer verstehen",
+    "Net Debt/EBITDA nach Branche einordnen und Grenzwerte kennen",
+    "Den Hebel-Effekt (Leverage) als zweischneidiges Schwert begreifen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Kapitalstruktur: Das Verhältnis von Eigen- und Fremdkapital",
+      "body": "Jedes Unternehmen finanziert sich mit einer Mischung aus Eigenkapital (Aktionärsgeld, einbehaltene Gewinne) und Fremdkapital (Anleihen, Bankkredite). Das Verhältnis dieser beiden Quellen nennt sich Kapitalstruktur — und es hat massive Auswirkungen auf Risiko, Renditepotenzial und die Fähigkeit, wirtschaftliche Schocks zu überstehen.\n\nDer Debt/Equity Ratio (D/E Ratio) misst, wie viel Fremdkapital pro Euro Eigenkapital eingesetzt wird. Ein D/E von 1,0 bedeutet: Für jeden Euro Eigenkapital steht ein Euro Schulden gegenüber. Ein D/E von 3,0 bedeutet: Dreifacher Schuldenstand des Eigenkapitals. Kapitalintensive Branchen wie Versorger oder Immobilien operieren traditionell mit hohem D/E (2-4), Technologieunternehmen oft mit wenig oder gar keinen Schulden.\n\nDer Leverage-Effekt funktioniert in beide Richtungen: Wenn ein Unternehmen mit 50% Eigenkapital und 50% Fremdkapital eine Rendite auf das Gesamtkapital von 10% erzielt, ist die Eigenkapitalrendite höher — weil der Fremdkapitalanteil zu einem fixen (niedrigeren) Zinssatz bezahlt wird. Das ist der positive Hebel. In schlechten Zeiten wirkt der Hebel umgekehrt: Sinkende Gesamtkapitalrendite trifft das Eigenkapital unverhältnismäßig hart."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Interest Coverage Ratio",
+      "body": "Interest Coverage = EBIT / Zinsaufwand. Diese Kennzahl zeigt, wie oft ein Unternehmen seine Zinszahlungen aus dem operativen Ergebnis decken kann. Unter 2x gilt als kritisch — das Unternehmen hat wenig Puffer. Unter 1x ist akut gefährlich: Es verdient zu wenig, um seine Zinsen zu bezahlen. Solide Unternehmen haben typischerweise eine Coverage von 5x oder mehr. In Zeiten steigender Zinsen (wie 2022-2023) sank die Coverage vieler verschuldeter Unternehmen deutlich."
+    },
+    {
+      "type": "text",
+      "heading": "Net Debt/EBITDA — der Branchenstandard für Verschuldungsniveau",
+      "body": "Net Debt/EBITDA ist die am häufigsten verwendete Kennzahl für das Verschuldungsniveau eines Unternehmens, weil sie Schulden ins Verhältnis zur operativen Ertragskraft setzt. Net Debt = Gesamtschulden minus Kassenbestand. EBITDA = Gewinn vor Zinsen, Steuern, Abschreibungen. Ein Net Debt/EBITDA von 2,0 bedeutet: Das Unternehmen bräuchte theoretisch zwei Jahre seines EBITDA, um seine Nettoschulden zu tilgen.\n\nFaustregel nach Branche: Unter 2x gilt als konservativ und finanziell solide. 2-3x ist für die meisten Branchen akzeptabel. Über 4x ist für viele Unternehmen problematisch, insbesondere in zyklischen Branchen. Über 6x gilt als hoch riskant und ist typisch für Leveraged Buyouts (Private Equity) — aber kaum tragfähig für börsennotierte Unternehmen in einem Zinsanstiegsumfeld.\n\nDas WeWork-Beispiel zeigt, wohin excessive Verschuldung führen kann: Das Unternehmen hatte vor seinem Börsengang 2019 negative EBITDA und steigende Schulden — Net Debt/EBITDA war rechnerisch nicht sinnvoll berechenbar. Die Bewertung von 47 Milliarden USD kollabierte auf unter 8 Milliarden beim abgebrochenen IPO. Ähnlich die Airlines in COVID-19: Delta Air Lines hatte vor der Pandemie ein Net Debt/EBITDA von etwa 2x — was für Airlines normal ist. Als der Umsatz 2020 um 60% einbrach, explodierte diese Kennzahl und das Überleben hing von staatlicher Hilfe ab."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Investment Grade vs. High Yield",
+      "body": "Ratingagenturen (Moody's, S&P, Fitch) bewerten die Kreditwürdigkeit von Unternehmen. Investment Grade (BBB- und höher) bedeutet: solide Bonität, niedrige Ausfallwahrscheinlichkeit, günstigere Kreditkonditionen. High Yield (auch Junk Bonds) bedeutet: höheres Ausfallrisiko, höhere Zinszahlungen notwendig. Wenn ein Unternehmen sein Investment-Grade-Rating verliert ('Fallen Angel'), steigen seine Finanzierungskosten dramatisch."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Ein Unternehmen hat Gesamtschulden von 600 Millionen Euro, einen Kassenbestand von 100 Millionen Euro und ein EBITDA von 200 Millionen Euro. Wie hoch ist sein Net Debt/EBITDA?",
+      "options": [
+        "3,0x (Gesamtschulden / EBITDA)",
+        "2,5x (Net Debt 500 Mio. / EBITDA 200 Mio.)",
+        "6,0x (Gesamtschulden / halbes EBITDA)",
+        "1,5x (EBITDA / Gesamtschulden minus Kasse)"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Net Debt = Gesamtschulden (600) - Kassenbestand (100) = 500 Millionen Euro. Net Debt/EBITDA = 500 / 200 = 2,5x. Das liegt im akzeptablen Bereich für die meisten Branchen. Hätte man fälschlicherweise Gesamtschulden ohne Kassenabzug verwendet, wäre man auf 3,0x gekommen — ein häufiger Fehler."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Eine Airline hat eine Interest Coverage Ratio von 1,8x. Was bedeutet das für das Risikoprofil?",
+      "options": [
+        "Sehr sicher — 1,8x bedeutet, dass das Unternehmen fast doppelt so viel verdient wie es Zinsen zahlt",
+        "Kritisch — das Unternehmen verdient nur knapp mehr als seine Zinszahlungen, wenig Puffer bei Umsatzrückgang",
+        "Akzeptabel — Airline-Branche hat typischerweise Coverage unter 2x",
+        "Nicht relevant — Airlines werden nach anderen Metriken bewertet"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Eine Interest Coverage von unter 2x gilt als Warnsignal, auch wenn das Unternehmen noch nicht ausfällt. Schon ein Umsatzrückgang von 10-15% könnte die Coverage unter 1x drücken. Airlines sind extrem zyklisch — wie COVID-19 zeigte, können Umsätze kurzfristig um 50-80% einbrechen. Eine Coverage von 1,8x bietet in einem solchen Szenario keinen ausreichenden Puffer."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Zwei Unternehmen im selben Sektor haben identische Umsätze und EBITDA-Margen. Unternehmen A hat kein Fremdkapital, Unternehmen B hat Net Debt/EBITDA von 4x. Erklären Sie, unter welchen wirtschaftlichen Bedingungen B besser abschneidet als A, und unter welchen Bedingungen das Gegenteil gilt. Was sollte ein Anleger bei steigenden Zinsen bevorzugen?",
+      "explanation": "Kernpunkte: Leverage-Effekt — bei stabilen oder wachsenden Erträgen und niedrigen Zinsen kann B eine höhere Eigenkapitalrendite (ROE) erzielen, weil Fremdkapital zu fixen Zinsen für Aktionäre gehebelt wird. B ist attraktiver in Boom-Phasen mit niedrigem Zinsniveau. Umgekehrt: In Rezession (sinkende EBITDA) steigt das Net Debt/EBITDA-Verhältnis von B explosionsartig. Bei steigenden Zinsen werden Refinanzierungen teurer — Coverage sinkt. A ohne Schulden hat keine Refinanzierungsrisiken, volles EBITDA geht an Aktionäre. Bei steigenden Zinsen (wie 2022-2023): A deutlich bevorzugen — kein Zinsrisiko, volle Handlungsfreiheit für Investitionen oder Buybacks."
+    }
+  ]
+}

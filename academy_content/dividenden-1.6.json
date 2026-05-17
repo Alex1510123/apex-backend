@@ -1,0 +1,71 @@
+{
+  "id": "div-1.6",
+  "track_id": "dividenden_investor",
+  "title": "Dividenden-Portfolio aufbauen",
+  "subtitle": "Sektormix, Ausschüttungskalender und 12-Monats-Einkommensstrom",
+  "duration_min": 9,
+  "sort_order": 6,
+  "status": "available",
+  "learning_goals": [
+    "Ein diversifiziertes Dividendenportfolio nach Sektoren aufbauen",
+    "Ex-Dividenden-Datum und Payment Date fuer die Planung nutzen",
+    "Einen monatlichen Einkommensstrom durch Ausschuettungskalender-Diversifikation erstellen",
+    "Yield-on-Cost als langfristige Erfolgsmetrik verstehen und berechnen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Sektordiversifikation im Dividenden-Portfolio",
+      "body": "Ein gut konstruiertes Dividenden-Portfolio ist nicht einfach eine Sammlung der höchstrentierenden Aktien — es ist ein diversifiziertes System mit komplementären Sektoreigenschaften, das in verschiedenen wirtschaftlichen Umgebungen stabil Einkommen generiert.\n\nDie sinnvolle Sektordiversifikation für Dividenden-Investoren: Gesundheitswesen (XLV, Johnson & Johnson, Pfizer) — defensive Charakteristik, Nachfrage unabhängig vom Konjunkturzyklus, FDA-Regulation als Moat-Schutz, typische Yields 2-4%. Basiskonsumgüter (XLP, Procter & Gamble, Unilever, Nestlé) — stabile, nicht-zyklische Umsätze, Pricing Power, Yields 2-4%. Versorger (XLU, NextEra Energy, National Grid) — regulierte Monopole mit hohen Yields (3-5%), steigende Relevanz durch Energiewende. Finanzwesen (Allianz, Münchener Rück, JPMorgan Preferred Shares) — hohe Yields bei Versicherern und Banken in Hochzinsphasen (4-7%). REITs (Realty Income, VICI Properties) — gesetzlich zur Ausschüttung verpflichtet, Yields 4-6%, monatliche Ausschüttung bei manchen Titeln. Industrie/Infrastruktur (3M, Emerson Electric) — zyklisch aber mit langen Aristokraten-Historien.\n\nMix-Empfehlung für ein ausgewogenes Dividenden-Portfolio: 25% Gesundheit/Consumer Staples, 20% REITs/Immobilien, 20% Finanzen/Versicherungen, 20% Versorger/Infrastruktur, 15% Industrie/International. Einzeltitel-Konzentration: Keine Position über 5-7% des Portfolios."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Ex-Dividenden-Datum",
+      "body": "Das Ex-Dividenden-Datum (Ex-Date) ist entscheidend: Wer die Aktie am oder nach diesem Datum kauft, erhält die nächste Dividende NICHT. Wer vor dem Ex-Date kauft, erhält sie. Am Ex-Date fällt der Aktienkurs typischerweise um den Dividendenbetrag — der Markt 'bereinigt' den Preis. Das Payment Date ist der tatsächliche Auszahlungstag, oft 2-4 Wochen nach dem Ex-Date."
+    },
+    {
+      "type": "text",
+      "heading": "12-Monats-Einkommensstrom und Yield-on-Cost",
+      "body": "Eines der elegantesten Konzepte im Dividenden-Investing ist die Konstruktion eines kontinuierlichen monatlichen Einkommensstroms durch strategische Sektorwahl und Ausschüttungskalender. Viele US-Unternehmen schütten quartalsweise aus — aber nicht alle im selben Monat. Durch bewusste Auswahl von Aktien, die in verschiedenen Kalendermonaten ausschütten, kann man praktisch monatliche Einkünfte generieren.\n\nBeispiel-Portfolio mit monatlicher Ausschüttungsverteilung:\n- Johnson & Johnson (JNJ): Ausschüttung März, Juni, September, Dezember\n- Realty Income (O): Monatliche Ausschüttung (einer der wenigen Monatszahler), ca. 5-6% Yield\n- Allianz SE (ALV): Jährliche Ausschüttung Mai (europäisch)\n- Unilever (UL): Quartalsweise März, Juni, September, Dezember\n- Procter & Gamble (PG): Februar, Mai, August, November\n\nMit diesem Mix erhält man in fast jedem Monat Dividendeneinkommen. Realty Income allein deckt monatliche Zahlungen ab — das Unternehmen hat sogar ein Trademark für 'The Monthly Dividend Company'.\n\nYield on Cost ist die Metrik, mit der echte langfristige Dividendeninvestoren messen, wie erfolgreich sie sind. Wer JNJ 2015 für 100 USD kaufte und heute auf 4,96 USD Dividende erhält, hat einen YoC von 4,96% — obwohl JNJ am Markt nur ca. 2,8% Yield bietet. Wer JNJ 2005 für 50 USD kaufte, hat heute einen YoC von über 9%. Das ist die stille Kraft des Dividenden-Compoundings über Zeit: Die Dividende wächst, der ursprüngliche Kaufpreis bleibt fix — und der YoC steigt jedes Jahr mit dem Dividendenwachstum.\n\nUm Ihr 12-Monats-Target Income zu berechnen: Summieren Sie alle erwarteten Dividendenzahlungen im Jahr, basierend auf aktueller Portfoliobewertung und aktuellen Dividendensätzen. Teilen Sie durch 12, um den monatlichen Erwartungswert zu erhalten. Multiplizieren Sie mit dem Dividendenwachstum-CAGR-Faktor für eine 5-10-Jahres-Prognose — so sehen Sie, welches Einkommen Ihr heutiges Portfolio in 10 Jahren liefert."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Yield on Cost (YoC)",
+      "body": "YoC = aktueller Jahres-Dividendensatz / ursprünglicher Kaufpreis. Bei 10% Dividendenwachstum CAGR verdoppelt sich YoC in 7,2 Jahren. Wer JNJ 2010 für 60 USD kaufte und 2024 auf 4,96 USD Dividende erhält: YoC = 4,96/60 = 8,27%. Am Markt bietet JNJ nur ~2,8% für Neukäufer. YoC ist die 'unsichtbare' Belohnung geduldiger Dividendeninvestoren — und einer der stärksten Anreize, qualitativ hochwertige Dividendenaktien zu kaufen und langfristig zu halten."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Ein Anleger kauft Realty Income (O) am Tag des Ex-Dividenden-Datums. Erhält er die nächste monatliche Dividende?",
+      "options": [
+        "Ja — er hält die Aktie, also erhält er alle zukünftigen Dividenden ab sofort",
+        "Nein — wer am Ex-Date oder danach kauft, erhält die nächste fällige Dividende nicht",
+        "Ja, aber nur die Hälfte — das Ex-Date bedeutet anteilige Berechtigung",
+        "Das hängt vom Broker ab — manche zählen das Ex-Date als Besitztag, andere nicht"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Um eine Dividende zu erhalten, muss man die Aktie VOR dem Ex-Dividenden-Datum halten. Am Ex-Date selbst oder danach Kaufende erhalten die nächste Dividende nicht. Gleichzeitig fällt der Kurs am Ex-Date typischerweise um den Dividendenbetrag — es gibt also keinen 'kostenlosen' Vorteil durch Kauf kurz vor dem Ex-Date."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Ein Anleger kaufte Procter & Gamble (PG) 2010 für 55 USD pro Aktie. Heute zahlt PG eine jährliche Dividende von 3,76 USD. Wie hoch ist sein Yield on Cost?",
+      "options": [
+        "2,5% (aktuelle Marktrendite von PG)",
+        "6,84% (3,76 / 55 = 6,84% YoC auf Basis des Kaufpreises 2010)",
+        "3,76% (die aktuelle Dividende als Prozentsatz des heutigen Kurses)",
+        "Yield on Cost ist nicht berechenbar ohne den aktuellen Marktpreis"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. YoC = Jahres-Dividende / ursprünglicher Kaufpreis = 3,76 / 55 = 6,84%. Das ist fast dreimal so hoch wie die aktuelle Markt-Yield für Neukäufer (ca. 2,3-2,5%). YoC zeigt den 'echten' Ertrag auf das ursprünglich investierte Kapital — und wächst jedes Jahr mit dem Dividendenwachstum. Bei 7% CAGR verdoppelt sich YoC alle 10 Jahre."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Bauen Sie ein vereinfachtes Dividenden-Portfolio aus 5 Positionen auf, das monatlichen Einkommensstrom generiert, mindestens 3 verschiedene Sektoren abdeckt, eine durchschnittliche Yield von 3-5% hat und geografisch zwischen Europa und USA diversifiziert ist. Erläutern Sie die Auswahl jeder Position, den jeweiligen Ausschüttungsmonat und die Begründung für den Sektormix.",
+      "explanation": "Musterportfolio: 1) Realty Income (O), USA, REIT, 5-6% Yield, MONATLICHE Ausschüttung — deckt alle 12 Monate ab, beste Monatszahler-Option, stabiler Geschäftsimmobilien-Moat. 2) Johnson & Johnson (JNJ), USA, Gesundheit, 2,8% Yield, März/Jun/Sep/Dez — Dividend King 61+ Jahre, breiter Medtech+Pharma+Consumer-Moat. 3) Allianz SE (ALV), Deutschland, Versicherung, 4-5% Yield, Mai — Europas grösster Versicherer, solide Combined Ratio, hohe Kapitalgeneration. 4) Procter & Gamble (PG), USA, Consumer Staples, 2,3% Yield, Feb/Mai/Aug/Nov — Dividend King 67+ Jahre, globaler Konsumgüter-Moat, 7% Dividendenwachstum. 5) Unilever (UL), UK/NL, Consumer Staples, 3,5% Yield, März/Jun/Sep/Dez — globale Diversifikation Europa+EM, stabiler FCF, Pricing Power bei Lebensmitteln+Hygiene. Sektormix: REITs (defensive Immobilienerträge), Gesundheit, Versicherung, Consumer Staples (2x). Geografie: 3 USA, 1 Deutschland, 1 UK/NL. Monatliche Abdeckung: Realty Income = alle Monate, JNJ+Unilever = identische Quartale ergänzt P&G in Zwischenmonaten, Allianz = Mai-Lücke füllt."
+    }
+  ]
+}

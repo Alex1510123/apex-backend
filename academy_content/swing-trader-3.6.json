@@ -1,0 +1,71 @@
+{
+  "id": "swing-3.6",
+  "track_id": "swing-trader",
+  "title": "Sektorrotation timen",
+  "subtitle": "Relative Rotation Graph, Leading vs. Weakening, früh rotieren",
+  "duration_min": 8,
+  "sort_order": 9,
+  "status": "available",
+  "learning_goals": [
+    "Sektorrotation im Konjunkturzyklus verstehen und antizipieren",
+    "Den Relative Rotation Graph (RRG) mit seinen vier Quadranten lesen",
+    "Fruehzeitig in aufkommende Sektor-Leader rotieren, bevor der Mainstream es tut",
+    "ETF-basierte Sektorstrategien (XLK, XLE, XLV etc.) konkret umsetzen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Sektorrotation — wie Kapital im Konjunkturzyklus wandert",
+      "body": "Nicht alle Sektoren performen im selben wirtschaftlichen Umfeld gut. Kapital fliesst zyklisch zwischen Sektoren, und wer diese Rotation früh erkennt, kann Gewinne erheblich steigern. Das Konzept basiert auf der Beobachtung, dass verschiedene Wirtschaftsphasen systematisch verschiedene Sektoren bevorzugen.\n\nIm frühen Aufschwung (Early Recovery) führen typischerweise zyklische Konsumgüter (XLY), Financials (XLF) und Technologie (XLK) — Unternehmen, die als erste von Wirtschaftswachstum profitieren. Im späten Aufschwung (Late Cycle) outperformen Energie (XLE), Materialien (XLB) und Versorger (XLU). In der Rezession führen defensive Sektoren: Gesundheit (XLV), Basiskonsumgüter (XLP), Versorger (XLU). In der frühen Rezessionsphase kann Technologie ebenfalls defensiv sein, wenn es Profitabilitätswachstum zeigt.\n\nDas Paradebeispiel 2022: Als die Fed mit aggressiven Zinserhöhungen begann und Rezessionsangst stieg, kollabierte Technologie (XLK) um 27%. Gleichzeitig profitierte Energie (XLE) von Russlands Ukraine-Krieg und steigenden Ölpreisen: XLE stieg 2022 um über 65% — während der breite Markt fiel. Wer diese Rotation im Januar 2022 antizipiert hatte (Energiepreise hoch, Fed hawkish, Zinsrisiko für Wachstumsaktien hoch), konnte erheblich profitieren."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Relative Rotation Graph (RRG)",
+      "body": "Der RRG zeigt die relative Stärke und das Momentum von Sektoren oder Aktien relativ zu einem Benchmark (typisch S&P 500). Vier Quadranten: Leading (stark und stärker werdend — kaufen), Weakening (stark aber Momentum nachlassend — vorsichtig werden), Lagging (schwach und schwächer werdend — meiden), Improving (schwach aber Momentum aufbauend — antizipieren). Sektoren rotieren gegen den Uhrzeigersinn durch die Quadranten."
+    },
+    {
+      "type": "text",
+      "heading": "Wie man Sektorrotation frühzeitig erkennt und handelt",
+      "body": "Der RRG ist ein visuelles Tool, das auf StockCharts.com oder Bloomberg verfügbar ist. Wenn ein Sektor aus dem Lagging-Quadranten in den Improving-Quadranten wechselt, ist das das frühest mögliche Signal: Das Momentum dreht, bevor der Sektor noch outperformt. Das ist der optimale Einstiegszeitpunkt — bevor der Mainstream die Rotation bemerkt.\n\nPraktisches Beispiel: Im Herbst 2021 zeigte der RRG, dass Energie (XLE) von Lagging nach Improving wechselte — getrieben durch steigende Ölpreise und unterbewertete Fundamentals nach der COVID-Strafe. Wer im Oktober/November 2021 in XLE einstieg, war Monate vor dem breiten Markt positioniert und profitierte von der spektakulären 2022-Performance.\n\nDie ETF-Instrumente für Sektorrotation sind gut entwickelt. Der US-Markt bietet den SPDR-ETF-Suite von State Street: XLK (Technologie), XLE (Energie), XLV (Gesundheit), XLF (Finanzwesen), XLY (zyklischer Konsum), XLP (Basiskonsumgüter), XLU (Versorger), XLB (Materialien), XLI (Industrie), XLRE (Immobilien). Diese ETFs sind hochliquide, niedrigkostig und ermöglichen schnelle Sektorrotation ohne Einzeltitelrisiko.\n\nDie Trendfolger-Strategie als Alternative: Anstatt zu antizipieren, folgt man einfach der relativen Stärke — kauft die drei stärksten Sektoren des letzten Monats und hält sie, bis sie nicht mehr führen. Diese einfache Momentum-Strategie hat historisch den S&P 500 outperformt, mit überschaubarem Aufwand."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Relative Stärke",
+      "body": "Relative Stärke misst, wie ein Sektor oder eine Aktie im Vergleich zum Gesamtmarkt performed. Ein Sektor mit relativer Stärke +10% bedeutet: Er stieg 10 Prozentpunkte mehr als der S&P 500. Relative Stärke ist ein Momentum-Signal: Was stark war, bleibt oft stark. Investoren, die systematisch in relative Stärke-Leader rotieren, nennt man Momentum-Investoren."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "2022 stieg XLE (Energie ETF) um +65%, während XLK (Technologie) um 27% fiel. Welche makroökonomischen Faktoren erklärt diese extreme Sektorrotation am besten?",
+      "options": [
+        "Tech-Unternehmen hatten schlechte Quartalsergebnisse, Energieunternehmen sehr gute",
+        "Steigende Zinsen (hawkish Fed) belasteten Wachstumsaktien (Tech), während der Ukraine-Krieg Ölpreise trieb und Energie profitierte",
+        "Regulierung zwang Tech-Unternehmen, Umsätze zu reduzieren, während Energie subventioniert wurde",
+        "Sektorrotation 2022 war zufällig und hätte nicht vorhergesagt werden können"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Zwei Haupttreiber: 1) Hawkish Fed — Zinserhöhungen erhöhten den Diskontfaktor, was Wachstumsaktien mit weit in der Zukunft liegenden Cashflows (typisch Tech) überproportional traf. 2) Ukraine-Krieg ab Februar 2022 — Sanktionen gegen russische Energie, reduziertes Angebot, steigende Ölpreise → Energieunternehmen profitierten. Diese Kombination war für einen makroorientierten Investor antizipierbar: Steigende Zinsen + geopolitische Energiekrise = Untergewicht Tech, Übergewicht Energie."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Im Relative Rotation Graph wechselt der Gesundheitssektor (XLV) vom Lagging- in den Improving-Quadranten. Was signalisiert das für einen Swing-Trader?",
+      "options": [
+        "Sofort verkaufen — Improving bedeutet, der Sektor war schlecht und bleibt schlecht",
+        "Frühes Signal: Das Momentum dreht sich positiv — potenzieller Einstiegspunkt bevor XLV Leading wird",
+        "Warten bis XLV in den Leading-Quadranten wechselt — erst dann ist der Einstieg sicher",
+        "Improving und Lagging sind identisch — beide signalisieren Schwäche gegenüber dem Markt"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Der Wechsel von Lagging zu Improving ist der frühest mögliche Kaufsignal im RRG-Framework. Der Sektor ist zwar noch schwächer als der Markt (Lagging-Erbe), aber das Momentum dreht sich positiv. Das ist typischerweise 2-4 Wochen bevor der Mainstream die Rotation bemerkt und XLV in den Leading-Quadranten wechselt. Frühe Positionierung bei Improving-Wechsel bietet das beste R/R-Verhältnis."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Die Wirtschaft zeigt erste Rezessionssignale: PMI unter 50, Arbeitslosigkeit steigt leicht, die Zinskurve ist invertiert. Beschreiben Sie, welche drei Sektoren Sie in einem solchen Umfeld übergewichten und welche drei Sie untergewichten würden — mit konkreten ETF-Beispielen (XLK, XLE, XLV, XLU, XLF etc.) und der fundamentalen Begründung für jede Entscheidung.",
+      "explanation": "Übergewichten in Rezession: 1) XLV (Gesundheit) — defensiv, nicht-zyklisch, Krankheiten sind unabhängig vom Konjunkturzyklus. Nachfrage konstant, Margen stabil. 2) XLP (Basiskonsumgüter) — Lebensmittel, Hygieneartikel, nicht-diskretionärer Konsum. Nestlé, P&G, Unilever halten Umsatz auch in Rezession. 3) XLU (Versorger) — Strom und Gas sind Grundbedürfnisse, regulierte Unternehmen mit stabilen Cash Flows, profitieren auch von Zinssenkungserwartungen (hohe Dividenden). Untergewichten: 1) XLY (zyklischer Konsum) — Luxusgüter, Restaurants, Tourismus leiden stark bei Konsumzurückhaltung. 2) XLF (Finanzen) — steigende Kreditausfälle in Rezession, Margencompression durch niedrigere Zinsen nach Fed-Pivot. 3) XLK (Technologie) — höhere Zinsen schaden Bewertung, Unternehmens-IT-Budgets werden gekürzt."
+    }
+  ]
+}

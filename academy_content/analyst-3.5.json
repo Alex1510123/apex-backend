@@ -1,0 +1,71 @@
+{
+  "id": "analyst-3.5",
+  "track_id": "analyst",
+  "title": "Management Quality beurteilen",
+  "subtitle": "Insider Ownership, Capital Allocation und Track Record",
+  "duration_min": 10,
+  "sort_order": 8,
+  "status": "available",
+  "learning_goals": [
+    "Insider Ownership als 'Skin in the Game' Qualitaetsmerkmal bewerten",
+    "Capital Allocation Qualitaet (Dividenden, Buybacks, M&A, Reinvestition) analysieren",
+    "Management Track Record ueber 5-10 Jahre systematisch beurteilen",
+    "Rote Flags im Management (CFO-Wechsel, Restatements, Verguetungsstruktur) erkennen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Skin in the Game — warum Insider Ownership entscheidend ist",
+      "body": "Ein Unternehmen zu beurteilen bedeutet auch, die Menschen dahinter zu beurteilen. Das Management entscheidet täglich darüber, wie Kapital eingesetzt wird, welche Risiken eingegangen werden und ob kurzfristige Gewinne oder langfristige Wertschöpfung priorisiert werden. Einer der stärksten Qualitätsindikatoren: Haben Führungskräfte eigenes Geld im Spiel?\n\nInsider Ownership — der Anteil an Aktien, den Management und Board selbst halten — ist ein kraftvolles Signal. Nassim Taleb nennt das 'Skin in the Game': Wer eigenes Kapital riskiert, trifft bessere Entscheidungen für alle Aktionäre. Gründer-geführte Unternehmen performen historisch deutlich besser als Management-geführte Konzerne ohne nennenswerten Eigenanteil. Jeff Bezos hielt über viele Jahre mehr als 10% von Amazon. Mark Zuckerberg hält über 13% der Meta-Aktien. Diese Eigentümer denken wie Eigentümer — nicht wie angestellte Manager.\n\nIm Gegensatz dazu: Ein Management, das jedes Jahr Millionen via Optionen oder Restricted Stock Units (RSUs) verdient, aber keinen substantiellen Eigenanteil hält, hat weniger Anreiz, konservativ zu wirtschaften. Die Vergütungsstruktur verrät viel: Optionen belohnen Kursgewinne, aber nicht den Schutz von Kapital in Abschwungphasen."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Capital Allocation",
+      "body": "Capital Allocation ist die Kunst, freien Cashflow sinnvoll einzusetzen. Die Optionen: Dividenden ausschütten (regelmässige Ausschüttung an Aktionäre), Aktienrückkäufe (Buybacks — erhöhen EPS, wenn Aktie unter intrinsischem Wert), Akquisitionen (M&A — oft die riskanteste Option, da 50-70% aller M&A-Deals Wert vernichten), Schuldenrückzahlung, oder Reinvestition ins Kerngeschäft. Das Beste: Reinvestition, wenn ROIC deutlich über Kapitalkosten liegt."
+    },
+    {
+      "type": "text",
+      "heading": "Buffett und Berkshire: Capital Allocation als Wissenschaft",
+      "body": "Warren Buffetts Berkshire Hathaway ist das Paradebeispiel exzellenter Capital Allocation über Jahrzehnte. Buffett schüttet keine Dividende aus — stattdessen reinvestiert Berkshire Gewinne dorthin, wo die Renditeerwartung am höchsten ist: manchmal in Aktienrückkäufe, manchmal in Akquisitionen, manchmal in Minderheitsbeteiligungen. Die Regel für Buybacks ist explizit: Berkshire kauft eigene Aktien nur zurück, wenn sie unter intrinsischem Wert handeln. Das ist disziplinierte Capital Allocation — keine mechanische Buyback-Maschinerie.\n\nIm Kontrast dazu: Viele Unternehmen kaufen Aktien auf dem Höhepunkt eines Booms zurück (wenn sie teuer sind) und stellen Buybacks in der Krise ein (wenn sie günstig wären). Das ist das Gegenteil von wertsteigernd.\n\nWie beurteilt man den Management Track Record? Schauen Sie sich die letzten 5-10 Jahre an: Wurde Guidance konsistent eingehalten? Wurde Kapital in renditearme Projekte oder überpreiste Akquisitionen investiert? Gab es Restatements (Korrekturen von früheren Finanzergebnissen — immer ein Warnsignal)? Häufige CFO-Wechsel sind ebenfalls ein rotes Tuch: Der CFO ist die erste Verteidigungslinie für Bilanzintegrität. Wenn der CFO geht, fragt man: Wollte er nicht unterschreiben, was das Management verlangte?\n\nDas Proxy Statement (Vollmachterklärung) ist ein goldenes Dokument für Analysten: Es zeigt Vergütungsstrukturen, Insider-Transaktionen und Corporate Governance-Details, die im normalen Jahresbericht oft fehlen."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Return on Invested Capital (ROIC)",
+      "body": "ROIC misst, wie effizient ein Unternehmen das in das Geschäft investierte Kapital in Gewinne umwandelt. ROIC = Net Operating Profit after Tax / Invested Capital. Ein ROIC von 15-20% über viele Jahre (wie bei Microsoft, Apple, LVMH) zeigt exzellente Capital Allocation. Wenn ROIC dauerhaft unter den gewichteten Kapitalkosten (WACC) liegt, vernichtet das Unternehmen Wert — auch wenn es Gewinne ausweist."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Berkshire Hathaway kauft eigene Aktien nur zurück, wenn sie unter intrinsischem Wert handeln. Warum ist dieser Ansatz wertschaffender als ein mechanisches Buyback-Programm?",
+      "options": [
+        "Weil Aktienrückkäufe steuerlich günstiger sind als Dividenden",
+        "Weil Buybacks unter intrinsischem Wert den Wert pro verbleibender Aktie erhöhen, während Buybacks über intrinsischem Wert Wert vernichten",
+        "Weil mechanische Buybacks von der SEC verboten sind",
+        "Weil Berkshire keine Dividenden zahlt und daher keine Alternative zu Buybacks hat"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Aktienrückkäufe schaffen nur dann Wert, wenn die Aktie unter ihrem fairen Wert (intrinsischem Wert) gekauft wird. Dann profitieren verbleibende Aktionäre, weil dieselben zukünftigen Gewinne auf weniger Aktien verteilt werden. Kauft man dagegen überteuerte Aktien zurück, wird Kapital vernichtet. Buffetts Disziplin: Nur kaufen wenn 'günstig' — das ist echte Capital Allocation."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Ein CFO eines börsennotierten Unternehmens tritt überraschend zurück, ohne klare öffentliche Begründung. Was sollte dies bei einem erfahrenen Analysten auslösen?",
+      "options": [
+        "Nichts besonderes — CFO-Wechsel sind in grossen Unternehmen normal und häufig",
+        "Erhöhte Aufmerksamkeit: CFO-Rücktritte ohne Erklärung sind häufig Vorboten von Restatements oder Governance-Problemen",
+        "Sofortige Kaufgelegenheit, weil der neue CFO oft Restrukturierungen ankündigt",
+        "Die Aktie sollte sofort verkauft werden, weil das Unternehmen garantiert pleitegeht"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Überraschende CFO-Abgänge sind ein statistisch signifikantes Warnsignal. Der CFO ist für die Integrität der Finanzergebnisse verantwortlich und muss diese mit seiner Unterschrift bestätigen. Wenn ein CFO abrupt geht, stellt man die Frage: Gab es Meinungsverschiedenheiten über Bilanzierungsentscheidungen? Historisch folgen auf viele unerwartete CFO-Wechsel Restatements oder Untersuchungen der Aufsichtsbehörden."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Amazon hatte unter Jeff Bezos über ein Jahrzehnt lang minimal oder gar keinen Jahresgewinn (Net Income), investierte stattdessen massiv in Logistik, AWS und internationale Expansion. Viele 'Value Investoren' mieden die Aktie. Erklären Sie, warum Bezos' Capital Allocation dennoch als exzellent bewertet wird, und welche Kennzahlen statt Net Income die richtige Linse für Amazons Erfolg waren.",
+      "explanation": "Kernpunkte: Bezos priorisierte FCF und langfristige Kapitalrendite über kurzfristigen Gewinnausweis. Amazon reinvestierte jeden Cash-Flow-Dollar in Bereiche mit sehr hohem ROIC: AWS (Margen >30%), Prime-Ökosystem (Kundenbindung), Logistiknetzwerk (Moat). Bezos' Shareholder Letter kommunizierte explizit diese Philosophie — Transparenz über Strategie. Korrekte Kennzahlen: Free Cash Flow (Amazon's FCF wuchs kontinuierlich auch als Net Income nahe null war), AWS-Wachstum und Margen als separates Segment, ROIC des Gesamtunternehmens. Lektion: Management beurteilen an Kapitalallokations-Qualität und langfristigem ROIC, nicht an kurzfristigem Net Income."
+    }
+  ]
+}

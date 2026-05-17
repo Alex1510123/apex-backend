@@ -1,0 +1,71 @@
+{
+  "id": "foundation-2.4",
+  "track_id": "foundation",
+  "title": "ETF vs. Aktie vs. Fonds",
+  "subtitle": "Kosten, Liquidität, Diversifikation und wann was sinnvoll ist",
+  "duration_min": 8,
+  "sort_order": 14,
+  "status": "available",
+  "learning_goals": [
+    "Die wesentlichen Unterschiede zwischen Einzelaktie, ETF und aktivem Fonds kennen",
+    "Kostenstrukturen vergleichen und ihre langfristige Auswirkung verstehen",
+    "Verstehen, wann welches Instrument sinnvoll ist",
+    "Liquidität und steuerliche Aspekte der drei Anlageformen einordnen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Drei Wege an die Börse — und ihre grundlegenden Unterschiede",
+      "body": "Wer an der Börse investieren möchte, hat im Wesentlichen drei Optionen: Einzelaktien, ETFs (Exchange Traded Funds) oder aktiv verwaltete Fonds. Jede hat ihre Berechtigung — und ihre spezifischen Risiken und Kosten.\n\nEine Einzelaktie gibt Ihnen direktes Eigentum an einem Unternehmen. Wer 100 Apple-Aktien (AAPL) hält, ist Miteigentümer von Apple. Das bietet das höchste Rendite-Potenzial — aber auch das höchste Einzeltitelrisiko. Apple kann 30% fallen, während der Gesamtmarkt nur 5% verliert. Einzelaktien erfordern fundierte Unternehmensanalyse, kontinuierliches Monitoring und eine gewisse Sorgfalt beim Aufbau des Portfolios. Sie eignen sich am besten für Anleger, die sich intensiv mit einzelnen Unternehmen auseinandersetzen möchten und ein konzentriertes Portfolio akzeptieren.\n\nETFs kombinieren die Handelbarkeit von Aktien mit der Diversifikation eines Fonds. Der SPDR S&P 500 ETF (SPY) etwa bildet den S&P 500 nach und gibt Ihnen mit einem Kauf Exposure in 500 der größten US-Unternehmen. ETFs werden wie Aktien börsentäglich gehandelt — im Gegensatz zu Fonds, die nur einmal täglich zum NAV berechnet werden."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: TER (Total Expense Ratio)",
+      "body": "Die TER ist die jährliche Gesamtkostenquote eines Fonds oder ETFs — alles inklusive: Verwaltungsgebühr, Depotbankgebühren, Handelskosten innerhalb des Fonds. SPY hat eine TER von 0,0945% (unter 0,1%), der iShares Core S&P 500 EUR sogar 0,07%. Aktive Fonds kosten oft 1,0% bis 2,0% p.a. — plus in manchen Fällen einen Ausgabeaufschlag von 3-5% einmalig. Diese Differenz klingt klein, ist aber über Jahrzehnte enorm."
+    },
+    {
+      "type": "text",
+      "heading": "Der Kostenunterschied entscheidet langfristig",
+      "body": "Betrachten wir einen direkten Vergleich über 20 Jahre: Anleger A investiert 10.000 EUR in einen aktiven Fonds mit TER 1,5% p.a. plus einmaligem Ausgabeaufschlag von 5% (also 500 EUR Einstiegskosten). Anleger B investiert 10.000 EUR in den SPY ETF mit TER 0,07%. Beide erzielen dieselbe Bruttorendite von 8% p.a.\n\nNach 20 Jahren hat Anleger A rund 36.000 EUR — nach Kosten. Anleger B hat etwa 46.000 EUR. Der Unterschied von 10.000 EUR entsteht allein durch die Kostendifferenz. Das ist der Zinseszinseffekt der Kosten — er wirkt genauso mächtig wie der Zinseszinseffekt der Rendite, nur in die andere Richtung.\n\nDazu kommt: Rund 80-90% aller aktiv verwalteten Aktienfonds schlagen ihren Benchmark (den Referenz-ETF) nicht — nach Kosten. Das ist kein Geheimnis, sondern gut dokumentiert (SPIVA-Report von S&P). Aktive Fonds können in bestimmten Nischen sinnvoll sein — etwa bei illiquiden Anlageklassen oder speziellen Strategien — aber als Ersatz für breit diversifizierte Indizes lohnen sie sich selten.\n\nFür Einsteiger gilt: Ein globaler ETF (z.B. MSCI World, TER ca. 0,12%) schlägt langfristig die meisten teuren Alternativen — bei minimalem Aufwand und maximaler Diversifikation."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Steuerliche Unterschiede",
+      "body": "In Deutschland und Österreich werden ETFs und Fonds steuerlich unterschiedlich behandelt. Thesaurierende ETFs reinvestieren Dividenden automatisch (kein sofortiger Steuereffekt), ausschüttende ETFs zahlen Dividenden aus (sofort steuerpflichtig). In Deutschland gibt es die Vorabpauschale für thesaurierende Fonds. In Österreich gilt die KESt von 27,5% auf alle Kapitalerträge. Einzelaktien unterliegen denselben Regeln — Dividenden und realisierte Kursgewinne sind steuerpflichtig."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Anleger A investiert 10.000 EUR in einen aktiven Fonds (TER 1,5%, Ausgabeaufschlag 5%), Anleger B in einen ETF (TER 0,07%). Bei gleicher Bruttorendite — wer hat nach 20 Jahren mehr?",
+      "options": [
+        "Anleger A, weil aktive Fonds durch professionelles Management höhere Renditen erzielen",
+        "Beide haben dasselbe Ergebnis — Kosten gleichen sich langfristig aus",
+        "Anleger B, weil die Kostendifferenz durch Zinseszins über 20 Jahre zu erheblichen Unterschieden führt",
+        "Anleger A, wenn der Fonds einen bekannten Manager hat"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. Kosten sind der verlässlichste negative Renditetreiber. Bei 1,5% vs. 0,07% TER (Differenz: 1,43% p.a.) entsteht über 20 Jahre ein Unterschied von etwa 25-30% des Endvermögens — rein durch den Zinseszinseffekt der Kosten. Der SPIVA-Report zeigt zudem, dass 80-90% aktiver Fonds ihren Benchmark langfristig nicht schlagen."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Welcher Vorteil zeichnet einen ETF gegenüber einem klassischen Investmentfonds aus?",
+      "options": [
+        "ETFs haben immer eine garantierte Rendite",
+        "ETFs werden börsentäglich gehandelt und sind dadurch jederzeit liquide handelbar",
+        "ETFs unterliegen keiner Besteuerung in Deutschland",
+        "ETFs schlagen immer aktive Fonds, weil sie professionell verwaltet werden"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. ETFs werden wie Aktien kontinuierlich an der Börse gehandelt — zu Marktpreisen, die sich im Sekundenrhythmus ändern. Klassische Investmentfonds werden dagegen nur einmal täglich zum Net Asset Value (NAV) abgerechnet. Diese Intraday-Liquidität macht ETFs für aktive Anleger flexibler, ist für langfristige Buy-and-Hold-Anleger aber weniger entscheidend."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Ihr Freund möchte 20.000 EUR investieren und steht vor der Wahl: 20 Einzelaktien selbst auswählen, einen aktiven Fonds kaufen, oder in den MSCI World ETF investieren. Er hat wenig Zeit für Research. Welche Option empfehlen Sie — und warum? Beziehen Sie Kosten, Risiko, Zeitaufwand und historische Performance ein.",
+      "explanation": "Empfehlung MSCI World ETF begründen: geringste Kosten (0,12-0,20% TER), sofortige Diversifikation in 1.600 Unternehmen, kein Research-Aufwand, historisch: schlägt 80%+ aktiver Fonds nach Kosten. Einzelaktien: erfordert erhebliches Research, 20 Titel sind zwar besser als 1, aber immer noch konzentriertes Risiko. Aktiver Fonds: höchste Kosten, geringste Wahrscheinlichkeit den Markt zu schlagen. Für zeitsparende Investoren ist der passive ETF-Ansatz rational überlegen."
+    }
+  ]
+}

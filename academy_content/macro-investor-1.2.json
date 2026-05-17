@@ -1,0 +1,71 @@
+{
+  "id": "macro-1.2",
+  "track_id": "macro_investor",
+  "title": "Yield Curve als Marktindikator",
+  "subtitle": "Normale, flache und invertierte Kurve — das Rezessionssignal",
+  "duration_min": 9,
+  "sort_order": 2,
+  "status": "available",
+  "learning_goals": [
+    "Die Yield Curve und ihre drei Hauptformen verstehen",
+    "Die 2s10s-Inversion als historisch zuverlaessiges Rezessionssignal einordnen",
+    "Die typische Lead Time von 12-18 Monaten vor einer Rezession kennen",
+    "Kurvenversteilerung als Recovery-Signal interpretieren"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Was die Yield Curve ist und warum sie funktioniert",
+      "body": "Die Yield Curve zeigt die Renditen von Staatsanleihen verschiedener Laufzeiten auf einen Blick — vom 3-Monats-T-Bill bis zur 30-jährigen Treasury Bond. In normalen Zeiten verlangt der Markt für langfristige Anleihen höhere Renditen als für kurzfristige — weil langfristige Investitionen mehr Unsicherheit beinhalten. Das Ergebnis ist eine aufwärts geneige Kurve: Je länger die Laufzeit, desto höher die Rendite.\n\nDie relevanteste Messgrösse für Makro-Investoren ist der 2s10s-Spread: die Differenz zwischen der 10-jährigen und der 2-jährigen US-Staatsanleiherendite. Ist dieser Spread positiv (10-Jahres-Rendite > 2-Jahres-Rendite), ist die Kurve normal. Ist er negativ — also 2-Jahres-Renditen HÖHER als 10-Jahres-Renditen — spricht man von Inversion der Yield Curve.\n\nWarum invertiert die Kurve? Wenn die Fed die kurzfristigen Zinsen stark erhöht (2-Jahres-Rendite steigt), aber die Marktteilnehmer erwarten, dass die Wirtschaft verlangsamt und die Fed künftig die Zinsen senken wird (was langfristige Renditen tief hält), kommt es zur Inversion. Kurzfristige Anleihen rentieren mehr als langfristige — ein Zeichen, dass der Markt kollektiv eine Verlangsamung oder Rezession antizipiert."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Inversion als Rezessionsindikator",
+      "body": "Die Inversion der 2s10s-Yield Curve hat vor jeder US-Rezession seit 1970 eine Warnung gegeben — ohne eine einzige Falschmeldung. Das macht sie zum zuverlässigsten vorlaufenden Wirtschaftsindikator überhaupt. Die Lead Time (Zeit von der Inversion bis zur Rezession) beträgt typischerweise 12-18 Monate. Das gibt Investoren Zeit, sich umzupositionieren."
+    },
+    {
+      "type": "text",
+      "heading": "2022-2023: Inversion, Fed-Pivot und Recovery-Signal",
+      "body": "Im März 2022 invertierte die 2s10s-Yield Curve zum ersten Mal seit 2006 — kurz nach Beginn der aggressiven Fed-Zinserhöhungen. Die 2-jährige US-Staatsanleihe rentierte zeitweise mehr als 5%, während die 10-jährige unter 4% blieb. Diese Inversion war die tiefste seit den frühen 1980er-Jahren — damals kämpfte Fed-Chef Volcker gegen zweistellige Inflation.\n\nWas folgte? Die US-Wirtschaft verlangsamte sich deutlich, aber erlebte (bisher) keine technische Rezession nach der klassischen Definition (zwei aufeinanderfolgende Quartale mit negativem BIP-Wachstum). Das überraschte viele Ökonomen. Dennoch schwächten sich Investitionen, Wohnungsbau und bestimmte Industriesektoren deutlich ab.\n\nAb Mitte 2023 begann die Kurvenversteilerung: Langfristige Renditen stiegen stärker als kurzfristige, weil der Markt einerseits mehr Staatsanleihen-Angebot einpreiste (US-Schulden steigen) und andererseits begann, Fed-Zinssenkungen für 2024 zu antizipieren. Diese Versteilerung nach einer Inversion ist historisch ein Signal, dass der Rezessionsdruck seinen Höhepunkt erreicht hat — und dass sich die Wirtschaft der nächsten Phase nähert.\n\nFür Makro-Investoren ist das Timing entscheidend: Eine Inversion ist ein Warnsignal, aber keine unmittelbare Verkaufsaufforderung. Der S&P 500 hat in der Vergangenheit nach der ersten Inversion oft noch 12-18 Monate weitergestiegen, bevor die Rezession und der eigentliche Bärenmarkt einsetzten. Die Lektion: Inversion einpreisen, defensivere Positionierung aufbauen — aber nicht in Panik verkaufen."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Kurven-Steepening",
+      "body": "Kurven-Steepening (Versteilerung) beschreibt, wenn die Differenz zwischen langen und kurzen Renditen zunimmt. Bullish Steepening: Kurzfristige Renditen fallen schneller (Fed senkt Zinsen) — positiv für Aktien, weil Lockerung bevorstehend. Bearish Steepening: Langfristige Renditen steigen schneller (Inflationsangst, mehr Angebot) — negativ für Langläufer und zinsempfindliche Sektoren. Die Richtung des Steepenings bestimmt die Portfolioreaktion."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Die 2-jährige US-Staatsanleihe rentiert 5,2%, die 10-jährige 4,1%. Wie ist die Yield Curve, und was signalisiert das historisch?",
+      "options": [
+        "Normale Kurve — langfristige Zinsen über kurzfristigen, kein Warnsignal",
+        "Invertierte Kurve (2s10s negativ) — historisch zuverlässiger Vorläufer einer Rezession in 12-18 Monaten",
+        "Flache Kurve — neutral, kein klares makroökonomisches Signal",
+        "Supernormale Kurve — zeigt aussergewöhnliches Wirtschaftswachstum"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Der 2s10s-Spread beträgt 4,1% - 5,2% = -1,1% (negativ) — eine tiefe Inversion. Historisch ist die Inversion der Yield Curve der zuverlässigste Rezessionsindikator überhaupt: Seit 1970 hat sie jede US-Rezession vorhergesagt, ohne Falschmeldungen. Die Lead Time beträgt typischerweise 12-18 Monate ab Inversions-Beginn."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Warum steigen Aktienmärkte nach der ersten Inversion der Yield Curve oft noch 12-18 Monate weiter?",
+      "options": [
+        "Weil Marktteilnehmer die Inversion ignorieren und nur auf Fed-Entscheidungen reagieren",
+        "Weil die Inversion zwar eine Rezession vorhersagt, aber die Wirtschaft und Unternehmensgewinne noch Monate wachsen, bevor die Abschwächung einsetzt",
+        "Weil invertierte Yield Curves in modernen Zeiten nicht mehr als Rezessionsindikator gelten",
+        "Weil Aktienmärkte immer steigen, wenn kurzfristige Zinsen höher sind als langfristige"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Die Inversion ist ein Vorlaufindikator mit erheblichem Lead Time. Wenn sie zum ersten Mal eintritt, ist die Wirtschaft typischerweise noch stark — Arbeitsmarkt gesund, Unternehmensgewinne wachsen noch. Die Rezession kommt erst Monate später. Diese Verzögerung gibt Investoren Zeit, sich umzupositionieren, ohne sofort defensiv zu werden."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Die 2s10s-Yield Curve hat sich gerade von -0,9% auf -0,1% normalisiert (Kurvenversteilerung). Gleichzeitig sinkt die Inflationsrate von 4% auf 2,5%, und die Fed signalisiert mögliche Zinssenkungen für das nächste Jahr. Beschreiben Sie, wie Sie als Makro-Investor Ihr Portfolio in diesem Umfeld positionieren würden — welche Asset-Klassen kaufen, welche verkaufen, und warum.",
+      "explanation": "Szenario: Kurvenversteilerung + fallende Inflation + Fed-Pivot-Erwartung = typisches Early Recovery Setup. Kaufen: 1) Langlaufende Staatsanleihen (Zinssenkungen erhöhen ihren Wert via inverse Kurs-Rendite-Beziehung — Duration-Spiel). 2) Zyklische Aktien (XLY, XLF, XLK) — Early Recovery begünstigt diese. 3) Emerging Markets (schwächerer Dollar durch Zinssenkungen → EM profitiert). 4) Gold (reale Zinsen fallen → Gold Rückenwind). Verkaufen/Untergewichten: 1) Sehr defensive Sektoren (XLU, XLP) — in Recovery outperformen zyklische stärker. 2) Cash/kurzfristige Anleihen — Zinsertrag fällt mit Fed-Senkungen. 3) USD-starke Positionen (Emerging Market Schulden in USD werden durch schwächeren Dollar attraktiver). Kernlogik: Positionierung antizipiert Zinssenkungen und Recovery, noch bevor sie offiziell bestätigt sind."
+    }
+  ]
+}

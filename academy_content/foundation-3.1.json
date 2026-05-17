@@ -1,0 +1,71 @@
+{
+  "id": "foundation-3.1",
+  "track_id": "foundation",
+  "title": "Fear & Greed Index",
+  "subtitle": "Wie Emotionen Märkte treiben und wie man davon profitiert",
+  "duration_min": 8,
+  "sort_order": 15,
+  "status": "available",
+  "learning_goals": [
+    "Den Fear & Greed Index von CNN und seine 7 Indikatoren kennen",
+    "Buffetts Contrarian-Prinzip verstehen und anwenden können",
+    "Den VIX als Angstmesser des Marktes interpretieren",
+    "Historische Extrempunkte als Kauf- und Verkaufssignale einordnen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Wie Emotionen Märkte bewegen",
+      "body": "Märkte sind keine rationalen Maschinen — sie sind Aggregationen menschlicher Emotionen. Angst und Gier sind die dominierenden Kräfte, die Kurse in Extremphasen weit von ihren fairen Werten entfernen. Der CNN Fear & Greed Index wurde entwickelt, um diese kollektiven Emotionen messbar zu machen.\n\nDer Index kombiniert sieben Indikatoren zu einem Gesamtwert von 0 (Extreme Fear) bis 100 (Extreme Greed): Marktmomentum (S&P 500 vs. 125-Tage-Durchschnitt), Aktien-Stärke (neue 52-Wochen-Hochs vs. Tiefs), Marktbreite (Volumen steigender vs. fallender Aktien), Put/Call-Ratio (Absicherungsnachfrage), Junk-Bond-Spread (Risikobereitschaft im Anleihenmarkt), Marktvolatilität (VIX) und Safe-Haven-Nachfrage (Aktien vs. Anleihen).\n\nIm März 2020, als COVID-19 die Märkte erschütterte, fiel der Index auf Werte unter 5 — Extreme Fear. Der S&P 500 hatte in wenigen Wochen 34% verloren. Wer in diesem Moment kaufte, erlebte in den folgenden 12 Monaten einen Anstieg von über 75%. Der NASDAQ 100 (QQQ) stieg von seinem Tief im März 2020 auf neue Allzeithochs — bis Ende 2020 um über 90%. Ein klassisches Beispiel dafür, dass extremste Angst oft den besten Einstiegspunkt markiert."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Contrarian Investing",
+      "body": "Warren Buffetts bekanntestes Zitat zur Marktpsychologie: 'Be fearful when others are greedy, and greedy when others are fearful.' Das Contrarian-Prinzip besagt, dass die besten Kaufgelegenheiten entstehen, wenn die Mehrheit panikverkauft — und die größten Risiken aufgebaut werden, wenn die Mehrheit euphorisch kauft. Es klingt einfach, ist aber psychologisch extrem schwer umzusetzen."
+    },
+    {
+      "type": "text",
+      "heading": "Der VIX — Angstmesser der Wall Street",
+      "body": "Der CBOE Volatility Index (VIX), oft als 'Angstmesser' bezeichnet, misst die implizite Volatilität des S&P 500 für die nächsten 30 Tage — abgeleitet aus Optionspreisen. Ein hoher VIX bedeutet: Marktteilnehmer zahlen viel für Absicherung, weil sie große Kursbewegungen erwarten. Ein niedriger VIX signalisiert Selbstgefälligkeit.\n\nHistorische Extremwerte sind aufschlussreich: Während normaler Märkte liegt der VIX zwischen 12 und 20. Im März 2020 (COVID-Crash) sprang er auf über 85 — ähnlich wie während der Finanzkrise 2008, wo er 80 erreichte. In solchen Phasen sind Optionspreise extrem teuer, Panik ist allgegenwärtig. In ruhigen Bullenmärkten fiel der VIX 2017 auf unter 10 — ein historisches Extremtief, das Selbstgefälligkeit signalisierte.\n\nFür Anleger gilt: Ein VIX über 40 historisch hat oft attraktive Einstiegspunkte markiert — nicht weil man das Tief treffen muss, sondern weil langfristige Renditeerwartungen in Hochangst-Phasen deutlich attraktiver sind. Wichtig ist zu verstehen: Der Fear & Greed Index ist kein Timing-Werkzeug für kurzfristige Trades, sondern ein Kontextsignal für die emotionale Verfassung des Marktes. In Verbindung mit fundamentaler Analyse ist er ein wertvolles Instrument im Anleger-Werkzeugkasten."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: VIX-Spike als Reversal-Signal",
+      "body": "VIX und S&P 500 haben historisch eine starke negative Korrelation: Wenn der VIX stark ansteigt (Panik), fallen Aktienpreise. Wenn der VIX Extremwerte erreicht (>40), ist das oft ein Indikator, dass die Verkaufswelle erschöpft ist — nicht immer sofort, aber mittelfristig markieren VIX-Spikes häufig attraktive Einstiegsbereiche."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Der Fear & Greed Index steht bei 8 (Extreme Fear). Was impliziert Buffetts Contrarian-Prinzip für diesen Moment?",
+      "options": [
+        "Sofort alles verkaufen, weil extreme Angst auf weitere Verluste hindeutet",
+        "Abwarten bis der Index auf 50 steigt, dann kaufen",
+        "Potenziell attraktiver Kaufzeitpunkt — extreme Angst markiert oft gute Einstiegspunkte",
+        "In Gold investieren, weil Aktien grundsätzlich gemieden werden sollten"
+      ],
+      "correct": 2,
+      "explanation": "Korrekt. Buffetts Prinzip 'Gierig sein, wenn andere ängstlich sind' sagt: Wenn extreme Angst herrscht, sind Bewertungen oft gedrückt und die erwartete Rendite langfristig höher. COVID-März 2020 war ein klassisches Beispiel — Fear & Greed bei 5, danach +75% in 12 Monaten. Das garantiert keine unmittelbare Erholung, aber verbessert die Renditeerwartung strukturell."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was misst der VIX (CBOE Volatility Index)?",
+      "options": [
+        "Die historische Volatilität des S&P 500 der letzten 30 Tage",
+        "Die implizite Volatilität des S&P 500 für die nächsten 30 Tage, abgeleitet aus Optionspreisen",
+        "Die Anzahl der Aktien im S&P 500, die neue 52-Wochen-Tiefs erreichen",
+        "Den Unterschied zwischen Bull- und Bear-Markt-Phasen"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Der VIX reflektiert die Erwartungen der Optionsmärkte für künftige Volatilität — nicht was in der Vergangenheit passiert ist, sondern was Marktteilnehmer für die Zukunft einpreisen. Je mehr Investoren bereit sind, für Absicherung (Put-Optionen) zu bezahlen, desto höher der VIX. Er ist ein Maß für Unsicherheit und Angst, kein direkter Kursindikator."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Im März 2020 fiel der S&P 500 um 34% in 23 Handelstagen, der VIX sprang auf 85, und der Fear & Greed Index stand bei unter 5. Ein erfahrener Investor kaufte. Sein Freund wartete auf 'Klarheit, bis der Markt sich beruhigt hat' und kaufte im September 2020 — zu deutlich höheren Kursen. Erklären Sie das psychologische Phänomen dahinter und warum 'warten auf Klarheit' oft die schlechtere Strategie ist.",
+      "explanation": "Kernpunkte: Recency Bias (wir extrapolieren aktuelle Trends in die Zukunft), Panikverkäufe sind irrational aber psychologisch nachvollziehbar. 'Klarheit' kommt meist erst, wenn Märkte bereits erholt haben — dann sind Bewertungen wieder teurer. Der Investor, der in Extreme Fear kaufte, profitierte von niedrigen Bewertungen + Erholungsmomentum. Märkte erholen sich oft bevor Fundamentaldaten gut werden. Contrarian Investing erfordert Disziplin, systemischen Ansatz (z.B. regelmäßiges Kaufen bei VIX>40) und psychologische Stärke."
+    }
+  ]
+}

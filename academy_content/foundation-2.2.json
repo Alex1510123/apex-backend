@@ -1,0 +1,71 @@
+{
+  "id": "foundation-2.2",
+  "track_id": "foundation",
+  "title": "Zentralbanken & Geldpolitik",
+  "subtitle": "Fed, EZB, Leitzins und Quantitative Easing",
+  "duration_min": 9,
+  "sort_order": 12,
+  "status": "available",
+  "learning_goals": [
+    "Das Mandat von Fed und EZB und ihre wichtigsten Werkzeuge kennen",
+    "Den Leitzins-Mechanismus und seine Wirkung auf Wirtschaft und Märkte verstehen",
+    "Quantitative Easing und Quantitative Tightening unterscheiden",
+    "Verstehen, warum Zinserwartungen Aktienbewertungen bereits im Voraus bewegen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Was Zentralbanken tun — und warum es jeden Anleger betrifft",
+      "body": "Zentralbanken sind die mächtigsten Institutionen im globalen Finanzsystem. Die US-amerikanische Federal Reserve (Fed) und die Europäische Zentralbank (EZB) haben einen doppelten Auftrag: Preisstabilität sichern und — im Fall der Fed — Vollbeschäftigung fördern. Die EZB konzentriert sich primär auf das Inflationsziel von 2%.\n\nIhr wichtigstes Werkzeug ist der Leitzins. In den USA ist das die Fed Funds Rate — der Zinssatz, zu dem Banken sich über Nacht gegenseitig Geld leihen. Wenn die Fed diesen Satz erhöht, verteuern sich Kredite im gesamten System: Hypotheken, Unternehmenskredite, Konsumentenkredite. Das dämpft Nachfrage und Inflation. Senkt die Fed den Leitzins, wird Kredit billiger, die Wirtschaft wird stimuliert.\n\nDer FOMC (Federal Open Market Committee) entscheidet achtmal pro Jahr über die Fed Funds Rate. Was die Fed ankündigt — und wie der Markt diese Ankündigung interpretiert — bewegt Billionen Dollar. Im Jahr 2022 demonstrierte Fed-Chef Jerome Powell eindrucksvoll, wie groß dieser Einfluss ist: Als die Fed signalisierte, dass die Ära billigen Geldes vorbei ist, reagierten Märkte unmittelbar."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Leitzins-Mechanismus",
+      "body": "Der Leitzins ist der geldpolitische Hebel der Zentralbank. Höhere Zinsen bedeuten: teurere Kredite, weniger Konsum, weniger Investitionen, sinkende Inflation. Niedrigere Zinsen bedeuten: billige Kredite, mehr Investitionen, höheres Wachstum, aber potenziell mehr Inflation. Der Leitzins bestimmt auch die risikofreie Rendite — und damit den Diskontfaktor für alle anderen Vermögenswerte."
+    },
+    {
+      "type": "text",
+      "heading": "Der schnellste Zinsanstieg seit 40 Jahren und seine Auswirkungen",
+      "body": "Von März 2022 bis Juli 2023 erhöhte die Federal Reserve die Fed Funds Rate von 0,25% auf 5,50% — ein Anstieg um 525 Basispunkte in etwa 18 Monaten. Das war der aggressivste Zinserhöhungszyklus seit Paul Volckers Kampf gegen die Inflation in den frühen 1980er-Jahren.\n\nDie Auswirkungen auf Finanzmärkte waren unmittelbar und dramatisch: Der S&P 500 verlor 2022 rund 19%, der technologielastige NASDAQ 100 sogar 33%. Warum? Aktien werden nach dem Discounted-Cash-Flow-Modell bewertet — höhere Zinsen bedeuten einen höheren Diskontfaktor, was den heutigen Wert künftiger Gewinne reduziert. Wachstumsaktien mit Gewinnen weit in der Zukunft trifft das besonders hart.\n\nParallel zum Leitzins nutzen Zentralbanken unkonventionelle Werkzeuge. Quantitative Easing (QE) bezeichnet den massenhaften Ankauf von Anleihen durch die Zentralbank — sie pumpt damit Liquidität ins System und drückt langfristige Zinsen. Die Fed kaufte während COVID-19 über 4 Billionen USD an Anleihen. Quantitative Tightening (QT) ist das Gegenteil: Die Zentralbank lässt fällige Anleihen auslaufen oder verkauft sie aktiv, um Liquidität abzuschöpfen. Als die Fed 2022 mit QT begann, verknappe sich die Marktliquidität spürbar."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Don't fight the Fed",
+      "body": "Diese Wall-Street-Weisheit bedeutet: Wenn die Fed straffe Geldpolitik betreibt (Zinserhöhungen, QT), ist es gefährlich, auf steigende Aktienmärkte zu setzen. Wenn die Fed locker ist (Zinssenkungen, QE), ist der Wind im Rücken der Märkte. Entscheidend: Märkte reagieren auf Erwartungen — oft bewegen sie sich, bevor die Fed tatsächlich handelt."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Was passiert mit Aktienbewertungen, wenn die Fed die Zinsen stark erhöht?",
+      "options": [
+        "Aktienkurse steigen, weil höhere Zinsen Unternehmensgewinne verbessern",
+        "Aktienkurse fallen tendenziell, weil künftige Gewinne mit einem höheren Satz abgezinst werden",
+        "Es gibt keinen direkten Zusammenhang zwischen Zinsen und Aktienpreisen",
+        "Nur Bankaktien werden beeinflusst, alle anderen Sektoren bleiben neutral"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Im Discounted-Cash-Flow-Modell werden künftige Unternehmensgewinne auf den heutigen Wert abgezinst. Steigt der Diskontierungssatz (getrieben durch Leitzinserhöhungen), sinkt der Barwert dieser Gewinne — und damit der faire Wert der Aktie. Wachstumsaktien mit weit in der Zukunft liegenden Gewinnen sind besonders sensibel."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was beschreibt Quantitative Easing (QE)?",
+      "options": [
+        "Die Erhöhung des Leitzinses um mehrere Prozentpunkte gleichzeitig",
+        "Den massenhaften Ankauf von Anleihen durch die Zentralbank zur Liquiditätsversorgung",
+        "Die Ausgabe neuer Staatsbonds durch das Finanzministerium",
+        "Die Regulierung von Kryptowährungen durch die Zentralbank"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Bei QE kauft die Zentralbank — typischerweise Staatsanleihen oder Hypothekenanleihen — am offenen Markt auf. Das erhöht die Geldmenge im System, drückt langfristige Zinsen und soll Kreditvergabe und Investitionen stimulieren. Die Fed setzte QE erstmals 2008 ein und weitete es während der COVID-Krise massiv aus."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Die Fed erhöhte 2022 die Zinsen von 0,25% auf 5,5% — und der S&P 500 fiel um 19%, obwohl die US-Wirtschaft noch keine Rezession erlebte. Erklären Sie, warum Märkte auf Zinserwartungen reagieren, bevor die Zentralbank tatsächlich handelt, und was das für Anleger bedeutet.",
+      "explanation": "Kernpunkte: Finanzmärkte sind vorwärtsdenkend (forward-looking), nicht rückwärtsdenkend. Sobald die Fed Zinserhöhungen ankündigt oder der Markt sie erwartet (via Fed Funds Futures), diskontieren Investoren höhere künftige Zinsen sofort in heutige Bewertungen ein. DCF-Effekt erklären: höherer Diskontfaktor → niedrigere faire Werte. Für Anleger bedeutet das: FOMC-Kommunikation und Dot Plot verfolgen ist wichtiger als auf die Leitzinsentscheidung selbst zu warten."
+    }
+  ]
+}

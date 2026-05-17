@@ -1,0 +1,71 @@
+{
+  "id": "foundation-2.3",
+  "track_id": "foundation",
+  "title": "Anleihen Grundlagen",
+  "subtitle": "Kupon, Laufzeit, Rendite und die inverse Kurs-Rendite-Beziehung",
+  "duration_min": 9,
+  "sort_order": 13,
+  "status": "available",
+  "learning_goals": [
+    "Verstehen, was eine Anleihe ist und wie Kupon, Laufzeit und Rendite zusammenhängen",
+    "Die inverse Kurs-Rendite-Beziehung mit konkreten Zahlen nachvollziehen",
+    "Staatsanleihen und Unternehmensanleihen unterscheiden",
+    "Das Duration-Konzept als Zinsrisiko-Maß kennen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Was eine Anleihe ist — Gläubiger und Schuldner",
+      "body": "Eine Anleihe ist im Kern ein Darlehen, das ein Investor einem Unternehmen oder Staat gewährt. Der Emittent — ob Apple, die US-Regierung oder die Bundesrepublik Deutschland — verspricht, den geliehenen Betrag (Nennwert) am Ende der Laufzeit zurückzuzahlen und dazwischen regelmäßige Zinszahlungen zu leisten. Diese Zinszahlungen heißen Kupon, weil früher tatsächlich physische Kupons aus Zertifikaten ausgeschnitten wurden.\n\nEin konkretes Beispiel: Die US-Regierung emittiert eine 10-jährige Staatsanleihe mit einem Nennwert von 1.000 USD und einem Kupon von 4%. Der Anleger erhält jedes Jahr 40 USD Zinsen und nach zehn Jahren seine 1.000 USD zurück. Klingt einfach — die Komplikation entsteht, wenn Anleihen auf dem Sekundärmarkt gehandelt werden und der Marktpreis vom Nennwert abweicht.\n\nStaatsanleihen (Government Bonds) gelten als sicherste Anleihenform — die USA, Deutschland oder Japan haben noch nie eine Staatsanleihe nicht bedient. Unternehmensanleihen (Corporate Bonds) bieten typischerweise höhere Kupons, weil das Ausfallrisiko größer ist. Der Aufschlag gegenüber Staatsanleihen heißt Credit Spread."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Inverse Kurs-Rendite-Beziehung",
+      "body": "Das wichtigste Prinzip bei Anleihen: Wenn Zinsen steigen, fallen Anleihenkurse — und umgekehrt. Warum? Eine bestehende Anleihe mit 2% Kupon wird unattraktiv, wenn neue Anleihen 4% zahlen. Ihr Preis muss sinken, bis ihre effektive Rendite mit dem Markt konkurrieren kann. Diese Beziehung ist mathematisch zwingend und gilt immer."
+    },
+    {
+      "type": "text",
+      "heading": "Warum steigende Zinsen Anleihenkurse drücken — mit Zahlen",
+      "body": "Stellen Sie sich vor, Sie besitzen eine 10-jährige US-Staatsanleihe, die Sie 2021 für 1.000 USD bei einem Kupon von 1,5% gekauft haben. Sie erhalten jährlich 15 USD Zinsen. Im Jahr 2022 steigt der Marktzins auf 4%. Neue Anleihen zahlen jetzt 40 USD auf 1.000 USD. Warum sollte jemand Ihre Anleihe für 1.000 USD kaufen, wenn er für denselben Betrag 40 USD statt 15 USD bekommt?\n\nNiemand würde das tun — also muss der Preis Ihrer Anleihe fallen, bis die Rendite für den Käufer attraktiv genug ist. Im Jahr 2022 verloren langfristige US-Staatsanleihen (TLT ETF) über 30% an Wert — mehr als der S&P 500. Das schockierte viele Anleger, die Anleihen für sicher gehalten hatten.\n\nDas Duration-Konzept quantifiziert dieses Zinsrisiko: Duration misst, wie viele Jahre es dauert, bis der Anleger seine investierten Mittel durch Kuponzahlungen zurückerhält — und wie stark der Kurs auf Zinsänderungen reagiert. Eine Duration von 7 bedeutet: Bei einem Zinsanstieg um 1 Prozentpunkt fällt der Anleihenkurs um etwa 7%. Kurzlaufende Anleihen (Duration 1-3) sind also viel weniger zinsempfindlich als langfristige (Duration 15-20).\n\nDie Yield Curve zeigt die Renditen verschiedener Laufzeiten. Normalerweise steigt sie an (Langläufer zahlen mehr als Kurzläufer). Wenn sie invers wird (Kurzläufer rentieren mehr), gilt das als klassisches Rezessionssignal — dazu mehr im Makro-Track."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Yield to Maturity (YTM)",
+      "body": "Yield to Maturity ist die Gesamtrendite einer Anleihe, wenn man sie heute kauft und bis zur Fälligkeit hält — sie berücksichtigt Kursdifferenz (Kauf unter/über Nennwert), Kuponzahlungen und Restlaufzeit. YTM ist die wichtigste Vergleichsgröße zwischen verschiedenen Anleihen, denn sie macht unterschiedliche Kupons und Preise vergleichbar."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Sie besitzen eine Anleihe mit 2% Kupon. Der Marktzins steigt auf 5%. Was passiert mit dem Marktpreis Ihrer Anleihe?",
+      "options": [
+        "Der Preis steigt, weil Anleihen in Zeiten hoher Zinsen beliebter werden",
+        "Der Preis bleibt unverändert, da der Kupon vertraglich fixiert ist",
+        "Der Preis fällt, weil neue Anleihen attraktivere Zinsen bieten",
+        "Der Preis verdoppelt sich, um die Zinsdifferenz zu kompensieren"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. Die inverse Kurs-Rendite-Beziehung ist das grundlegendste Prinzip bei Anleihen. Wenn neue Anleihen 5% zahlen, ist eine Anleihe mit 2% Kupon weniger attraktiv — ihr Preis muss sinken, bis die effektive Rendite (Kupon plus Kursgewinn bei Fälligkeit) wieder marktkonform ist. Das war 2022 zu beobachten: Zinsanstieg um ~4% führte zu Kursverlusten von 20-30% bei Langläufern."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was bedeutet eine hohe Duration bei einer Anleihe?",
+      "options": [
+        "Die Anleihe zahlt einen besonders hohen Kupon",
+        "Die Anleihe hat ein hohes Kreditausfallrisiko",
+        "Die Anleihe reagiert stark auf Zinsänderungen — höheres Zinsrisiko",
+        "Die Anleihe kann jederzeit vorzeitig gekündigt werden"
+      ],
+      "correct": 2,
+      "explanation": "Korrekt. Duration ist das primäre Maß für Zinsrisiko bei Anleihen. Eine Duration von 10 bedeutet: Steigen die Zinsen um 1 Prozentpunkt, verliert die Anleihe rund 10% an Wert. Langfristige Anleihen haben höhere Duration als kurzfristige. Wenn man steigende Zinsen erwartet, sollte man kurze Duration bevorzugen."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Ein konservativer Anleger hielt 2021 ausschließlich langlaufende Staatsanleihen (10-30 Jahre), weil er sie für 'sicher' hielt. 2022 verlor sein Portfolio mehr als 25%. Erklären Sie, welches Risiko er übersehen hat, und wie er sein Portfolio hätte strukturieren können, um Zinsrisiko zu reduzieren.",
+      "explanation": "Der Anleger hat Zinsrisiko mit Kreditrisiko verwechselt. Staatsanleihen haben kein Ausfallrisiko, aber erhebliches Zinsrisiko (Duration-Risiko). Bei langfristigen Anleihen ist die Duration hoch — ein Zinsanstieg von 4% bei Duration 20 bedeutet ca. 20% Kursverlust. Alternativen: kürzere Laufzeiten (1-3 Jahre), Floating Rate Notes (Kupon passt sich an Marktzins an), TIPS (inflationsgeschützt), oder Anleihenleiter (Laddering verschiedener Laufzeiten)."
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "macro-1.4",
+  "track_id": "macro_investor",
+  "title": "Rohstoff-Zyklen verstehen",
+  "subtitle": "Superzyklus, China-Nachfrage und Contango vs. Backwardation",
+  "duration_min": 10,
+  "sort_order": 4,
+  "status": "available",
+  "learning_goals": [
+    "Rohstoffzyklen und die Superzyklus-Theorie einordnen",
+    "Chinas Rolle als dominanter Rohstoffkonsument verstehen",
+    "Contango und Backwardation als fundamentale ETF-Realitaeten kennen",
+    "Verstehen, warum Rohstoff-ETFs oft nicht den Spotpreis abbilden"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Rohstoffzyklen — die langen Wellen der Weltwirtschaft",
+      "body": "Rohstoffmärkte folgen langen Zyklen von typischerweise 15-20 Jahren — viel länger als die kurzen Konjunkturzyklen von 5-7 Jahren, an die wir gewöhnt sind. Der Grund liegt in der strukturellen Trägheit des Rohstoffsektors: Es dauert 5-10 Jahre, bis eine neue Mine ihre volle Produktionskapazität erreicht. Wenn Rohstoffpreise hoch sind, beginnen Bergbauunternehmen zu investieren — aber bis die neuen Kapazitäten online gehen, haben sich die Märkte möglicherweise bereits abgekühlt.\n\nDer letzte grosse Rohstoff-Superzyklus dauerte von etwa 1999 bis 2011 — getrieben von Chinas rapider Industrialisierung. Kupfer stieg in diesem Zeitraum von etwa 0,60 USD/lb auf über 4,50 USD/lb. Öl von 15 USD/Barrel auf 147 USD (2008). Kohle, Eisenerz, Nickel — alle erlebten historische Preissteigerungen. Nach 2011 folgte eine Dekade relativer Schwäche, als die chinesische Wirtschaft sich verlangsamt und neue Minenkapazitäten den Markt überschwemmten.\n\nKupfer wird als 'Dr. Copper' bezeichnet, weil er als akkurater Wirtschaftsindikator gilt: Kupfer wird in fast allem verwendet — Elektroleitungen, Bauinfrastruktur, Elektronik, Elektroautos. Steigende Kupferpreise signalisieren robuste Industrienachfrage; fallende Preise oft eine Verlangsamung. Das macht Kupfer zum makroökonomischen Seismographen."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Chinas Rohstoffdominanz",
+      "body": "China ist der grösste Rohstoffkonsument der Welt — mit Abstand. Bei Kupfer konsumiert China etwa 55% der globalen Raffinadeproduktion. Bei Stahl: China produziert mehr als 50% des globalen Stahls. Bei Kohle: China ist grösster Produzent und Konsument. Das bedeutet: Jede Verlangsamung der chinesischen Wirtschaft oder Umstrukturierung weg von investitionsgetriebenen Wachstum hat dramatische Auswirkungen auf globale Rohstoffpreise."
+    },
+    {
+      "type": "text",
+      "heading": "Contango, Backwardation und die ETF-Falle",
+      "body": "Das wichtigste misverstandene Konzept bei Rohstoff-Investments für Privatanleger: Rohstoff-ETFs bilden typischerweise NICHT den Spotpreis ab. Der Grund ist fundamental für Futures-basierte Rohstoff-ETFs: Sie halten Futures-Kontrakte, die monatlich auslaufen. Wenn ein Kontrakt ausläuft, muss er in den nächsten Monat gerollt werden (Roll-Over).\n\nContango ist der Normalzustand: Futures für einen späteren Monat sind teurer als der aktuelle Spotpreis (weil Lagerkosten, Finanzierungskosten etc. eingepreist sind). Wenn ein ETF seinen ablaufenden Kontrakt verkauft und einen teureren zukünftigen Kontrakt kauft, verliert er bei jedem Roll-Over Geld — unabhängig davon, wohin sich der Spotpreis bewegt. Das nennt man Contango Roll-Verlust oder 'Negative Roll Yield'.\n\nBackwardation ist das Gegenteil: Futures für spätere Monate sind günstiger als der Spotpreis. Das passiert, wenn der Markt akute Lieferknappheit einpreist. In Backwardation profitieren ETFs beim Roll-Over. Ölmärkte waren 2020 in extremem Contango — was zum historischen Ereignis führte, dass WTI-Rohöl-Futures im April 2020 kurz negative Preise erreichten (-37 USD/Barrel), weil Händler verzweifelt versuchten, physische Lieferung zu vermeiden, da die Lagerkapazitäten voll waren.\n\nFür Anleger bedeutet das: Ein ETF, der physisches Gold hält (wie GLD oder XETRA-GOLD), bildet den Goldpreis direkt ab. Ein Öl-ETF (wie USO) kann erheblich vom Ölpreis abweichen, wenn er stark im Contango ist. Wer Rohstoffe als Investment halten will, sollte entweder physisch-hinterlegte ETFs (bei Gold, Silber möglich) oder Aktien von Rohstoffunternehmen wählen."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Negative Roll Yield",
+      "body": "Negative Roll Yield ist der systematische Verlust, den Futures-basierte ETFs in Contango-Märkten erleiden. Wenn der Frontmonat-Kontrakt billiger ist als der nächste Monat (Contango), kostet das Rollen Geld. Über Zeit kann dieser Effekt enorm sein: Manche Energie-ETFs haben über Jahre 10-20% p.a. an Roll-Verlusten gelitten, selbst wenn der Ölpreis seitwärts lief."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Ein Anleger kauft einen Öl-ETF, weil er glaubt, Ölpreise werden in 12 Monaten um 15% steigen. Der ETF hält Öl-Futures. Warum könnte der ETF trotz eines 15%-Ölpreisanstiegs kaum oder keine Rendite erzielen?",
+      "options": [
+        "Öl-ETFs sind von der Regulierung auf 10% maximale Rendite begrenzt",
+        "Contango: Der ETF verliert beim monatlichen Rollen der Futures Geld, was den Kursgewinn aufzehren kann",
+        "Öl-ETFs investieren in Ölunternehmen, nicht in Öl — daher keine direkte Korrelation",
+        "Futures-Märkte bilden immer den Spotpreis ab, deshalb wäre die Rendite exakt 15%"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. In einem Contango-Markt kostet das monatliche Rollen der Futures Geld. Wenn der Nächstmonat-Future 2% teurer ist als der aktuelle, verliert der ETF beim Roll-Over 2%. Über 12 Monate summiert sich das auf ~24% Roll-Verlust. Der 15%-Kursgewinn des Spotpreises wird dadurch nicht nur neutralisiert, sondern der ETF macht Verlust — ein für viele Anleger überraschendes Ergebnis."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Warum wird Kupfer als 'Dr. Copper' bezeichnet?",
+      "options": [
+        "Kupfer wurde von einem Doktor namens Copper entdeckt",
+        "Kupfer ist ein wertvoller medizinischer Rohstoff in der Pharmaindustrie",
+        "Kupfer gilt als zuverlässiger Wirtschaftsindikator, weil es in nahezu allen Industriebereichen verwendet wird",
+        "Kupfer hat einen konstanten Preis der als medizinische Referenz genutzt wird"
+      ],
+      "correct": 2,
+      "explanation": "Korrekt. Kupfer ist in Elektronik, Bau, Autos, Infrastruktur und zunehmend in Elektrofahrzeugen unverzichtbar. Steigende Kupferpreise signalisieren daher, dass Industrie und Bau boomen — eine robuste Weltwirtschaft. Fallende Kupferpreise deuten auf Nachfrageschwäche hin. Ökonomen nutzen Kupfer als 'vorauslaufenden Indikator' für Wirtschaftsaktivität, daher der Spitzname 'Doktor Kupfer' — als ob der Kupferpreis eine Diagnose der Weltwirtschaft liefert."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "China kündigt ein massives 2 Billionen Yuan Infrastrukturprogramm an (Strassen, Brücken, Schienen). Gleichzeitig prognostiziert Goldman Sachs einen neuen Rohstoff-Superzyklus. Als Makro-Investor — wie würden Sie positionieren? Beschreiben Sie konkrete Instrumente (ETFs, Sektoren, Einzelaktien), und diskutieren Sie die Contango-Problematik bei Ihrer Auswahl.",
+      "explanation": "China-Infrastruktur → hohe Nachfrage nach Kupfer, Stahl, Zement, Energie. Superzyklus = langfristige strukturelle Nachfragesteigerung. Instrumente: 1) Kupfer-Mining-Aktien: Freeport-McMoRan (FCX), BHP, Rio Tinto — partizipieren am Kupferpreisanstieg ohne Contango-Problem. 2) Physisch-hinterlegtes Gold (GLD, XETRA-GOLD) als Inflations- und Dollar-Hedge (Superzyklus oft mit Dollar-Schwäche verbunden). 3) Rohstoff-Breit-ETF mit Vorsicht: DJP oder PDBC haben Contango-Verluste in Energie — besser Einzelrohstoffe oder Mining-Aktien wählen. 4) Stahl-/Materialien-ETFs (XLB, PICK für Mining). Contango-Diskussion: Futures-basierte Öl- und Gas-ETFs meiden wegen Roll-Verlusten — stattdessen Energieunternehmen (XLE) oder physisch gedeckte Rohstoffe. Risiken: China-Stimulus scheitert, geopolitische Handelsstreitigkeiten, Umweltregulierung begrenzt Produktionsexpansion."
+    }
+  ]
+}

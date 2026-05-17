@@ -1,0 +1,71 @@
+{
+  "id": "analyst-3.3",
+  "track_id": "analyst",
+  "title": "Peer Comparison & Relative Bewertung",
+  "subtitle": "EV/EBITDA Vergleich, Screening und relative Unterbewertung finden",
+  "duration_min": 10,
+  "sort_order": 6,
+  "status": "available",
+  "learning_goals": [
+    "EV/EBITDA als kapitalstruktur-neutralen Multiplikator korrekt anwenden",
+    "Eine sinnvolle Peer Group definieren und vergleichen",
+    "Verstehen, wann ein Premium oder Discount zum Sektor gerechtfertigt ist",
+    "Screening-Tools (Finviz, Simply Wall St) systematisch nutzen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Warum relatives Bewertung oft aussagekräftiger ist als absolute Werte",
+      "body": "Ist ein KGV von 25 teuer oder günstig? Die Antwort hängt vollständig vom Kontext ab — von der Branche, dem Wachstum, dem Zinsniveau und den Peers. Genau deshalb ist relative Bewertung im Analystenalltag oft aufschlussreicher als absolute DCF-Modelle. Die Kernfrage lautet: Wird dieses Unternehmen im Vergleich zu seinen direkten Konkurrenten mit einem ungerechtfertigten Abschlag gehandelt?\n\nEV/EBITDA (Enterprise Value / EBITDA) ist der bevorzugte Multiplikator für Peer Comparison, weil er kapitalstruktur-neutral ist. Enterprise Value (EV) = Marktkapitalisierung + Nettoschulden — er berücksichtigt also, wie das Unternehmen finanziert ist. EBITDA ist vor Zinsen und damit unabhängig von der Verschuldung. Zwei identische Unternehmen — eines mit viel Schulden, eines schuldenfrei — haben dasselbe EV/EBITDA, aber unterschiedliche KGVs. Das macht EV/EBITDA zum faireren Vergleichsinstrument.\n\nDas KGV hingegen ist schuldenabhängig: Ein hoch verschuldetes Unternehmen zahlt viel Zinsen, was den Gewinn drückt und das KGV optisch günstig erscheinen lässt — obwohl der Enterprise Value keineswegs günstiger ist."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Peer Group Analyse",
+      "body": "Eine gute Peer Group besteht aus Unternehmen mit: gleichem Sektor (GICS-Klassifikation), ähnlicher Unternehmensgrösse (Marktkapitalisierung innerhalb einer Grössenordnung), vergleichbarem Geschäftsmodell und geografischen Fokus. Fehler: Apple mit Samsung vergleichen (unterschiedliche Margen, Geschäftsmodelle) oder grosse Unternehmen mit Micro Caps. Je homogener die Peer Group, desto aussagekräftiger der Vergleich."
+    },
+    {
+      "type": "text",
+      "heading": "Praxisbeispiel: US-Tech-Giganten im EV/EBITDA-Vergleich",
+      "body": "Betrachten wir Microsoft (MSFT), Alphabet/Google (GOOGL) und Meta (META) im Jahr 2023 im EV/EBITDA-Vergleich. Microsoft handelte mit einem EV/EBITDA von rund 22-25x, getrieben durch das Azure Cloud-Wachstum und die AI-Integration (Copilot). Google handelte bei 13-16x EV/EBITDA — trotz starkem Cloud-Geschäft und YouTube. Meta handelte zeitweise unter 10x EV/EBITDA (in der 'Reality Labs'-Krise 2022) und stieg dann auf 12-16x, als das Unternehmen sein 'Year of Efficiency' ankündigte.\n\nWarum handelt Microsoft mit einem Aufschlag gegenüber Google? Der Markt bewertet Microsofts stärker recurring Subscription-Umsätze (Azure, Office 365) höher als Googles werbeabhängige Umsätze — die zyklischer sind. Wer glaubt, dass dieser Aufschlag übertrieben ist, könnte Google als relativ unterbewertet ansehen.\n\nScreening-Tools machen diese Analyse skalierbar. Finviz.com erlaubt es, Aktien nach EV/EBITDA, Sektor, Marktkapitalisierung und anderen Kriterien zu filtern. Simply Wall St berechnet automatisch relative Bewertungen und zeigt, ob ein Unternehmen unter oder über seinem Sektor-Durchschnitt gehandelt wird. Der Schlüssel: Relative Unterbewertung allein ist kein Kaufsignal — man muss verstehen, ob der Discount gerechtfertigt ist (strukturelle Probleme) oder eben nicht (temporäre Überreaktion des Marktes)."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Justified Premium vs. Value Trap",
+      "body": "Ein Unternehmen kann teurer als seine Peers sein und trotzdem kein schlechtes Investment sein — wenn die Prämie durch höheres Wachstum, bessere Margen, stärkeres Moat oder niedrigeres Risiko gerechtfertigt ist. Umgekehrt: Ein Unternehmen, das billig erscheint, kann eine 'Value Trap' sein — strukturell schwaches Geschäftsmodell, das dauerhaft unter Sektor-Multiplikatoren handelt."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Warum ist EV/EBITDA dem KGV bei der Peer-Comparison oft vorzuziehen?",
+      "options": [
+        "Weil EV/EBITDA immer eine niedrigere Zahl ergibt und dadurch Unternehmen günstiger erscheinen",
+        "Weil EV/EBITDA kapitalstruktur-neutral ist — es macht die Bewertung unabhängig vom Verschuldungsgrad",
+        "Weil das KGV nur für US-amerikanische Unternehmen berechenbar ist",
+        "Weil EV/EBITDA regulatorisch vorgeschrieben ist für DAX-Unternehmen"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Das KGV (Kurs/Gewinn) ist abhängig von der Kapitalstruktur: Hohe Verschuldung bedeutet hohe Zinszahlungen, was den Gewinn drückt und das KGV optisch günstig macht — obwohl der tatsächliche Enterprise Value nicht günstiger ist. EV/EBITDA umgeht das, weil EV bereits Schulden einrechnet und EBITDA vor Zinsen gemessen wird."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Meta handelte 2022 mit einem EV/EBITDA von unter 8x, während der Sektor-Durchschnitt bei 15x lag. Was sind zwei plausible Erklärungen für diesen Abschlag?",
+      "options": [
+        "Meta war verboten und der Handel wurde eingeschränkt; der Abschlag reflektiert die Illiquidität",
+        "Markt bestrafte Reality Labs-Verluste (Investitionen in Metaverse) und Werbemarkts-Unsicherheit; oder der Abschlag war eine Kaufgelegenheit",
+        "Meta hatte 2022 kein EBITDA, daher war der Multiplikator nicht berechenbar",
+        "EV/EBITDA unter 10x ist bei Tech-Unternehmen nie ein Kaufsignal"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Meta's Abschlag 2022 hatte fundamentale Gründe: massive Verluste in der VR/AR-Sparte Reality Labs (mehrere Milliarden USD p.a.), Sorgen über Apple's iOS-Datenschutzänderungen (ATT) die das Werbegeschäft schrumpfen liessen, und allgemeine Werbemarktschwäche in der Rezessionsangst. Wer erkannte, dass der Kernbereich (Social Media Werbung) stabil blieb und Zuckerberg 'Year of Efficiency' ankündigte, sah eine Kaufgelegenheit — Meta stieg 2023 um über 170%."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie analysieren zwei Softwareunternehmen in derselben Nische (B2B SaaS). Unternehmen A: EV/EBITDA 18x, Umsatzwachstum 8% p.a., EBITDA-Marge 35%, Net Debt/EBITDA 0,5x. Unternehmen B: EV/EBITDA 12x, Umsatzwachstum 15% p.a., EBITDA-Marge 20%, Net Debt/EBITDA 2x. Welches würden Sie als potenziell unterbewertet einstufen und warum? Welche zusätzlichen Informationen würden Sie vor einer Kaufentscheidung benötigen?",
+      "explanation": "Kernpunkte: B könnte unterbewertet sein, trotz niedrigerem Multiplikator. Höheres Wachstum (15% vs. 8%) rechtfertigt typischerweise höheres EV/EBITDA — PEG-ähnliche Logik. Wenn B um 33% günstiger handelt aber fast doppelt so schnell wächst, könnte es eine echte Opportunity sein. Aber: niedrigere Margen (20% vs. 35%) und höhere Verschuldung (2x vs. 0,5x) erhöhen das Risiko. Zusätzliche Infos: Customer Acquisition Cost und Churn Rate (SaaS-Gesundheit), Gross Revenue Retention (>110% = Net Expansion ist die beste Metrik), ob Marge skaliert oder konstant bleibt, Qualität des Schuldners."
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "swing-3.3",
+  "track_id": "swing-trader",
+  "title": "Gap Trading",
+  "subtitle": "Gap Up/Down, Earnings Gaps und Gap Fill Wahrscheinlichkeit",
+  "duration_min": 8,
+  "sort_order": 6,
+  "status": "available",
+  "learning_goals": [
+    "Gaps (Kurslücken) erkennen und ihre Entstehungsursachen einordnen",
+    "Breakaway Gaps von Exhaustion Gaps unterscheiden",
+    "Die Gap-Fill-Statistik (70-80%) kennen und strategisch nutzen",
+    "Earnings Gaps als grösste und volatilste Gap-Kategorie einordnen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Was Gaps sind und wie sie entstehen",
+      "body": "Ein Gap (Kurslücke) entsteht, wenn der Eröffnungskurs eines Handelstages deutlich vom Schlusskurs des Vortages abweicht — weil zwischen Handelsschluss und der nächsten Eröffnung bedeutende News veröffentlicht wurden. Im Tageschart ist das optisch eine leere Zone: Der Preis ist von A nach B gesprungen, ohne den dazwischenliegenden Bereich zu handeln.\n\nGaps entstehen typischerweise durch Earnings-Berichte nach Börsenhandel (After-Hours Earnings), makroökonomische Daten (NFP, CPI, Fed-Entscheidungen), Unternehmens-News (M&A-Ankündigungen, Gewinnwarnungen, Produktzulassungen) oder globale Ereignisse über Nacht (geopolitische Krisen, Zentralbankentscheidungen in Asien/Europa).\n\nMAN unterscheidet vier Gap-Typen: Common Gaps entstehen in ruhigen Märkten und füllen sich schnell — sie haben wenig technische Bedeutung. Breakaway Gaps entstehen beim Ausbruch aus einer Konsolidierungs- oder Bodenformation — hochvolumig, signalisieren den Beginn eines neuen Trends. Runaway/Continuation Gaps entstehen in der Mitte eines Trends und bestätigen ihn. Exhaustion Gaps entstehen am Ende eines Trends, wenn die letzte Momentum-Welle erschöpft ist — gefolgt von einer schnellen Umkehr."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Gap Fill",
+      "body": "Statistisch gesehen werden 70-80% aller Gaps irgendwann 'gefüllt' — d.h. der Kurs kehrt in den Bereich zurück, den er beim Gap übersprungen hat. Diese Statistik ist der Kern der Gap-Trading-Strategie: Wenn eine Aktie stark gap-oben oder gap-unten eröffnet, gibt es eine hohe Wahrscheinlichkeit, dass dieser Bereich später wieder besucht wird. Wichtig: 'Irgendwann' kann Tage, Wochen oder Monate bedeuten — der Zeitpunkt ist ungewiss."
+    },
+    {
+      "type": "text",
+      "heading": "META Q4 2022 — Earnings Gap Down als Fallstudie",
+      "body": "Earnings Gaps sind die dramatischsten und tradingintensivsten Gaps. Sie entstehen, wenn ein Unternehmen nach Handelsschluss Quartalsergebnisse meldet, die die Erwartungen deutlich übertreffen oder verfehlen. Die Implied Volatility (IV) von Optionen steigt vor Earnings stark an, weil der Markt diese unsichere Bewegung einpreist — und kollabiert danach (IV Crush) unabhängig davon, in welche Richtung der Kurs geht.\n\nMeta Platforms (META) meldete am 26. Oktober 2022 Ergebnisse für Q3 2022: Umsatz unter den Erwartungen, Reality Labs verbrannte weitere Milliarden, und die Guidance für Q4 war enttäuschend. Am nächsten Morgen eröffnete META mit einem Gap Down von rund 25% — von ca. 135 USD auf etwa 102 USD. Das war einer der grössten Earnings Gap Downs für ein DAX/S&P 500 grosses Unternehmen in jüngerer Geschichte.\n\nWurde dieser Gap gefüllt? Ja — aber es dauerte. META handelte monatelang im 90-130 USD-Bereich, bevor Zuckerbergs 'Year of Efficiency' Anfang 2023 das Sentiment drehte. Die Aktie erreichte den Pre-Gap-Bereich von 135 USD erst Monate später wieder — und stieg dann weiter bis auf 350+ USD bis Ende 2023. Wer den Gap als mittelfristige Fill-Gelegenheit sah und den fundamentalen Turnaround (Kostensenkungen, Margenverbesserung) erkannte, erzielte ausserordentliche Renditen.\n\nFür Swing-Trader gilt: Nach einem grossen Earnings Gap Down ist die Strategie komplex. Shorts direkt nach dem Gap sind riskant (oft Bounce am ersten Tag). Longs vor einem voreiligen Gap-Fill-Play können schmerzhaft sein, wenn das Fundamentalproblem real ist. Das Risiko-Management ist entscheidend: Kleine Positionen, breite Stops, und immer die fundamentale Frage stellen: Ist das Problem temporär oder strukturell?"
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Breakaway Gap vs. Exhaustion Gap",
+      "body": "Breakaway Gap: hohe Volumen, am Anfang eines neuen Trends, NICHT schnell gefüllt — dieser Gap ist ein Einstiegssignal in den neuen Trend. Exhaustion Gap: niedriges oder fallendes Volumen, am Ende eines langen Trends, schnell gefüllt — Warnsignal für Trendende. Die Volumenanalyse ist der entscheidende Unterschied zwischen beiden."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Eine Aktie gappt nach sehr starken Quartalsergebnissen um 8% nach oben. Das Gap entstand mit dem 4-fachen Durchschnittsvolumen. Um welchen Gap-Typ handelt es sich wahrscheinlich, und was ist die Erwartung?",
+      "options": [
+        "Exhaustion Gap — hohes Volumen am Anfang des Tages zeigt Erschöpfung des Trends",
+        "Common Gap — Earnings Gaps sind immer Common Gaps und werden schnell gefüllt",
+        "Breakaway Gap — hohes Volumen, starker fundamentaler Katalysator; Gap wird wahrscheinlich nicht schnell gefüllt",
+        "Runaway Gap — entsteht nur in der Mitte eines langen Aufwärtstrends, nicht nach Earnings"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. Ein Earnings Gap Up mit sehr hohem Volumen und starkem fundamentalem Katalysator ist typischerweise ein Breakaway Gap — der Beginn oder die Bestätigung eines neuen Aufwärtstrends. Diese Gaps werden oft nicht schnell gefüllt, weil der fundamentale Grund (Gewinnverbesserung, Guidance-Erhöhung) das neue Preisniveau rechtfertigt. Breakaway Gaps sind oft die besten Einstiegssignale für Swing-Long-Trades."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was besagt die Gap-Fill-Statistik, und warum ist der Zeitpunkt des Gap-Fills für Trader so wichtig?",
+      "options": [
+        "70-80% aller Gaps werden nie gefüllt — Gaps sind permanente Preis-Zonen",
+        "70-80% aller Gaps werden irgendwann gefüllt, aber der Zeitpunkt kann Tage bis Monate betragen, was das Timing-Risiko erhöht",
+        "Gaps werden immer innerhalb von 3 Handelstagen gefüllt — das ist statistisch bewiesen",
+        "Gap-Fill gilt nur für Abwärts-Gaps, Aufwärts-Gaps werden statistisch nicht gefüllt"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Die Statistik sagt 'irgendwann' — nicht 'bald'. Ein Trader, der nach einem Gap Down sofort eine Long-Position auf Gap-Fill eröffnet, kann wochenlang im Verlust liegen, bevor der Gap gefüllt wird. Das Timing-Risiko ist das grösste Problem beim Gap-Fill-Trading. Die Strategie ist valide, aber erfordert entweder viel Geduld oder eine asymmetrische Position (wenig Kapitaleinsatz, weiter Stop)."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie sind Swing-Trader und beobachten, dass ein Pharmaunternehmen nach einem positiven FDA-Zulassungsbescheid um 40% gap-oben eröffnet hat. Das Volumen ist 8x der Norm. Erklären Sie, welche Trading-Strategie Sie in den nächsten 3-10 Handelstagen verfolgen würden — sowohl für einen potenziellen Long-Trade als auch die Risiken eines Gap-Fill-Shorts.",
+      "explanation": "Long-Strategie: Breakaway Gap mit massivem Volumen und fundamentalem Katalysator (FDA-Zulassung = permanente fundamentale Veränderung). Diese Gaps füllen sich selten schnell. Potenzielle Einstiegsstrategien: a) Kaufen beim ersten Pullback nach dem Eröffnungs-Spike (oft kommt am ersten Tag ein Rücksetzer von 5-10% als Profit-Taking), b) Kaufen wenn Konsolidierung nahe dem Lückenoberkante. Stop-Loss: unter dem Eröffnungskurs des Gap-Tages. Short/Gap-Fill-Strategie: Sehr riskant bei fundamentalem Katalysator. FDA-Zulassung ist permanent — Aktie hat jetzt legitimerweise höheren Wert. Gap-Fill-Shorts funktionieren besser bei rein technischen oder News-getriebenen Gaps ohne fundamentale Substanz. Risiken des Shorts: Short Squeeze bei hohem Short-Interesse, weitere positive Analysten-Updates, institutionelle Käufe."
+    }
+  ]
+}

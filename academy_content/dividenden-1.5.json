@@ -1,0 +1,71 @@
+{
+  "id": "div-1.5",
+  "track_id": "dividenden_investor",
+  "title": "Qualitätskriterien für Dividendenaktien",
+  "subtitle": "Moat, Pricing Power, Schuldenstand und Dividendensicherheit",
+  "duration_min": 9,
+  "sort_order": 5,
+  "status": "available",
+  "learning_goals": [
+    "Den Economic Moat als Grundvoraussetzung fuer langfristiges Dividendenwachstum verstehen",
+    "Pricing Power als Inflationsschutz und Dividenden-Stabilisator erkennen",
+    "Verschuldungsgrenzen fuer Dividendeninvestoren kennen (Net Debt/EBITDA < 2x ideal)",
+    "ROIC als Effizienzmassstab fuer Kapitalallokation interpretieren"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Economic Moat — der Burggraben des Dividendeninvestors",
+      "body": "Für langfristige Dividendeninvestoren ist der Economic Moat — der Wettbewerbsvorteil eines Unternehmens — das wichtigste Qualitätskriterium überhaupt. Ein Unternehmen ohne Moat kann heute hohe Gewinne machen und grosszügige Dividenden zahlen, aber in 10 Jahren von der Konkurrenz überholt werden. Mit einem Moat bleibt das Geschäftsmodell über Jahrzehnte profitabel.\n\nEs gibt fünf klassische Moat-Typen: Starke Marken (Coca-Cola, LVMH, Nestlé — Konsumenten zahlen Prämien für Vertrauen und Status), Netzwerkeffekte (Visa und Mastercard — jeder weitere Nutzer erhöht den Wert für alle, Konkurrenz kann das Netzwerk nicht leicht replizieren), Wechselkosten (SAP und Oracle — einmal implementiert, ist ein Wechsel extrem teuer und riskant), Kostenvorteile durch Skalierung (Amazon Logistics, Walmart — Skaleneffekte ermöglichen Preisunterbietung ohne Margenverlust), regulatorische Vorteile (Versorger mit Monopol-Lizenzen, patentgeschützte Pharmaunternehmen).\n\nNestlé ist ein Paradebeispiel für Branding-Moat und Pricing Power: Nescafé ist in über 180 Ländern vertreten. Die Kaffeekapsel-Linie Nespresso hat durch das proprietäre System Wechselkosten aufgebaut — einmal Nespresso-Nutzer, immer Nespresso-Nutzer. Über 30 Jahre hat Nestlé die Preise seiner Kernprodukte regelmässig erhöht, ohne nennenswerten Marktanteilsverlust in Premium-Segmenten zu erleiden."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Pricing Power",
+      "body": "Pricing Power ist die Fähigkeit eines Unternehmens, Preiserhöhungen durchzusetzen, ohne dass Kunden zur Konkurrenz wechseln. Coca-Cola erhöhte den Syrup-Preis mehrfach in den letzten Jahren — und McDonald's und die Abfüller akzeptierten es. Unternehmen mit echter Pricing Power können Inflation weitergeben statt sie zu absorbieren. Das bedeutet: Margen bleiben stabil oder wachsen trotz Kostensteigerungen — und damit auch die Dividendenfähigkeit."
+    },
+    {
+      "type": "text",
+      "heading": "Verschuldung, ROIC und die BASF-Warnung",
+      "body": "Für Dividendeninvestoren sind Schulden besonders kritisch zu beobachten — nicht weil Schulden per se schlecht sind, sondern weil in Stressphasen (Umsatzrückgang, steigende Zinsen) hohe Schulden die Dividende zuerst bedrohen. Faustregel: Net Debt/EBITDA idealerweise unter 2x, maximum 3x für defensive Sektoren. Bei zyklischen Unternehmen (Chemie, Stahl, Automotive) sollte die Schuldenquote in Boomzeiten deutlich unter 1x sein, um Abschwungphasen zu überleben.\n\nReturn on Invested Capital (ROIC) über 10% gilt als Qualitätsmerkmal. Besser sind 15%+ kontinuierlich. ROIC misst, wie effizient ein Unternehmen das eingesetzte Kapital in Gewinne umwandelt. Coca-Cola hat einen ROIC von 20-25% durch starkes Branding ohne hohe Sachanlagen. Microsoft erreicht 30%+ ROIC durch das Software-Abo-Modell mit minimalem Kapitalaufwand. Im Vergleich: Ein Stahlhersteller mit ROIC von 5% muss enorm viel Kapital binden für geringe Renditen — wenig Spielraum für Dividendenwachstum.\n\nDer BASF-Kontrast zu Nestlé illustriert das gut: BASF ist Europas grösster Chemiekonzern und zahlt eine Dividende von oft 7-8% Yield. Klingt attraktiv. Aber BASF ist hochgradig zyklisch (Chemieindustrie), energieintensiv (Gas-Abhängigkeit, Ukraine-Krieg traf BASF direkt), mit Net Debt/EBITDA von 2-3x und ROIC schwankend zwischen 3-8%. In 2022-2023 zeigte sich: Energiekosten stiegen dramatisch, Margen wurden gequetscht, die Aktie verlor stark. Die scheinbar hohe Dividende war kein Qualitätssignal, sondern Kompensation für zyklisches Risiko und strukturelle Schwäche in der Kostenstruktur. Nestlé hingegen — gleiche Region, ähnliche Dividendenrendite — hielt sich durch seine Pricing Power und seinen globalen Konsumgüter-Moat deutlich besser."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Free Cash Flow muss Dividende decken",
+      "body": "Die Grundbedingung für jede nachhaltige Dividende: Das Unternehmen muss mehr Free Cash Flow generieren als es als Dividende ausschüttet. FCF > Dividende ist die Minimalanforderung. Idealerweise FCF Payout Ratio unter 70%, damit Spielraum für Reinvestition, Schuldenabbau und Dividendenwachstum bleibt. Wenn FCF unter die Dividende fällt, wird die Ausschüttung aus Schulden oder Kapitalreserven finanziert — das ist kurzfristig möglich, langfristig aber nicht tragfähig."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Welcher Moat-Typ schützt Coca-Cola am besten vor Konkurrenz?",
+      "options": [
+        "Patentschutz — Coca-Cola's Rezeptur ist weltrekord-patentiert",
+        "Netzwerkeffekte — jeder neue Coca-Cola-Trinker erhöht den Wert für alle anderen",
+        "Branding und globales Vertriebsnetzwerk — über 130 Jahre Markenaufbau, Lieferkette in 200+ Ländern",
+        "Kostenführerschaft — Coca-Cola produziert günstiger als alle Konkurrenten"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. Coca-Cola's Hauptmoat ist das Branding — eine der weltweit wertvollsten Marken — kombiniert mit einem unübertrefflichen globalen Vertriebsnetzwerk. Jeder Supermarkt, jedes Restaurant, jede Tankstelle weltweit hat Coca-Cola. Dieses Netzwerk aufzubauen würde Jahrzehnte und Milliarden erfordern. Patente spielen keine relevante Rolle — das Rezept ist ein Betriebsgeheimnis, kein Patent."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "BASF zahlt 7% Dividendenrendite, Nestlé 2,5%. Warum könnte Nestlé trotzdem das qualitativ bessere Dividendinvestment sein?",
+      "options": [
+        "Nestlé ist grösser als BASF und grössere Unternehmen sind immer sicherer",
+        "Nestlé hat einen breiten Moat, stabilen FCF, geringe Zyklizität und konsistentes Dividendenwachstum — BASF ist zyklisch, energieintensiv und hat niedrigen ROIC",
+        "Dividendenrendite unter 3% ist immer besser als über 5% — höhere Yields sind per Definition Yield Traps",
+        "Nestlé hat keine Schulden, BASF ist überschuldet"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Die Qualität einer Dividende hängt nicht von ihrer Höhe ab, sondern von ihrer Nachhaltigkeit und Wachstumsaussichten. Nestlé's 2,5% Yield wächst konsistent mit 5-7% p.a. durch Pricing Power und Moat. BASF's 7% Yield ist zyklisch exponiert — in Abschwüngen fällt der Kurs stark, die Dividende kann gekürzt werden. Langfristig übertrifft Nestlé's Total Return BASF's — trotz niedrigerer initialer Yield."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie wollen einen Qualitätsfilter für Dividendenaktien entwickeln. Definieren Sie fünf konkrete, messbare Kriterien mit konkreten Schwellenwerten, und begründen Sie für jedes Kriterium, warum es für die langfristige Dividendensicherheit relevant ist. Geben Sie für jedes Kriterium ein Beispielunternehmen, das es erfüllt, und eines, das es verfehlt.",
+      "explanation": "Fünf Kriterien: 1) FCF Payout Ratio < 75%: Dividende aus echtem Cashflow, nicht aus Schulden. Erfüllt: JNJ (~60%). Verfehlt: AT&T vor 2022 (~110%). 2) Net Debt/EBITDA < 2x: Solide Bilanz übersteht Rezessionen. Erfüllt: Microsoft (Nettocash-Position). Verfehlt: WeWork (nicht mehr existent). 3) ROIC > 15%: Effiziente Kapitalallokation. Erfüllt: Coca-Cola (~20-25%). Verfehlt: Stahlhersteller (~5-8%). 4) Dividendenwachstum > Inflation (>3% CAGR über 5 Jahre): Kaufkrafterhalt der Dividende. Erfüllt: Procter & Gamble (~5-7% CAGR). Verfehlt: Tabakaktien mit stagnierendem Dividendenwachstum. 5) Moat-Score (qualitativ — mindestens ein starker Moat-Typ identifizierbar): Langfristige Wettbewerbsfähigkeit. Erfüllt: Nestlé (Branding + Netzwerk). Verfehlt: Generische Industrie ohne Differenzierung."
+    }
+  ]
+}

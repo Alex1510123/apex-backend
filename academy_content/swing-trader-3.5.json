@@ -1,0 +1,71 @@
+{
+  "id": "swing-3.5",
+  "track_id": "swing-trader",
+  "title": "Earnings Play Strategie",
+  "subtitle": "IV Crush, Straddle-Konzept und Pre/Post Earnings Trading",
+  "duration_min": 9,
+  "sort_order": 8,
+  "status": "available",
+  "learning_goals": [
+    "Implied Volatility (IV) und ihren Anstieg vor Earnings verstehen",
+    "IV Crush nach Earnings als typisches Optionsphänomen einordnen",
+    "Das Straddle-Konzept als richtungsneutrale Earnings-Strategie kennen",
+    "Pre-Earnings Momentum und Post-Earnings Drift als Swing-Strategien beurteilen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Implied Volatility vor Earnings — warum Optionen teurer werden",
+      "body": "Jedes Quartal gibt es für jeden Swing-Trader ein wichtiges Datum im Kalender: den Earnings Release. Für Aktionäre ist es der Tag der Wahrheit — für Optionshändler ist es der Tag des IV Crush.\n\nImplied Volatility (IV) ist die vom Optionsmarkt eingepreiste Erwartung künftiger Kursschwankungen. In den Tagen und Wochen vor einem Earnings Release steigt die IV von Optionen systematisch an — Marktteilnehmer zahlen mehr für Absicherung und Spekulation, weil sie wissen, dass ein grosser Kursbewegung bevorsteht. Bei NVIDIA beispielsweise steigt die IV vor Earnings oft auf das 2-3-fache des normalen Niveaus. Konkret: Wenn NVIDIA normalerweise eine 30-Tage-IV von 40% hat, kann sie vor Earnings auf 70-80% steigen.\n\nDas bedeutet: Optionen sind teuer — und wer sie kurz vor Earnings kauft, bezahlt viel für diese Unsicherheitsprämie. Genau hier liegt die Falle für unerfahrene Trader: Sie sehen, dass NVDA um 20% steigen könnte, kaufen Call-Optionen — und verdienen trotzdem nichts, weil die IV nach dem Earnings-Release kollabiert (IV Crush), selbst wenn der Kurs tatsächlich steigt."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: IV Crush",
+      "body": "IV Crush beschreibt den starken Rückgang der Implied Volatility unmittelbar nach einem Earnings Release — unabhängig von der Kursrichtung. Die Unsicherheit über das Ergebnis ist vorbei, also fällt die Risikoprämie in den Optionspreisen sofort. Wenn eine Aktie 10% steigt, aber die IV um 40% fällt, kann eine Call-Option trotzdem an Wert verlieren — weil der Delta-Gewinn durch den Vega-Verlust überkompensiert wird."
+    },
+    {
+      "type": "text",
+      "heading": "NVDA Earnings 2023 — eine Fallstudie der Extreme",
+      "body": "NVIDIAs Earnings im Mai 2023 (Q1 FY2024) waren ein historisches Ereignis: Das Unternehmen kündigte an, dass die Nachfrage nach KI-Chips die Erwartungen bei Weitem übertraf. Die Guidance für das nächste Quartal lag fast 50% über den Konsenserwartungen der Analysten. NVIDIA stieg in den Tagen nach dem Earnings-Release um mehr als 25%.\n\nDoch wer Optionen direkt vor dem Earnings-Call gekauft hatte, erlebte trotzdem eine komplexe Situation: Die IV war so extrem gestiegen, dass selbst bei einem 25%-Anstieg die Rendite auf Calls enttäuschend sein konnte — abhängig von Strike, Laufzeit und wie stark der IV Crush einsetzte. Das Paradebeispiel für 'richtig in der Richtung, falsch im Vehikel'.\n\nDas Straddle-Konzept löst das Richtungsproblem: Man kauft gleichzeitig einen Call und einen Put auf denselben Strike. Egal ob die Aktie stark steigt oder fällt — mindestens eine Seite gewinnt. Das Problem: Beide Seiten leiden unter dem IV Crush. Ein Straddle lohnt sich nur, wenn die tatsächliche Kursbewegung grösser ist als die vom IV-Niveau eingepreiste erwartete Bewegung (Implied Move).\n\nPre-Earnings Momentum ist eine elegantere Strategie: Aktien tendieren statistisch dazu, in den 5-10 Handelstagen vor Earnings leicht zu steigen — getrieben durch Erwartungsoptimismus und institutionelle Positionierung. Ein Kauf 7-10 Tage vor Earnings und Verkauf kurz vor dem Report umgeht den IV Crush vollständig, weil man Aktien hält, nicht Optionen. NVDA stieg in den zwei Wochen vor dem historischen May-2023-Earnings von ca. 280 auf 310 USD — ein solider Swing-Trade ohne Optionsrisiko."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Post-Earnings Drift",
+      "body": "Post-Earnings Announcement Drift (PEAD) ist ein gut dokumentiertes Marktphänomen: Aktien mit positiver Earnings-Überraschung tendieren dazu, in den Wochen nach dem Earnings-Release weiter zu steigen — langsamer als am ersten Tag, aber messbar. Das Gegenteil gilt für negative Überraschungen. Erklärt durch die langsame Informationsverarbeitung institutioneller Investoren und die schrittweise Neupositionierung grosser Fonds."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Ein Trader kauft eine Call-Option auf NVDA 2 Tage vor Earnings. NVDA steigt danach um 15%, aber der Wert seiner Option ist kaum gestiegen. Was ist die wahrscheinlichste Erklärung?",
+      "options": [
+        "Der Trader hat den falschen Strike gewählt — in-the-money Optionen reagieren nicht auf Kursbewegungen",
+        "IV Crush: Die Implied Volatility kollabierte nach dem Earnings-Release und kompensierte den Kursgewinn",
+        "Optionen auf NVDA sind in Deutschland nicht handelbar, daher keine Preisanpassung",
+        "Earnings-Reaktionen werden bei Optionen erst nach 5 Handelstagen eingepreist"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Das klassische IV-Crush-Szenario: Optionen waren vor Earnings extrem teuer (hohe IV). Nach dem Release kollabiert die IV, weil die Unsicherheit vorbei ist. Der 'Vega-Verlust' (Wertverlust durch IV-Rückgang) kann den 'Delta-Gewinn' (Wertzuwachs durch Kursanstieg) überkompensieren — besonders bei kurzlaufenden Optionen und bei Strikes, die bereits im oder nahe am Geld waren."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Welche Strategie vermeidet das IV Crush Problem bei Earnings vollständig?",
+      "options": [
+        "Straddle kaufen — man kauft sowohl Call als auch Put und ist gegen IV Crush immunisiert",
+        "Pre-Earnings Momentum in der Aktie (kein Optionskauf) — kaufen 7-10 Tage vor Earnings, vor dem Release verkaufen",
+        "Tiefe In-the-Money Calls kaufen — diese haben kaum Zeitwert und werden daher nicht vom IV Crush betroffen",
+        "Sehr kurz laufende Wochensoptionen kaufen — diese haben keinen Zeitwert der verloren gehen kann"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Wenn man Aktien (keine Optionen) hält und vor dem Earnings-Release verkauft, gibt es keinen IV Crush — weil Aktien keine implizite Volatilität haben. Pre-Earnings Momentum nutzt die statistisch beobachtete Tendenz, dass viele Aktien in den Tagen vor Earnings leicht steigen. Man profitiert von der Kurserwartung, ohne dem Options-Preisrisiko ausgesetzt zu sein."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "NVDA steht vor Earnings bei 450 USD. Die am Markt eingepreiste Bewegung (Implied Move) beträgt +/- 12%. Ein Trader kauft einen Straddle (Call + Put) für zusammen 80 USD Prämie. NVDA steigt nach Earnings um 20%. Berechnen Sie ungefähr das Ergebnis des Straddles, und erklären Sie, unter welchen Umständen der Straddle auch bei 20% Kursanstieg verlustbringend sein könnte.",
+      "explanation": "Berechnung: NVDA steigt 20% von 450 auf 540 USD. Call mit Strike 450 hat intrinsischen Wert von 90 USD. Put verfällt wertlos. Straddle-Wert nach Earnings: ca. 90 USD minus IV Crush Verlust. Wenn IV Crush den Zeitwert von 30 USD vernichtet, ist der Straddle ca. 60 USD wert → bei 80 USD Kosten = Verlust von 20 USD. Verlustszenarien trotz 20% Anstieg: 1) Wenn IV so extrem hoch war, dass 12% Implied Move zu konservativ war — tatsächlich war 20% nötig zum Break-Even, aber Straddle-Kosten setzten die Schwelle höher. 2) Bei sehr kurzer Laufzeit: Theta (Zeitwertverlust) und IV-Crush zusammen können Gewinne auffressen. Break-Even bei Straddle = Strike +/- Prämie. Bei 80 USD Prämie: Break-Even bei 370 oder 530 USD. 20% Anstieg = 540 USD > 530 Break-Even → sollte knapp profitabel sein in diesem Beispiel."
+    }
+  ]
+}

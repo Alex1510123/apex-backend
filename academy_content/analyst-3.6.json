@@ -1,0 +1,71 @@
+{
+  "id": "analyst-3.6",
+  "track_id": "analyst",
+  "title": "Earnings Call Analyse",
+  "subtitle": "Was zu lesen, Tonalität und Guidance-Qualität beurteilen",
+  "duration_min": 9,
+  "sort_order": 9,
+  "status": "available",
+  "learning_goals": [
+    "Die Struktur eines Earnings Calls kennen und systematisch analysieren",
+    "Management-Tonalität als weichen Indikator interpretieren",
+    "Guidance-Qualität (konservativ vs. aggressiv) über Zeit bewerten",
+    "Kritische Analysten-Fragen und ihre Aussagekraft einordnen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Die Anatomie eines Earnings Calls",
+      "body": "Jede Quartalsberichterstattung börsennotierter Unternehmen endet mit einem Earnings Call — einem telefonischen oder webcast-basierten Gespräch zwischen Management, Analysten und Investoren. Diese Calls sind öffentlich und deren Transkripte werden oft sofort veröffentlicht. Für Analysten sind sie Informationsquellen ersten Ranges — nicht nur wegen der Zahlen, sondern wegen allem, was zwischen den Zahlen liegt.\n\nStruktur eines typischen Earnings Calls: Zunächst gibt das Investor Relations-Team einen organisatorischen Hinweis mit Forward-Looking-Statements-Disclaimer. Dann spricht der CEO mit einem Management-Statement — ca. 10-20 Minuten, qualitative Highlights, strategische Entwicklungen, oft gut vorbereitet und optimistisch formuliert. Anschliessend übernimmt der CFO die Finanzzahlen: Umsatz, Margen, Capex, Cashflow, und — am wichtigsten — Guidance für das nächste Quartal. Nach den vorbereiteten Statements beginnt die Q&A-Runde mit Sell-Side-Analysten: Hier kann das Management nicht scripted antworten und echte Informationen durchsickern.\n\nApples Earnings Calls sind bekannt für ihre Präzision und Kürze. Tim Cook und der CFO (zuletzt Luca Maestri, ab 2024 Kevan Parekh) kommunizieren wenig, aber konsistent. NVIDIA-Calls unter Jensen Huang sind das Gegenteil: enthusiastisch, voll technischer Details zu Blackwell-Architekturen und Datacenter-Nachfrage — ein Technologievisionär am Mikrofon."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Guidance und Revision",
+      "body": "Guidance ist die Prognose des Managements für das nächste Quartal oder Geschäftsjahr — typischerweise Umsatz und EPS. Guidance-Erhöhung (Raise) ist positiv und treibt Kurse. Guidance-Senkung (Cut) ist oft stärker bestraft als die entsprechende Verfehlung der aktuellen Zahlen. Unternehmen, die konservativ guidieren und dann konsistent übertreffen ('Beat and Raise' Pattern), werden vom Markt mit Bewertungsprämien belohnt."
+    },
+    {
+      "type": "text",
+      "heading": "Tonalität, Wortwahl und was Management wirklich sagt",
+      "body": "Erfahrene Analysten lesen Earnings Call Transkripte nicht nur nach Zahlen — sie analysieren Sprache. Bestimmte Muster verraten mehr als der optimistische Einleitungstext.\n\nPositive Signale in der Sprache: Spezifische Zahlen statt vager Formulierungen. Management nennt konkrete Kunden, Projekte oder geographische Märkte — das deutet auf tatsächliches Wissen über das Geschäft hin. 'Acceleration' und 'momentum' in Bezug auf den Auftragseingang. Fragen werden direkt beantwortet.\n\nNegative Signale: Ausweichende Antworten — 'Wir kommentieren keine spezifischen Marktdynamiken.' Häufige Verwendung von Passiv-Konstruktionen oder Konjunktiven: 'Es könnte sein, dass...' Plötzlicher Wechsel zu langfristigen Formulierungen wenn nach kurzfristiger Performance gefragt wird. CEO und CFO unterbrechen sich gegenseitig oder korrigieren einander. Managern fällt es schwer, einfache Fragen über Margen oder Kundenverluste zu beantworten.\n\nBesonders aufschlussreich: Was wird NICHT angesprochen? Wenn ein CEO in einem Call über alle Produktlinien spricht, ausser einer — genau diese wird die sein, die Probleme hat. Analysten, die mit dem Unternehmen vertraut sind, fragen gezielt nach den Schwachstellen. Wenn das Management diese Fragen umgeht oder auf später verweist, ist das ein Warnsignal. Das Prinzip: Nicht alles, was in einem Earnings Call gesagt wird, ist wichtig — aber fast alles, was nicht gesagt wird, ist es."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Beat and Raise Pattern",
+      "body": "Das 'Beat and Raise' Pattern beschreibt Unternehmen, die im aktuellen Quartal die Erwartungen übertreffen (Beat) und gleichzeitig die Guidance für die Zukunft erhöhen (Raise). Dieser Kombination folgt fast immer ein Kursanstieg. Noch wertvoller über Zeit: Unternehmen, die konsistent konservativ guidieren und dann wiederholt schlagen — der Markt lernt, ihrer Guidance zu misstrauen und zahlt Prämien für die Erwartung des Beats."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Im Q&A-Teil eines Earnings Calls fragt ein Analyst nach der Entwicklung im europäischen Markt. Der CEO antwortet: 'Europa bleibt ein wichtiger Wachstumsmarkt für uns. Wir sind sehr zufrieden mit unserer strategischen Position.' Keine Zahlen, keine Spezifika. Was signalisiert diese Antwort?",
+      "options": [
+        "Europa läuft gut — der CEO hätte sonst negative Zahlen genannt",
+        "Möglicherweise läuft Europa schlecht — ausweichende Antworten ohne Zahlen sind oft ein Warnsignal",
+        "Das Management darf aus rechtlichen Gründen keine regionalen Zahlen nennen",
+        "Europäische Märkte sind für das Unternehmen zu unwichtig, um spezifisch kommentiert zu werden"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Erfahrene Analysten wissen: Wenn das Management begeistert über eine Region oder Produktlinie ist, nennt es Zahlen und Beispiele. Vage, optimistisch klingende Antworten ohne Substanz deuten oft darauf hin, dass die genannte Region underperformt. Das Management vermeidet spezifische Zahlen, um nicht offiziell eine schwache Entwicklung zugeben zu müssen."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was beschreibt das 'Beat and Raise' Pattern?",
+      "options": [
+        "Ein Unternehmen schlägt Kursrekorde und erhöht gleichzeitig seine Verschuldung",
+        "Ein Unternehmen übertrifft die Quartalserwartungen und erhöht gleichzeitig die Zukunfts-Guidance",
+        "Ein Unternehmen erhöht Dividenden (Raise) nach einem Kursrückgang (Beat)",
+        "Ein Analyst überarbeitet (Raises) sein Kursziel nachdem das Unternehmen die Erwartungen verfehlt (Beat) hat"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Beat and Raise ist das idealste Szenario in einem Earnings Call: Das Unternehmen übertrifft die Erwartungen für das abgelaufene Quartal (Beat) und signalisiert gleichzeitig, dass die nächsten Quartale noch besser werden (Raise der Guidance). Dieser Kombination folgt fast immer ein Kursanstieg, weil sowohl die aktuellen als auch die zukünftigen Erwartungen positiv überrascht werden."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie lesen das Transkript eines Earnings Calls eines Softwareunternehmens. Der CEO erwähnt 'KI-Integration' 17 Mal im Eröffnungsstatement, aber keine einzige konkrete KI-Umsatzzahl. Der CFO gibt Guidance von 'mid-single-digit growth' für das Folgequartal, ohne Gesamtjahresguidance zu geben. Ein Analyst fragt nach dem Enterprise-Segment, das CEO und CFO beide beantworten — dabei widersprechen sich ihre Zahlen leicht. Welche spezifischen Schlüsse ziehen Sie aus diesen drei Beobachtungen, und was würden Sie als nächstes prüfen?",
+      "explanation": "Drei Beobachtungen analysieren: 1) KI 17x erwähnt ohne Zahlen — Marketingstrategie oder KI-Hype ohne echten Umsatzbeitrag. Verdacht: KI als Narrativ ohne Substanz ('AI-washing'). Prüfen: Welcher Anteil des Umsatzes kommt explizit aus KI-Produkten? 2) Nur kurzfristige Guidance ohne Jahres-Outlook — könnte Unsicherheit über H2 signalisieren oder dass Management die Jahresziele nicht mehr confident ist. 3) CEO/CFO-Widerspruch beim Enterprise-Segment: ernstes Signal für interne Kommunikationsprobleme oder schlechte Unternehmenssteuerung. Prüfschritte: Enterprise-Segment in 10-Q separat analysieren, KI-Umsätze in PR-Releases prüfen, Transkript mit Vorquartalen vergleichen ob Konsistenz besteht."
+    }
+  ]
+}

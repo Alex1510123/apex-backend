@@ -1,0 +1,71 @@
+{
+  "id": "foundation-3.4",
+  "track_id": "foundation",
+  "title": "Steuern auf Kapitalerträge",
+  "subtitle": "KESt, Verlustverrechnung und steueroptimiertes Investieren",
+  "duration_min": 8,
+  "sort_order": 18,
+  "status": "available",
+  "learning_goals": [
+    "Die Kapitalertragsteuer in Österreich (27,5% KESt) und Deutschland (25% Abgeltungssteuer) kennen",
+    "Verlustverrechnung als steuerliches Optimierungsinstrument verstehen",
+    "Den deutschen Freistellungsauftrag und seine korrekte Nutzung kennen",
+    "Steueroptimierungsstrategien wie Tax-Loss Harvesting anwenden"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Kapitalertragsteuern in Österreich und Deutschland",
+      "body": "Kapitalerträge — also Dividenden, Zinsen und realisierte Kursgewinne — sind in den meisten europäischen Ländern steuerpflichtig. Die gute Nachricht: In Österreich und Deutschland sind die Steuersätze pauschal und meist niedriger als der persönliche Einkommenssteuersatz.\n\nIn Österreich gilt die Kapitalertragsteuer (KESt) von 27,5% auf Dividenden und Kursgewinne. In Deutschland beträgt die Abgeltungssteuer 25% zuzüglich 5,5% Solidaritätszuschlag darauf — effektiv also 26,375% (für Kirchensteuerpflichtige etwas mehr). Beide Länder erheben diese Steuer an der Quelle: Bei einem österreichischen Broker wird die KESt automatisch einbehalten.\n\nKonkretes Rechenbeispiel: Ein Anleger realisiert 2.000 Euro Kursgewinn durch den Verkauf von NVIDIA-Aktien. In Österreich werden davon 27,5%, also 550 Euro, als KESt fällig — es verbleiben 1.450 Euro netto. In Deutschland (ohne Soli) wären es 500 Euro Steuer (25%) → 1.500 Euro netto. Der Freibetrag in Deutschland (Sparerpauschbetrag) von 1.000 Euro (ab 2023, davor 801 Euro) für Einzelpersonen und 2.000 Euro für Ehepaare ist dabei nicht vergessen — bis zu diesem Betrag sind Kapitalerträge steuerfrei."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Freistellungsauftrag",
+      "body": "In Deutschland können Anleger einen Freistellungsauftrag bei ihrer Bank einrichten — bis zu 1.000 Euro Kapitalerträge pro Jahr (Sparerpauschbetrag) bleiben steuerfrei. Wichtig: Der Betrag gilt pro Person und muss auf alle Banken aufgeteilt werden, bei denen man Konten hat. Wer vergisst, einen Freistellungsauftrag einzurichten, zahlt Steuern, die er sich später per Steuererklärung zurückholen kann — aber nur durch aktives Handeln."
+    },
+    {
+      "type": "text",
+      "heading": "Verlustverrechnung und Tax-Loss Harvesting",
+      "body": "Ein oft unterschätztes Steuerinstrument ist die Verlustverrechnung: Realisierte Verluste können mit realisierten Gewinnen verrechnet werden. Wer im selben Steuerjahr 3.000 Euro Gewinn mit Apple-Aktien und 1.500 Euro Verlust mit einer anderen Position gemacht hat, zahlt nur auf die Netto-2.000 Euro Gewinn KESt — also 550 Euro statt 825 Euro.\n\nTax-Loss Harvesting ist die aktive Strategie, Verlustpositionen gegen Jahresende gezielt zu realisieren, um steuerliche Vorteile zu heben — auch wenn man an der Position langfristig festhält. Das bedeutet: Man verkauft die verlustige Aktie kurz vor Jahresende, realisiert den steuerlichen Verlust, und kann dasselbe oder ein ähnliches Wertpapier direkt wieder kaufen. Wichtig: In Deutschland und Österreich gibt es keine Wash-Sale-Regel wie in den USA — man kann theoretisch am selben Tag zurückkaufen.\n\nLangfristiges Halten zahlt sich steuerlich aus, weil nicht realisierte Gewinne nicht besteuert werden — der Steueraufschub wirkt wie ein zinsloses Darlehen vom Staat. Wer Apple-Aktien 20 Jahre hält und erst dann verkauft, hat den Steuerbetrag in der Zwischenzeit für sich arbeiten lassen. In Österreich gibt es keine Spekulationsfrist mehr — Gewinne aus Aktienverkäufen sind immer mit 27,5% KESt belastet, egal wie lange man gehalten hat. In Deutschland gilt seit 2009 ebenfalls kein Haltefristen-Vorteil mehr."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Thesaurierend vs. Ausschüttend",
+      "body": "Thesaurierende ETFs reinvestieren Erträge automatisch ohne Ausschüttung — in Deutschland gilt jedoch die Vorabpauschale, eine fiktive Mindestbesteuerung auch ohne Ausschüttung. Ausschüttende ETFs zahlen Dividenden aus, die sofort KESt/Abgeltungssteuer auslösen. Thesaurierende ETFs bieten einen kleinen steuerlichen Vorteil durch den Zinseszins-Aufschub, aber der Unterschied ist bei der deutschen Vorabpauschale geringer als in anderen Ländern."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Ein Anleger in Österreich realisiert 4.000 Euro Kursgewinn aus NVIDIA-Aktien. Wie viel KESt ist fällig?",
+      "options": [
+        "800 Euro (20% KESt)",
+        "1.000 Euro (25% Abgeltungssteuer)",
+        "1.100 Euro (27,5% KESt)",
+        "0 Euro, da Kursgewinne in Österreich steuerfrei sind"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. In Österreich gilt auf Kursgewinne und Dividenden aus Aktien ein KESt-Satz von 27,5%. Bei 4.000 Euro Gewinn sind das 1.100 Euro Steuer — es verbleiben 2.900 Euro netto. Die KESt wird in Österreich automatisch vom Broker einbehalten, sofern das Depot bei einer österreichischen Bank geführt wird."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was versteht man unter Tax-Loss Harvesting?",
+      "options": [
+        "Das Verschieben von Gewinnen auf das nächste Steuerjahr durch Nicht-Verkaufen",
+        "Das gezielte Realisieren von Verlustpositionen vor Jahresende, um steuerliche Gewinne zu reduzieren",
+        "Das vollständige Vermeiden von Kapitalertragsteuer durch langfristiges Halten",
+        "Eine staatliche Steuererstattung für langjährige Anleger"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Beim Tax-Loss Harvesting werden Verlustpositionen bewusst vor Jahresende verkauft, um die realisierten Verluste mit Gewinnen im selben Jahr zu verrechnen. Das reduziert die Steuerlast im laufenden Jahr. In Deutschland und Österreich kann man das Wertpapier danach sofort zurückkaufen (keine Wash-Sale-Regel), um die gewünschte Portfolio-Position beizubehalten."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Ein Anleger in Deutschland hat im Jahr 2024 folgende Kapitalerträge: 3.500 Euro Kursgewinn (Amazon-Aktien), 800 Euro Dividenden (verschiedene Aktien), und 1.200 Euro Kursverlust (Telekommunikationsaktien). Er hat keinen Freistellungsauftrag beantragt. Berechnen Sie seine tatsächliche Steuerlast und erklären Sie, welche Schritte er unternehmen sollte, um in Zukunft steueroptimierter zu agieren.",
+      "explanation": "Berechnung: Netto-Kapitalerträge = 3.500 + 800 - 1.200 = 3.100 Euro. Sparerpauschbetrag 1.000 Euro (nicht genutzt, da kein Freistellungsauftrag beantragt). Steuerpflichtig: 3.100 Euro. Abgeltungssteuer 25% + 5,5% Soli = 26,375% auf 3.100 Euro = ca. 818 Euro Steuer. Hätte er den Freistellungsauftrag beantragt: nur auf 2.100 Euro Steuer = ca. 554 Euro — Ersparnis ca. 264 Euro. Optimierungsschritte: Freistellungsauftrag beantragen, Verluste aktiv verrechnen lassen (NV-Bescheinigung oder Steuererklärung), Tax-Loss Harvesting für künftige Jahre planen, thesaurierende ETFs erwägen."
+    }
+  ]
+}

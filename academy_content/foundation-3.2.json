@@ -1,0 +1,71 @@
+{
+  "id": "foundation-3.2",
+  "track_id": "foundation",
+  "title": "Kognitive Verzerrungen beim Investieren",
+  "subtitle": "Confirmation Bias, Anchoring und Loss Aversion",
+  "duration_min": 8,
+  "sort_order": 16,
+  "status": "available",
+  "learning_goals": [
+    "Die wichtigsten kognitiven Verzerrungen beim Investieren kennen und benennen",
+    "Loss Aversion nach Kahneman und Tversky verstehen und im eigenen Verhalten erkennen",
+    "Anchoring und Recency Bias als aktive Fallen im Investitionsprozess identifizieren",
+    "Konkrete Strategien entwickeln, um kognitive Biases zu kompensieren"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Warum unser Gehirn schlechte Investment-Entscheidungen trifft",
+      "body": "Menschen sind keine rationalen Entscheider — wir sind emotionale Wesen mit kognitiven Abkürzungen, die in der Evolution nützlich waren, aber an der Börse systematisch zu Fehlern führen. Die Verhaltensökonomen Daniel Kahneman und Amos Tversky erhielten 2002 den Nobelpreis für ihre Forschung zu diesen systematischen Denkfehlern.\n\nConfirmation Bias ist der vielleicht häufigste Fehler: Wir suchen unbewusst Informationen, die unsere bestehende Meinung bestätigen, und ignorieren oder werten widersprüchliche Informationen ab. Ein Investor, der an Tesla glaubt, liest begeistert jeden bullischen Artikel über Elon Musk und übergeht kritische Berichte über Absatzprobleme oder Konkurrenz von BYD. Das Ergebnis: Ein verzerrtes Lagebild, das die tatsächlichen Risiken unterschätzt.\n\nRecency Bias führt dazu, dass wir aktuelle Ereignisse übergewichten. Nach einer langen Hausse erwarten wir weitere Kursgewinne; nach einem Crash extrapolieren wir weitere Verluste. In beiden Fällen entscheiden wir auf Basis der jüngsten Erfahrung — und nicht auf Basis langfristiger Statistiken und Grundlagen."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Loss Aversion",
+      "body": "Kahneman und Tverskys Prospect Theory zeigt: Verluste schmerzen psychologisch etwa doppelt so stark wie gleich große Gewinne erfreuen. 500 Euro zu verlieren fühlt sich schlimmer an als 500 Euro zu gewinnen sich gut anfühlt. Das führt dazu, dass Anleger Verlustpositionen viel zu lang halten (um den 'Verlust nicht zu realisieren') und Gewinnpositionen zu früh verkaufen — genau das Gegenteil der rationalen Strategie."
+    },
+    {
+      "type": "text",
+      "heading": "Anchoring und der Break-Even-Trap",
+      "body": "Anchoring (Ankereffekt) beschreibt die Tendenz, Entscheidungen an einem ersten Referenzwert auszurichten — selbst wenn dieser nicht mehr relevant ist. Das klassische Investitionsbeispiel: Ein Anleger kauft eine Aktie für 100 EUR. Sie fällt auf 50 EUR — ein Minus von 50%. Nun denkt er: 'Ich verkaufe erst, wenn sie wieder auf 100 EUR steht.' Der Kaufpreis von 100 EUR ist sein Anker, obwohl er für die Frage, ob die Aktie jetzt kaufenswert ist, irrelevant ist.\n\nDas Unternehmen dahinter hat sich vielleicht fundamental verschlechtert. Die richtige Frage lautet: Würde ich diese Aktie heute zu 50 EUR kaufen? Wenn die Antwort Nein ist, sollte man verkaufen — unabhängig vom ursprünglichen Kaufpreis. Die Steueroptimierung kann sogar einen Verkaufsgrund liefern: Realisierte Verluste können mit Gewinnen verrechnet werden.\n\nWie bekämpft man diese Biases aktiv? Einige bewährte Methoden: Investmentthesen schriftlich dokumentieren (und regelmäßig kritisch hinterfragen, nicht bestätigen). Eine klare Exit-Strategie vor dem Kauf definieren — wann und warum man verkauft. Einen 'Advocatus Diaboli' suchen (jemanden, der die Gegenposition vertritt). Regelbasierte Systeme wie automatisches Rebalancing einsetzen, um emotionale Entscheidungen zu minimieren. Und: Verlustpositionen regelmäßig mit der Frage 'Würde ich diese Position heute kaufen?' neu beurteilen."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Disposition Effect",
+      "body": "Der Disposition Effect fasst Loss Aversion und Anchoring zusammen: Anleger tendieren dazu, Gewinneraktien zu früh zu verkaufen (Gewinne sichern) und Verlustaktien zu lange zu halten (Verlust nicht realisieren wollen). Studien zeigen, dass dies systematisch die Portfolio-Rendite senkt — man verkauft oft die besten Aktien und behält die schlechtesten."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Ein Anleger kauft eine Aktie für 80 EUR. Sie fällt auf 40 EUR. Obwohl das Unternehmen schwächelt, hält er die Aktie, 'bis sie wieder bei 80 EUR ist'. Welche kognitive Verzerrung beschreibt dieses Verhalten?",
+      "options": [
+        "Confirmation Bias — er sucht nur positive Nachrichten über die Aktie",
+        "Anchoring und Loss Aversion — der Kaufpreis als irrelevanter Anker, kombiniert mit der Weigerung, den Verlust zu realisieren",
+        "Recency Bias — er extrapoliert den aktuellen Trend in die Zukunft",
+        "Overconfidence Bias — er überschätzt seine Fähigkeit, den Turnaround vorherzusagen"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Der Kaufpreis von 80 EUR fungiert als Anker (Anchoring), obwohl er für die aktuelle Investitionsentscheidung irrelevant ist. Gleichzeitig verhindert Loss Aversion den Verkauf, weil der Verlust 'noch nicht realisiert' ist — als ob ein nicht realisierter Verlust kein echter Verlust wäre. Die rationale Frage lautet: Würde ich diese Aktie heute zu 40 EUR kaufen?"
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was besagt Loss Aversion nach Kahneman und Tversky?",
+      "options": [
+        "Investoren verlieren häufiger als sie gewinnen, weil Märkte langfristig fallen",
+        "Der Schmerz eines Verlustes wird psychologisch etwa doppelt so stark empfunden wie die Freude eines gleich großen Gewinns",
+        "Anleger sollten Verluste immer sofort realisieren, um psychologischen Schaden zu minimieren",
+        "Risiko sollte grundsätzlich vermieden werden, weil die negativen Konsequenzen stets überwiegen"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Kahneman und Tversky zeigten in ihrer Prospect Theory, dass Menschen Verluste und Gewinne asymmetrisch wahrnehmen: 500 Euro zu verlieren fühlt sich ungefähr doppelt so schlimm an wie 500 Euro zu gewinnen sich gut anfühlt. Diese Asymmetrie erklärt viele irrationale Investment-Entscheidungen — insbesondere das Festhalten an Verlustpositionen."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie beobachten, dass ein Freund ausschließlich Artikel und YouTube-Videos über Aktien schaut, die seine bestehenden Positionen bestätigen, und kritische Analysen ignoriert oder als 'Hater' abtut. Erklären Sie, welcher Bias hier vorliegt, warum er gefährlich ist, und schlagen Sie drei konkrete Methoden vor, wie Ihr Freund diesen Bias in seinem Investmentprozess aktiv bekämpfen kann.",
+      "explanation": "Confirmation Bias identifizieren und erklären: Gehirn filtert Information um Komfort zu behalten, vermeidet kognitive Dissonanz. Gefahr: verzerrtes Risikobild, Überkonzentration, späte Reaktion auf Negativentwicklungen. Methoden: 1) Actively seek out bear cases — gezielt nach Kritikern der Position suchen und deren Argumente ernst nehmen. 2) Investment-These schriftlich dokumentieren mit konkreten Bedingungen, wann die These widerlegt ist. 3) Regelmäßiger 'Devil's Advocate' — Freund oder Forum suchen, der die Gegenposition vertritt. 4) Checklist vor Kauf mit Pflichtlektüre von Bären-Analysen."
+    }
+  ]
+}

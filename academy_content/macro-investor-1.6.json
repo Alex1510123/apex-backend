@@ -1,0 +1,71 @@
+{
+  "id": "macro-1.6",
+  "track_id": "macro_investor",
+  "title": "Geopolitik & Märkte",
+  "subtitle": "Sanktionen, Energiekrisen und Safe Haven Flows",
+  "duration_min": 9,
+  "sort_order": 6,
+  "status": "available",
+  "learning_goals": [
+    "Direkten und indirekten Einfluss von Geopolitik auf Finanzmärkte verstehen",
+    "Safe Haven Assets und ihre typische Krisenreaktion kennen",
+    "Sanktionen als Marktrisiko am Russland-2022-Beispiel einordnen",
+    "Energie als geopolitische Waffe und ihre Investitionsimplikationen verstehen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Wie Geopolitik in Marktpreise übersetzt wird",
+      "body": "Geopolitik war lange Zeit ein Nischenthema für Investoren — die Globaliserung schien politische Risiken zu dämpfen. Das Jahrzehnt von 2020-2030 hat diese Annahme zerstört. COVID-19 zeigte die Verwundbarkeit globaler Lieferketten. Der russische Angriff auf die Ukraine im Februar 2022 bewies, dass geopolitische Eskalation Märkte in Stunden, nicht Monate, transformieren kann.\n\nGeopolitik beeinflusst Märkte auf zwei Wegen. Direkt: Energiepreise (Ukraine-Krieg → russisches Gas aus Europa → Gaspreis verfünffacht sich in Europa), Lieferkettenstörungen (Taiwan-Streit → Chip-Engpässe → Automobil-Produktion reduziert), Handelsembargos (Sanktionen gegen Russland → Metallpreise für Nickel, Palladium springen), Währungsabwertungen (betroffene Länder verlieren Investorenvertrauen). Indirekt: Risk-Off Sentiment (geopolitische Unsicherheit führt generell zu Risikoabbau), höhere Risikoprämien für bestimmte Regionen oder Sektoren, Rüstungsausgaben steigen (Rüstungsunternehmen wie Rheinmetall profitieren).\n\nDie entscheidende Frage für Investoren: Ist das geopolitische Ereignis ein kurzzeitiger Schock (Markt überreagiert, dann Erholung) oder eine strukturelle Veränderung (neue langfristige Realität)? Der Golfkrieg 1990 war ein kurzer Schock — Öl stieg, Märkte fielen, dann schnelle Erholung. Der Ukraine-Krieg 2022 war eine strukturelle Verschiebung — europäische Energiepolitik, Rüstungsausgaben und Lieferketten wurden dauerhaft verändert."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Safe Haven Assets",
+      "body": "Safe Haven Assets sind Anlagen, in die Investoren in Krisenzeiten flüchten, weil sie als wertstabil oder wertsteigernd gelten: Gold (inflationsunabhängiger, politisch neutraler Wertspeicher), US-Staatsanleihen (globale Reserveanlagen, höchste Kreditqualität), Schweizer Franken CHF (politisch neutrales Land, stabile Wirtschaft), Japanischer Yen JPY (Japan als Nettogläubigernation — Kapital kehrt bei Krisen nach Japan zurück), USD (globale Leitwährung, Risk-Off bedeutet Dollar-Nachfrage). Diese Assets steigen typischerweise, wenn Aktien fallen."
+    },
+    {
+      "type": "text",
+      "heading": "Russland 2022: Wenn ein Markt über Nacht auf null gesetzt wird",
+      "body": "Am 24. Februar 2022 griff Russland die Ukraine an. Was folgte, war für westliche Anleger in russischen Assets katastrophal. Der MSCI Russia Index — der russische Aktienmarkt für internationale Investoren — verlor innerhalb von wenigen Tagen über 90% und wurde schliesslich auf null gesetzt, weil westliche Anleger keine russischen Aktien mehr handeln durften. Russische Anleihen wurden unhandelbar. Der Rubel kollabierte initial um 30-40%.\n\nWer in russischen ETFs (z.B. VanEck Russia ETF) oder in russischen Staatsanleihen (OFZ) investiert war, erlebte Totalverlust oder annähernden Totalverlust. Das Risiko: Sanktionen können einen Markt buchstäblich über Nacht schliessen.\n\nDer DAX reagierte ebenfalls heftig: In den drei Wochen nach dem Angriff (25. Februar bis 15. März 2022) fiel der DAX von rund 15.200 auf etwa 12.900 Punkte — ein Rückgang von knapp 15% in drei Wochen. Gold stieg in diesem Zeitraum um etwa 8% — klassisches Safe Haven-Verhalten. Brent-Rohöl sprang von 95 USD auf über 130 USD/Barrel (+37%) — Russland lieferte vor dem Krieg etwa 12% des globalen Ölangebots.\n\nDie Lektion für Makro-Investoren: Geopolitische Risikoprämien sind oft unterbezahlt. Russland-Assets handelten vor dem Krieg mit attraktiven KGVs und hohen Dividendenrenditen — aber das geopolitische Risiko war nicht eingepreist. Geografische Konzentration in politisch instabilen Regionen erhöht Tail-Risiken dramatisch. Safe Haven Allokationen (Gold 5-10% des Portfolios, Schweizer Franken-Anleihen) sind deshalb nicht nur renditeoptimierend, sondern eine Form der Versicherung gegen Schwarze-Schwan-Ereignisse."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Tail Risk und Black Swan",
+      "body": "Tail Risk bezeichnet das Risiko seltener, extremer Ereignisse — jene 2-3% am Ende der Wahrscheinlichkeitsverteilung (dem 'Tail'). Nassim Taleb's 'Black Swan' beschreibt unvorhersehbare Ereignisse mit extremen Auswirkungen: COVID-19, der Lehman-Kollaps, der Ukraine-Krieg. Portfolios, die auf Normalverteilungs-Szenarien optimiert sind, sind für Tail Events nicht ausgelegt. Daher sind explizite Hedges (Gold, Safe Haven Währungen, Put-Optionen) sinnvoll."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Nach dem russischen Angriff auf die Ukraine stieg Gold +8%, fiel der DAX -15%, stieg Öl +37%. Welches Muster illustriert das?",
+      "options": [
+        "Inflation-Hedging: Gold steigt bei Energiepreisanstieg",
+        "Safe Haven Flight: In Krisenzeiten fliesst Kapital in Gold, aus risikobehafteten Anlagen (DAX) heraus, Öl steigt durch Angebotsschock",
+        "Zyklische Sektorrotation: Energie wird bevorzugt, Industrie gemieden",
+        "Währungseffekt: Schwächerer Euro treibt alle nicht-Euro-Assets"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Das klassische Geopolitik-Krisenmuster: Risk-Off-Sentiment treibt Kapital in sichere Häfen (Gold +8%, US-Staatsanleihen gestiegen). Risikoassets fallen (DAX -15% — Europa direkt exponiert). Energiepreise steigen durch Angebotsschock (Russland liefert 12% des globalen Öls — Sanktionen und Unsicherheit trieben Öl auf 130 USD)."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Westliche Anleger in russischen ETFs erlitten 2022 Totalverluste. Welches Investmentprinzip hätte dieses Risiko begrenzt?",
+      "options": [
+        "Höheres Leverage — mehr Hebel ermöglicht schnellere Reaktion auf Krisen",
+        "Geografische Diversifikation — kein einzelnes Land sollte mehr als 5-10% eines Portfolios ausmachen, besonders nicht politisch instabile Märkte",
+        "Stop-Loss-Orders auf russische ETFs hätten automatisch verkauft, bevor der Markt geschlossen wurde",
+        "Russische Aktien mit niedrigem KGV sind immer günstiger bewertet und daher sicherer"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Geografische Konzentration in einem politisch exponieren Markt ist ein Tail-Risk, das durch Diversifikation begrenzt wird. Wenn Russland max. 3-5% eines Portfolios ausmacht, ist der Schaden eines 90%-Verlusts 2,7-4,5% des Gesamtportfolios — schmerzhaft, aber nicht ruinös. Stop-Loss-Orders helfen nicht, wenn der Markt geschlossen wird (wie im Fall Russland)."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Die geopolitische Spannung zwischen den USA und China bezüglich Taiwan eskaliert. Als Makro-Investor: Welche Asset-Klassen würden Sie in einem Eskalations-Szenario über- und untergewichten? Berücksichtigen Sie Safe Haven Flows, Lieferketten-Exposition (Halbleiter), Energiemärkte und die Auswirkung auf chinesische und US-Aktien.",
+      "explanation": "Übergewichten: 1) Gold (klassischer Safe Haven, geopolitische Unsicherheit = Nachfrage). 2) US-Staatsanleihen / Kurzläufer (Risk-Off Flight). 3) CHF, JPY (Safe Haven Währungen). 4) Rüstungsunternehmen (Rheinmetall, Lockheed Martin, Raytheon — höhere Verteidigungsausgaben). 5) Energie-Alternativen zu China-exponierten Lieferketten. Untergewichten: 1) Halbleiter-Unternehmen mit Taiwan-Fertigungsrisiko (TSMC direct exposure — aber TSMC selbst hat Diversifikation angekündigt). 2) Chinesische Tech-Aktien (Regulierungsrisiko + direkte Kriegsrisiko). 3) Globale Logistik (Lieferkettenstörungen). 4) Exportorientierte EM, die stark von China-Handelsvolumen abhängen. Wichtig: Eskalations-Szenarien sind nicht linear — auch bei moderater Eskalation ohne direkten Konflikt sind massive Marktbewegungen möglich durch Sentiment-Schock."
+    }
+  ]
+}

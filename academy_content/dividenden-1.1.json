@@ -1,0 +1,71 @@
+{
+  "id": "div-1.1",
+  "track_id": "dividenden_investor",
+  "title": "Dividend Yield vs. Dividend Growth",
+  "subtitle": "Yield Trap erkennen und CAGR-Dividende als Qualitätsmerkmal",
+  "duration_min": 8,
+  "sort_order": 1,
+  "status": "available",
+  "learning_goals": [
+    "Dividend Yield korrekt berechnen und Yield Traps erkennen",
+    "Dividend Growth CAGR als Qualitaetsmerkmal und Compounding-Treiber verstehen",
+    "Total Return (Kursgewinn + Dividende) als Gesamtmassstab anlegen",
+    "Langfristigen Vergleich zwischen hoher Yield und hohem Wachstum selbst berechnen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Dividend Yield — die häufigste Dividendenkennzahl und ihre Tücken",
+      "body": "Die Dividendenrendite (Dividend Yield) ist die einfachste Dividendenkennzahl: Jahres-Dividende pro Aktie dividiert durch den aktuellen Aktienkurs. Wenn eine Aktie bei 50 Euro notiert und jährlich 2 Euro Dividende zahlt, beträgt der Yield 4%. Klingt einfach — und ist doch eine der am häufigsten misverstandenen Kennzahlen.\n\nDas Problem: Ein hoher Yield kann zwei völlig verschiedene Dinge bedeuten. Entweder zahlt das Unternehmen tatsächlich eine hohe Dividende aus starken Cashflows — das ist wünschenswert. Oder: Der Aktienkurs ist gefallen, ohne dass die Dividende entsprechend angepasst wurde — und der optisch attraktive Yield täuscht über tiefergehende Probleme hinweg. Man spricht dann von einer 'Yield Trap'.\n\nEin Klassiker der Yield Trap: Eine Aktie, die bei 100 Euro mit 3% Yield handelte, fällt auf 70 Euro — vielleicht weil das Geschäftsmodell Probleme hat. Nun beträgt der Yield rechnerisch 4,3%. Anleger sehen eine 'günstigere' Aktie mit 'höherer' Dividendenrendite und kaufen — kurz bevor das Unternehmen die Dividende kürzt. Das schmerzhafteste Szenario: Kurs fällt weiter, Dividende wird gestrichen, Totalverlust der Einkommensstrategie."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Dividend Growth CAGR",
+      "body": "Dividend Growth CAGR (Compound Annual Growth Rate) misst, wie schnell ein Unternehmen seine Dividende über Zeit steigert. Eine Dividende von 1 Euro, die mit 10% CAGR wächst, verdoppelt sich in 7,2 Jahren (Rule of 72). Nach 20 Jahren: 6,73 Euro Dividende pro Aktie — bei Erstinvestition zum 1-Euro-Niveau ist der 'Yield on Cost' nun 6,73%. Dividendenwachstum ist der stärkste Zinseszins-Mechanismus im Dividenden-Investing."
+    },
+    {
+      "type": "text",
+      "heading": "Philip Morris 7% vs. Microsoft 0,8% — wer gewinnt nach 20 Jahren?",
+      "body": "Das Kernbeispiel für Dividend Yield vs. Dividend Growth: Philip Morris International (PM) zahlt eine Dividende von rund 7% Yield — optisch sehr attraktiv. Microsoft (MSFT) zahlt nur ca. 0,8% Yield. Oberflächlich scheint PM das bessere Dividendeninvestment.\n\nAber betrachten wir die Dividendenwachstumsraten: Philip Morris steigert seine Dividende in den letzten Jahren mit ca. 2-4% CAGR — kaum mehr als Inflation. Microsoft hingegen steigert seine Dividende mit 10-12% CAGR pro Jahr konsistent, unterstützt durch starkes FCF-Wachstum aus Azure Cloud, Office 365 und LinkedIn.\n\nBei einer Anfangsinvestition von 10.000 Euro und einem Zeithorizont von 20 Jahren: Philip Morris (7% initialer Yield, 3% Dividendenwachstum, begrenzte Kursgewinne durch schrumpfende Industrie): Gesamtrendite inklusive reinvestierter Dividenden: ca. 5-6% p.a. CAGR. Microsoft (0,8% initialer Yield, 11% Dividendenwachstum, starkes Kurswachstum durch Geschäftsmodell): Gesamtrendite: ca. 15-18% p.a. in der jüngeren Vergangenheit. Der Total Return von Microsoft übertrifft Philip Morris nach 10-15 Jahren deutlich — obwohl die initiale Yield von Microsoft nur ein Bruchteil ist.\n\nDie Lehre: Dividend Yield ist eine Momentaufnahme. Total Return (Kursgewinn + Dividende) über einen langen Zeithorizont ist die relevante Grösse. Und der wichtigste Treiber langfristiger Dividendenrenditen ist nicht die initiale Yield, sondern das Dividendenwachstum — kombiniert mit Unternehmensqualität, die dieses Wachstum nachhaltig macht."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Yield on Cost",
+      "body": "Yield on Cost (YoC) ist die Dividendenrendite berechnet auf Basis des ursprünglichen Kaufpreises, nicht des aktuellen Marktkurses. Wer Microsoft 2015 für 40 USD kaufte und heute 2,72 USD Dividende erhält, hat einen YoC von 6,8% — obwohl die aktuelle Yield am Markt nur 0,8% beträgt. Yield on Cost ist das Ergebnis von Dividendenwachstum über Zeit und zeigt die 'versteckten' Erträge langfristiger Dividendenanleger."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Eine Aktie fiel von 120 EUR auf 75 EUR, während die jährliche Dividende bei 5 EUR blieb. Was ist die wahrscheinlichste Interpretation des nun höheren Dividenden-Yields von 6,7%?",
+      "options": [
+        "Hervorragende Kaufgelegenheit — 6,7% Yield ist aussergewöhnlich attraktiv",
+        "Mögliche Yield Trap — der Kursrückgang könnte strukturelle Probleme anzeigen, und die Dividende könnte gefährdet sein",
+        "Die Aktie ist nun 37,5% günstiger — mit höherem Yield ist das Chance/Risiko-Verhältnis perfekt",
+        "Eine Dividende von 5 EUR bei 75 EUR Kurs zeigt, dass das Unternehmen generös ist — immer positiv"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Wenn ein Kurs stark fällt ohne Dividendenanpassung, steigt der Yield optisch — aber nicht aus stärke, sondern aus schwäche. Die kritische Frage: Warum ist der Kurs gefallen? Wenn das Problem strukturell ist (sinkende Gewinne, steigende Schulden, Marktanteilsverluste), wird das Unternehmen die Dividende früher oder später kürzen. Der hohe Yield wäre eine Falle. Immer zuerst die fundamentale Ursache des Kursrückgangs analysieren."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Unternehmen A: 5% Dividend Yield, 1% Dividendenwachstum p.a. Unternehmen B: 1% Dividend Yield, 12% Dividendenwachstum p.a. Nach wie vielen Jahren übersteigt B's Dividende je Aktie die von A — bei gleichem Anfangsbetrag?",
+      "options": [
+        "Nach 5 Jahren — Dividendenwachstum ist linear",
+        "Nach etwa 15-16 Jahren (Rule of 72: bei 12% verdoppelt sich B's Dividende alle 6 Jahre, während A kaum wächst)",
+        "Niemals — A zahlt immer mehr, weil der Yield-Vorsprung nie aufgeholt wird",
+        "Nach 30 Jahren — Dividendenwachstum wirkt erst sehr langfristig"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Nehmen wir an, A zahlt 5 EUR und B zahlt 1 EUR anfänglich. Bei 12% Wachstum verdoppelt sich B's Dividende alle 6 Jahre (72/12=6). Nach 6 Jahren: 2 EUR. Nach 12 Jahren: 4 EUR. Nach etwa 15-16 Jahren übersteigt B's Dividende die von A (die bei 1% Wachstum kaum gewachsen ist, von 5 EUR auf ~5,80 EUR nach 15 Jahren). Und der Kurs von B hat in dieser Zeit wahrscheinlich auch deutlich stärker zugelegt."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Ein Rentner plant, von Dividenden zu leben. Er investiert 200.000 EUR und hat die Wahl zwischen: A) Philip Morris (7% Yield, 2% Dividendenwachstum, stabiles aber schrumpfendes Geschäft) und B) MSFT + JNJ gemischt (1,5% Yield, 10% Dividendenwachstum). Er braucht heute 800 EUR monatliche Dividendeneinnahmen. Analysieren Sie beide Optionen aus kurzfristiger und langfristiger Perspektive — und empfehlen Sie unter Berücksichtigung der Inflation.",
+      "explanation": "Kurzfristige Analyse: A generiert sofort 14.000 EUR/Jahr (7% von 200.000 EUR) = 1.167 EUR/Monat — deutlich über dem Bedarf von 800 EUR. B generiert 3.000 EUR/Jahr = 250 EUR/Monat — erhebliche Lücke. Kurz- bis mittelfristig ist A besser für Einkommensbedarf. Langfristige Analyse: Inflation von 3% p.a. bedeutet, 800 EUR heute sind in 15 Jahren nur noch ~513 EUR in heutiger Kaufkraft. A's Dividende wächst nur 2% p.a. — unterschreitet Inflation. B's Dividende wächst 10% p.a. — nach 10 Jahren generiert B bereits ca. 7.700 EUR/Jahr = 644 EUR/Monat. Nach 15 Jahren ca. 12.400 EUR = 1.033 EUR/Monat und weiter steigend. Empfehlung: Kompromiss — 40% in hochyieldenden, stabilen Dividendeninstrumenten (zur Einkommensdeckung), 60% in Dividendenwachstum (Inflationsschutz und langfristiger Einkommensanstieg)."
+    }
+  ]
+}

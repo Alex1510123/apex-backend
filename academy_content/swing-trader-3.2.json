@@ -1,0 +1,71 @@
+{
+  "id": "swing-3.2",
+  "track_id": "swing-trader",
+  "title": "Volumen-Analyse",
+  "subtitle": "OBV, Volumen-Spikes und Distribution vs. Akkumulation",
+  "duration_min": 8,
+  "sort_order": 5,
+  "status": "available",
+  "learning_goals": [
+    "On-Balance Volume (OBV) als Divergenz-Indikator interpretieren",
+    "Volumen-Spikes als Reversal- und Ausbruchssignale erkennen",
+    "Akkumulation und Distribution als institutionelle Aktivitaet identifizieren",
+    "Schwache Ausbrueche ohne Volumen von starken Ausbruechen unterscheiden"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Volumen — die unterschätzte Dimension der Chartanalyse",
+      "body": "Preis sagt Ihnen, was passiert ist. Volumen sagt Ihnen, wie überzeugt der Markt davon war. Diese Unterscheidung ist fundamental für jeden Swing-Trader. Ein Kursanstieg von 3% bei normalem Volumen ist eine andere Information als ein Anstieg von 3% beim doppelten Durchschnittsvolumen — letzterer signalisiert echtes institutionelles Interesse, während ersterer möglicherweise nur mangelnde Verkäufer widerspiegelt.\n\nDer On-Balance Volume (OBV) Indikator, entwickelt von Joe Granville, kumuliert das Volumen: An Aufwärtstagen wird das Volumen addiert, an Abwärtstagen subtrahiert. Das Ergebnis ist eine Linie, die das 'Volumen-Momentum' über Zeit zeigt. Die wichtigste Anwendung ist die Divergenz-Analyse: Wenn der Kurs neue Hochs macht, aber der OBV nicht — ein bearisches Signal, weil die Kurserholung nicht durch proportionale Kaufkraft gestützt wird. Wenn der Kurs neue Tiefs macht, aber der OBV steigt oder stagniert — ein bullisches Signal, weil trotz fallender Kurse mehr Volumen auf Käuferseite ist.\n\nDiese Divergenzen sind besonders wertvoll, weil institutionelle Investoren (Fonds, Hedgefonds) ihre grossen Positionen nicht in einem Zug aufbauen können — sie kaufen oder verkaufen über Tage und Wochen. Das OBV-Muster zeigt diese langsame Akkumulation oder Distribution, bevor sie im Preis sichtbar wird."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Akkumulation vs. Distribution",
+      "body": "Akkumulation bezeichnet Phasen, in denen institutionelle Investoren langsam grosse Positionen aufbauen — oft bei steigendem Volumen ohne dramatischen Kursanstieg. Distribution ist das Gegenteil: Institutionelle verkaufen ihre Positionen schrittweise, oft während der Kurs noch seitwärts oder leicht steigt — aber das Volumen auf Abwärtstagen nimmt zu. Privatanleger kaufen oft in der Distributionsphase, unwissend, dass 'Smart Money' bereits verkauft."
+    },
+    {
+      "type": "text",
+      "heading": "Volumen-Spikes als Wendepunkt-Signal und NVDA-Fallstudie",
+      "body": "Ein Volumen-Spike — Handelsvolumen von 2x oder mehr des 20-Tage-Durchschnitts — ist eines der bedeutungsvollsten Signale in der technischen Analyse. Er zeigt: Etwas Wichtiges passiert. Die Interpretation hängt vom Kontext ab.\n\nEin Volumen-Spike nach einem langen Abwärtstrend kann ein Erschöpfungs-Signal sein (Capitulation): Panikverkäufer werfen alle ihre Positionen auf einmal ab. Wenn der Kurs danach nicht weiter fällt, obwohl das Volumen extrem war, signalisiert das, dass die Verkäufer erschöpft sind — ein mögliches Kaufsignal. Ein Volumen-Spike beim Ausbruch aus einer Konsolidierungsphase ist ein starkes Bestätigungssignal: Echte Käufer mit echtem Kapital bestätigen den Ausbruch.\n\nNVDA ist das Paradebeispiel für einen bestätigten Ausbruch: Als NVIDIA im Mai 2023 die 300-USD-Marke und dann die psychologisch wichtige 400-500-USD-Zone durchbrach, geschah das mit massivem Volumen — mehrfach des Durchschnitts. Das war kein 'schwacher Ausbruch', sondern institutionelle Nachfrage, ausgelöst durch den AI-Boom und NVIDIAs starke Quartalsergebnisse. Wer den Ausbruch mit hohem Volumen als Einstiegssignal interpretierte, partizipierte an einem der spektakulärsten Anstiege in der modernen Börsengeschichte: NVDA stieg 2023 von rund 140 USD auf über 490 USD.\n\nEin schwacher Ausbruch ohne Volumen — oft als 'False Breakout' bezeichnet — ist das häufigste und schmerzhafteste Muster für Swing-Trader. Die Aktie überschreitet kurz ein Resistance-Level, aber das Volumen ist unter dem Durchschnitt. Institutionelle stützen den Ausbruch nicht — und der Kurs fällt oft schnell zurück unter das gebrochene Level."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Average Volume als Referenz",
+      "body": "Durchschnittsvolumen ist die Basis für alle Volumenanalysen. Typisch verwendet man den 20-Tage- oder 50-Tage-Durchschnitt. Ein Volumen von 1,5x Durchschnitt gilt als erhöht. 2x oder mehr gilt als Volumen-Spike. Bei Ausbrüchen gilt: Mindestens 1,5x Durchschnittsvolumen für eine erste Bestätigung, 2x+ für eine starke Bestätigung. Unter 1x Durchschnitt bei einem vermeintlichen Ausbruch ist ein Warnsignal."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Eine Aktie erreicht neue Kurshochs, aber der OBV-Indikator ist rückläufig (divergiert nach unten). Was signalisiert das?",
+      "options": [
+        "Bullisches Signal — steigende Kurse bestätigen immer die Stärke des Trends",
+        "Bearisches Divergenz-Signal — Kursgewinne werden nicht durch proportionales Kaufvolumen gestützt",
+        "Neutrales Signal — OBV und Kurs divergieren häufig und haben keine Vorhersagekraft",
+        "Kaufsignal — OBV-Divergenz zeigt, dass Institutionelle akkumulieren"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Wenn der Kurs neue Hochs macht, aber OBV sinkt, bedeutet das: Die Kurserholung geschieht bei immer weniger Volumen auf der Käuferseite. Das ist ein klassisches bearisches Divergenz-Signal — der Trend verliert an Überzeugung. Institutionelle, die bei steigenden Kursen verkaufen, drücken das OBV nach unten, auch wenn der Preis noch steigt. Oft ein Frühzeichen einer Umkehr."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "NVDA brach im Mai 2023 mit dem 3-fachen Durchschnittsvolumen über die 400-USD-Marke aus. Warum ist das Volumen bei diesem Ausbruch entscheidend?",
+      "options": [
+        "Hohes Volumen bedeutet immer höhere Kursziele — es ist ein automatisches Kaufsignal",
+        "Hohes Volumen bestätigt, dass institutionelle Käufer den Ausbruch stützen — nicht nur Privatanleger-Momentum",
+        "Das Volumen ist beim Ausbruch irrelevant, entscheidend ist nur der Schlusskurs über dem Level",
+        "Hohes Volumen erhöht das Risiko eines False Breakouts"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Institutionelle Investoren (Fonds, ETFs, Pensionskassen) bewegen mit ihren Käufen das Volumen signifikant. Wenn ein Ausbruch mit massivem Volumen passiert, signalisiert das, dass 'Smart Money' in die Position geht — nicht nur Privatanleger, die einem Trend folgen. NVIDAs Ausbruch 2023 war getrieben durch Fonds-Umschichtungen in AI-Exposition und institutionelle FOMO."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie beobachten eine Aktie über 3 Wochen: In der ersten Woche fällt der Kurs um 5%, aber das Volumen an Aufwärtstagen übersteigt das Volumen an Abwärtstagen. In der zweiten Woche fällt der Kurs weiter, aber der OBV steigt. In der dritten Woche stabilisiert sich der Kurs mit sehr hohem Volumen an einem historischen Support-Level. Interpretieren Sie diese drei Signale zusammen und erklären Sie, was wahrscheinlich im Hintergrund passiert.",
+      "explanation": "Gesamtbild zeigt klassische Akkumulationsphase: Woche 1: Kurs fällt, aber mehr Volumen auf Aufwärtstagen — 'smart money' kauft trotz fallendem Trend (antizyklisch). Woche 2: OBV steigt trotz fallendem Kurs — institutionelle Käufer akkumulieren, bevor die Öffentlichkeit es bemerkt. Woche 3: Hohes Volumen an Support — Capitulation der letzten Panikverkäufer, gleichzeitig Absorption durch Käufer. Das Gesamtbild: Wyckoff-Akkumulationsphase. Institutionelle bauen Position auf, bevor der Kurs steigt. Für Swing-Trader: potenzieller Einstiegspunkt mit Stop-Loss unter dem Support-Level. Bestätigung gesucht: Ausbruch aus der Bodenformation mit hohem Volumen."
+    }
+  ]
+}

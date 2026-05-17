@@ -1,0 +1,71 @@
+{
+  "id": "div-1.3",
+  "track_id": "dividenden_investor",
+  "title": "Dividend Aristocrats & Kings",
+  "subtitle": "Kriterien, Europa-Äquivalente und Qualitätsfilter",
+  "duration_min": 8,
+  "sort_order": 3,
+  "status": "available",
+  "learning_goals": [
+    "Die Kriterien fuer Dividend Aristocrats und Dividend Kings kennen",
+    "Europaeische Dividenden-Champions identifizieren",
+    "Verstehen, warum Aristokraten in Krisenzeiten outperformen",
+    "Einen Qualitaetsfilter fuer die Aristokraten-Auswahl anwenden"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Was Dividend Aristocrats und Dividend Kings sind",
+      "body": "Dividend Aristocrats sind Unternehmen im S&P 500, die ihre Dividende mindestens 25 Jahre in Folge gesteigert haben — durch Rezessionen, Kriege, Zinszyklen und technologischen Wandel. Das ist eine ausserordentlich scharfe Qualitätshürde: Nur rund 60-70 der 500 S&P-Mitglieder erfüllen dieses Kriterium. Dividend Kings sind noch exklusiver: Sie haben die Dividende 50 Jahre oder länger in Folge erhöht. Diese Unternehmen haben durch den Dot-Com-Crash (2000-2002), die Finanzkrise (2008-2009) und COVID-19 (2020) hindurch ihre Dividenden nicht nur gehalten, sondern gesteigert.\n\nKlassische Dividend Kings: Johnson & Johnson (J&J, 61+ Jahre), Procter & Gamble (67+ Jahre), Coca-Cola (61+ Jahre), Colgate-Palmolive (60+ Jahre). Dividend Aristocrats darunter: Realty Income, NextEra Energy, McDonald's, 3M, Abbott Laboratories. Diese Liste liest sich wie ein Lehrbuch über bewährte Geschäftsmodelle.\n\nDas Geheimnis hinter langen Dividendenhistorien: Um die Dividende 50 Jahre lang zu steigern, braucht ein Unternehmen einen starken Economic Moat — einen Burggraben, der es vor Konkurrenz schützt. Coca-Cola hat den stärksten Branding-Moat der Welt: Über 100 Jahre Markenaufbau, vertrieben in 200+ Ländern. Procter & Gamble hat Skalenvorteile und Vertriebsnetzwerke, die kaum zu replizieren sind. Johnson & Johnson hat einen diversifizierten Pharma-Medtech-Consumer-Konzern mit entsprechend breitem Cashflow-Fundament."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: ProShares S&P 500 Dividend Aristocrats ETF (NOBL)",
+      "body": "NOBL ist der bekannteste ETF, der ausschliesslich Dividend Aristocrats enthält — gleichgewichtet, nicht marktkapitalisierungsgewichtet. Diese Gleichgewichtung verhindert, dass grosse Unternehmen den ETF dominieren. In Krisenphasen hat NOBL historisch den breiten S&P 500 outperformt — weil defensive, cash-starke Unternehmen weniger fallen. In starken Bullenmärkten underperformt NOBL typischerweise den S&P 500, da er keine Wachstumshöchstflieger enthält."
+    },
+    {
+      "type": "text",
+      "heading": "Europäische Dividenden-Champions und der Qualitätsfilter",
+      "body": "Europa hat keinen offiziellen 'Dividend Aristocrat' Status, aber es gibt die Kategorie der 'Euro Dividend Champions' — Unternehmen, die mindestens 10 Jahre (nach dem European Dividend Champions-Framework) die Dividende gesteigert haben. Europäische Aristokraten-Äquivalente:\n\nNestlé (NESN): Schweizer Nahrungsmittelriese, über 25 Jahre konsistentes Dividendenwachstum, starkes globales Markenportfolio (Nescafé, KitKat, Maggi). Allianz (ALV): Grösste europäische Versicherungsgruppe, konsistente Dividendenhistorie, starke Kapitalgeneration. LVMH: Luxusgüterkonzern mit Preissetzungsmacht — Louis Vuitton, Moët, Dior. L'Oréal: Kosmetik-Marktführer mit globalem Moat. Diese europäischen Champions sind weniger bekannt als ihre US-Gegenstücke, aber ebenso qualitativ.\n\nQualitätsfilter für Aristokraten-Auswahl: Erstens Moat-Stärke — hat das Unternehmen einen nachhaltigen Wettbewerbsvorteil (Branding, Netzwerkeffekte, Kostenführerschaft, Regulierungsschutz)? Zweitens FCF Payout Ratio unter 70% — ausreichend Puffer für Dividendensicherheit. Drittens Net Debt/EBITDA unter 2x — solide Bilanz übersteht Rezessionen ohne Dividendenkürzung. Viertens ROIC über 15% — zeigt, dass das Unternehmen Kapital effizient einsetzt. Fünftens Dividendenwachstum konsistent über 5% CAGR — schlägt Inflation und verdoppelt die Dividende in 14 Jahren. Unternehmen, die alle fünf Filter erfüllen, sind die Elite der Dividendeninvestments."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Economic Moat",
+      "body": "Der Economic Moat (Burggraben) ist Warren Buffetts Konzept für nachhaltige Wettbewerbsvorteile. Breite Moats: Starke Marken (Coca-Cola, Apple), Netzwerkeffekte (Visa, Mastercard), Wechselkosten (Microsoft Office, SAP), Kostenvorteile durch Skalierung (Amazon, Walmart). Unternehmen mit breiten Moats können Preise erhöhen, ohne Kunden zu verlieren — das ist Pricing Power, die Dividendenwachstum finanziert."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Was ist das Kriterium für einen Dividend Aristocrat im S&P 500?",
+      "options": [
+        "Dividendenrendite über 3% für mindestens 5 Jahre",
+        "Mindestens 25 Jahre konsekutive Dividendensteigerung als S&P 500-Mitglied",
+        "Dividendenzahlung seit Unternehmensgruendung ohne Unterbrechung",
+        "Gehört zu den Top 50 Dividendenzahlern im S&P 500 nach absoluter Höhe"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Dividend Aristocrat-Status erfordert: 1) Mitgliedschaft im S&P 500, 2) mindestens 25 aufeinanderfolgende Jahre Dividendenwachstum. Diese Kombination filtert auf ca. 60-70 Unternehmen. Dividend Kings gehen noch weiter: 50+ Jahre Steigerung. Wer die Dividende auch nur einmal kürzt, verliert sofort den Status."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Der NOBL ETF (S&P 500 Dividend Aristocrats) unterperformt in starken Bullenmärkten den S&P 500. Warum ist das kein Qualitätsproblem des ETF?",
+      "options": [
+        "NOBL ist in Bullenmärkten schlechter gemanaged als passive S&P 500 ETFs",
+        "Aristocrat-Unternehmen sind defensive Qualitätsunternehmen — in Bullenmärkten dominieren Wachstumstitel, die in NOBL nicht enthalten sind. Der Vorteil von NOBL liegt in Krisen und Seitwärtsmärkten",
+        "NOBL hat höhere Kosten, die im Bullenmarkt die Rendite auffressen",
+        "Dividend Aristocrats zahlen ihre Gewinne als Dividende aus, was das Wachstumspotential limitiert"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. NOBL enthält reife, defensive Qualitätsunternehmen — keine Hochflyer wie NVIDIA oder Tesla. In einer Rally, die von Wachstumsaktien angeführt wird, underperformt NOBL strukturell. Das ist kein Fehler, sondern das Design. Der Mehrwert von Aristocrat-ETFs liegt in Krisenresistenz: In 2008-2009 und 2022 fielen Aristocrats weniger stark als der breite Markt. Über vollständige Marktzyklen halten Aristocrat-Strategien gut mit."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Nestlé hat über 25 Jahre konsistentes Dividendenwachstum, ist globaler Nahrungsmittelmarktführer, hat aber in den Jahren 2022-2024 Marktanteilsprobleme durch günstigere Eigenmarken der Supermärkte erfahren, und der Aktienkurs hat underperformt. Analysieren Sie, ob Nestlé trotzdem in ein Dividend-Quality-Portfolio gehört, und welche Kriterien Sie prüfen würden.",
+      "explanation": "Prüfkriterien für Nestlé: 1) Economic Moat — trotz Eigenmarken-Druck haben Premium-Marken wie Nescafé, KitKat, San Pellegrino echte Preissetzungsmacht in bestimmten Segmenten. Frage: Hat sich der Marktanteil in Premium-Kategorien gehalten? 2) FCF und Payout Ratio — Nestlé generiert konsistent starken FCF; Payout Ratio historisch ca. 70-80% von FCF — kritisch zu prüfen ob das stabil bleibt. 3) ROIC — war historisch 15%+; wenn Marktanteilsverluste die Margen dauerhaft drücken, könnte ROIC sinken. 4) Dividendenwachstum — ist das Wachstum noch konsistent oder verlangsamt sich? 5) Preissetzungsmacht — kann Nestlé trotz Eigenmarken-Konkurrenz Preiserhöhungen durchsetzen? Fazit: Nestlé hat einen breiten Moat mit langem Track Record. Kurzfristiger Druck durch Eigenmarken ist ein Risiko, aber kein sofortiger Ausschlussgrund — wenn FCF stabil bleibt und Management überzeugende Gegenmaßnahmen zeigt."
+    }
+  ]
+}

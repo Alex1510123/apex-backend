@@ -1,0 +1,71 @@
+{
+  "id": "macro-1.3",
+  "track_id": "macro_investor",
+  "title": "Währungen & DXY für Investoren",
+  "subtitle": "Dollar-Stärke und ihre Auswirkung auf EM, Rohstoffe und US-Konzerne",
+  "duration_min": 9,
+  "sort_order": 3,
+  "status": "available",
+  "learning_goals": [
+    "Den DXY-Dollar-Index und seine Zusammensetzung verstehen",
+    "Den Zusammenhang zwischen Dollarkurs und Rohstoffpreisen erklaeren",
+    "Auswirkung eines starken Dollars auf Emerging Markets und US-Multinationals analysieren",
+    "EUR/USD-Bewegungen als Investitionssignal nutzen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Der DXY — wie der Dollar gemessen wird",
+      "body": "Der US Dollar Index (DXY) misst den Wert des US-Dollars gegenüber einem Korb aus sechs Hauptwährungen: Euro (57,6% Gewichtung), japanischer Yen (13,6%), britisches Pfund (11,9%), kanadischer Dollar (9,1%), schwedische Krone (4,2%) und Schweizer Franken (3,6%). Die hohe Euro-Gewichtung erklärt, warum DXY und EUR/USD nahezu perfekt invers korrelieren — wenn der Euro schwächelt, steigt der DXY und umgekehrt.\n\nDer DXY ist kein allgemeiner 'globaler Dollarkurs' — er spiegelt hauptsächlich die Stärke des Dollars gegenüber Industrieländer-Währungen. Für Emerging Market-Analysen sind bilaterale Wechselkurse (USD/TRY, USD/BRL, USD/INR) wichtiger, weil EM-Währungen im DXY kaum vertreten sind.\n\nWie wird der DXY bewegt? Primäre Treiber sind Zinsdifferentiale (höhere US-Zinsen attrahieren Kapital → Dollar steigt), Risikoappetit (in Risk-Off-Phasen flüchtet Kapital in 'sicheren' Dollar), wirtschaftliche Wachstumsdifferentiale (USA wächst stärker → Dollar stärker) und geopolitische Krisen (Dollar als globale Reservewährung — Nachfrage steigt bei Unsicherheit)."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Dollar Smile Theorie",
+      "body": "Die Dollar Smile Theorie besagt, dass der Dollar in zwei extremen Szenarien stark ist: 1) Wenn die US-Wirtschaft deutlich besser wächst als der Rest der Welt. 2) Wenn es eine globale Krise gibt (Risk-Off — Dollar als sicherer Hafen). Nur wenn die Weltwirtschaft synchron gut wächst und die USA nicht führen, schwächelt der Dollar. Das 'Lächeln' bildet sich, weil der Dollar in beiden Extremen nach oben zeigt."
+    },
+    {
+      "type": "text",
+      "heading": "Rohstoffe, Emerging Markets und US-Multinationals — drei direkte Auswirkungen",
+      "body": "Die Auswirkungen des Dollarkurses auf globale Investitionen sind vielfältig und oft gegenläufig — was perfekt zum Makro-Investorenansatz passt.\n\nRohstoffe werden global in USD gehandelt. Ein starker Dollar macht Rohstoffe für Nicht-Dollar-Käufer teurer — was die Nachfrage drückt und damit den Preis. 2022 stieg der DXY von etwa 95 auf 114 Punkte — ein Anstieg von fast 20% in einem Jahr. Gleichzeitig fiel Gold trotz hoher Inflation, weil ein starker Dollar Gold für Euro-, Yen- und Pfund-Investoren teurer machte. Kupfer fiel, trotz Chinas Nachfrage. Diese Dynamik ist kontraintuitiv für viele Investoren: Inflation = Gold steigt. Aber starker Dollar = Gold fällt. Der Netttoeffekt hängt von der Stärke beider Kräfte ab.\n\nEmerging Markets leiden besonders unter Dollar-Stärke: Erstens haben viele EM-Länder Schulden in USD — wenn der Dollar steigt, werden diese Schulden in lokaler Währung teurer zu bedienen. Zweitens importieren viele EM-Länder Rohstoffe in Dollar — ein starker Dollar erhöht die Importkosten und treibt lokale Inflation. Drittens fliessen Kapitalströme zurück in die USA, wenn US-Zinsen steigen — EM-Währungen schwächen sich ab.\n\nUS-Multinationals haben die entgegengesetzte Empfindlichkeit: Wenn der Dollar stark ist, werden Auslandseinnahmen in Dollar umgerechnet — und ergeben weniger. Apple verdient Milliarden in Europa, Japan und China. Wenn der Dollar um 10% aufwertet, werden diese Einnahmen beim Umrechnen 10% kleiner. Deshalb verweisen grosse US-Konzerne in Earnings Calls oft auf 'FX headwinds' — Gegenwind durch Wechselkurs — als Erklärung für schwächere berichtete Ergebnisse."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: FX Headwind vs. Tailwind",
+      "body": "FX Headwind (Gegenwind): Ein starker Dollar reduziert in Dollar ausgewiesene Auslandseinnahmen von US-Multinationals. Bei einem 10%-Dollar-Anstieg verlieren Europaeinnahmen 10% beim Umrechnen. FX Tailwind (Rückenwind): Ein schwacher Dollar erhöht die Dollar-Ausgangseinnahmen. S&P 500 Unternehmen erwirtschaften durchschnittlich ca. 40% ihrer Umsätze ausserhalb der USA — Währungsschwankungen sind damit materiell für viele Earnings-Berichte."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Der DXY steigt von 100 auf 115 innerhalb von 12 Monaten. Was sind die wahrscheinlichsten Auswirkungen auf Rohstoffpreise und Emerging Markets?",
+      "options": [
+        "Rohstoffpreise steigen (Inflation), Emerging Markets profitieren von teurerem Dollar",
+        "Rohstoffpreise fallen tendenziell (USD-Denominierung macht sie teurer für Nicht-Dollar-Käufer), EM leiden (höhere USD-Schuldenkosten, Kapitalabflüsse)",
+        "Rohstoffpreise sind unabhängig vom Dollar — sie werden nur von Angebot und Nachfrage bestimmt",
+        "Emerging Markets profitieren, weil ihre Exporteinnahmen in Dollar steigen"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Rohstoffe sind in USD denominiert — ein stärkerer Dollar macht sie für Nicht-US-Käufer teurer, was die Nachfrage drückt und den Preis in USD tendenziell senkt (ausser wenn Angebotsfaktoren dominant sind). EM leiden dreifach: höhere USD-Schuldenkosten, teurere Importe in lokaler Währung, Kapitalabflüsse in die USA. 2022 bestätigte dieses Muster: DXY +19%, Gold -4%, Kupfer -15%, MSCI EM -20%."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Apple meldete Q4-Umsatz von 90 Milliarden USD, obwohl Europa-Umsätze in Euro leicht stiegen. Der CFO erwähnte 'FX headwinds' von 5%. Was bedeutet das konkret?",
+      "options": [
+        "5% der Umsätze waren Wechselkursgewinne durch den starken Dollar",
+        "Der stärkere Dollar reduzierte die berichteten USD-Umsätze aus Nicht-Dollar-Märkten um etwa 5% — ohne diesen Effekt wäre der Umsatz ~5% höher gewesen",
+        "Apple hat 5% seiner Einnahmen gegen Währungsrisiko abgesichert",
+        "FX headwinds bedeuten, dass Apple 5% mehr in Fremdwährungen ausgegeben hat"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Wenn Apple 10 Milliarden Euro in Europa verdient und der Euro 5% schwächer wurde, ergibt das in Dollar ausgedrückt 5% weniger — ohne dass der eigentliche Geschäftsverlauf schlechter war. Der 'Constant Currency Growth' (Wachstum ohne Wechselkurseffekte) zeigt das organische Wachstum. FX headwinds reduzieren berichtete Wachstumsraten und sind für Analysten wichtig, um reales Geschäftswachstum von Währungseffekten zu trennen."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie erwarten, dass die Fed in den nächsten 12 Monaten dreimal die Zinsen senkt (von 5,5% auf 4,75%), während die EZB die Zinsen unverändert lässt. Beschreiben Sie, wie diese Zinsdivergenz den EUR/USD-Wechselkurs beeinflussen würde, und welche konsequenten Portfolio-Anpassungen ein Makro-Investor in Bezug auf Rohstoffe, EM und US-Multinationals vornehmen sollte.",
+      "explanation": "Zinsdivergenz-Analyse: Fed senkt, EZB bleibt konstant → US-Zinsen fallen relativ zu Euro-Zinsen → Zinsdifferential schrumpft → Dollar schwächt sich ab → EUR/USD steigt (von z.B. 1,05 auf möglicherweise 1,12-1,15). Implikationen: Rohstoffe: Schwächerer Dollar macht Rohstoffe für Nicht-Dollar-Käufer günstiger → Nachfrage steigt → Rohstoffpreise steigen. Kauf: Gold, Öl, Kupfer über ETFs (GLD, USO, CPER). Emerging Markets: Schwächerer Dollar = weniger Druck auf EM-Währungen, günstigere USD-Schulden, Kapitalrückfluss in EM. Kauf: MSCI EM ETF (EEM). US-Multinationals: Schwächerer Dollar = FX tailwind für Auslandseinnahmen → Earnings-Rückenwind für Apple, Microsoft, Coca-Cola. Kauf: S&P 500 oder spezifisch international exponierte US-Unternehmen. Risiken: EZB könnte ebenfalls senken, Fed könnte hawkisher bleiben als erwartet."
+    }
+  ]
+}

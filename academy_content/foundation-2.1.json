@@ -1,0 +1,71 @@
+{
+  "id": "foundation-2.1",
+  "track_id": "foundation",
+  "title": "Was ist Inflation?",
+  "subtitle": "CPI, Warenkorb und die stille Kraft, die Geld entwertet",
+  "duration_min": 8,
+  "sort_order": 11,
+  "status": "available",
+  "learning_goals": [
+    "Den Verbraucherpreisindex (CPI) und seine Berechnung verstehen",
+    "Headline- vs. Core Inflation unterscheiden und einordnen",
+    "Importierte Inflation am Beispiel Ölpreis 2022 nachvollziehen",
+    "Den Kaufkraftverlust von Bargeld und das EZB-Inflationsziel 2% kennen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Was Inflation bedeutet und wie sie gemessen wird",
+      "body": "Inflation beschreibt den anhaltenden Anstieg des allgemeinen Preisniveaus — und damit die schleichende Entwertung von Geld. Wer heute 1.000 Euro unter der Matratze versteckt, hat in zehn Jahren bei 3% Inflation nur noch eine Kaufkraft von rund 744 Euro. Das Geld ist noch da, aber es kann weniger kaufen.\n\nGemessen wird Inflation über den Verbraucherpreisindex (CPI, Consumer Price Index). Statistikbehörden wie Eurostat oder das US Bureau of Labor Statistics erheben regelmäßig die Preise eines definierten Warenkorbs — einer repräsentativen Auswahl an Gütern und Dienstleistungen, die ein durchschnittlicher Haushalt konsumiert. Der Warenkorb umfasst Kategorien wie Nahrungsmittel, Wohnen, Transport, Gesundheit und Freizeit, jeweils mit unterschiedlichen Gewichtungen.\n\nIn der Eurozone erreichte die Inflation im Oktober 2022 einen Höchststand von 10,6% — das erste Mal seit der Gründung der Währungsunion. Zum Vergleich: Das EZB-Ziel liegt bei 2%. Für Haushalte bedeutete das: Wer monatlich 2.000 Euro ausgab, musste ein Jahr später rund 2.212 Euro aufwenden, um exakt dasselbe zu kaufen. Lebensmittelpreise stiegen in Deutschland 2022 sogar um bis zu 20%."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Headline vs. Core Inflation",
+      "body": "Headline Inflation ist die Gesamtinflation inklusive Energie und Lebensmittel — die Zahl, über die in den Nachrichten berichtet wird. Core Inflation (Kerninflation) schließt diese volatilen Komponenten aus, weil Energiepreise stark schwanken und kurzfristige Ausschläge das Bild verzerren können. Zentralbanken schauen bevorzugt auf die Kerninflation, um strukturelle Preistrends zu beurteilen."
+    },
+    {
+      "type": "text",
+      "heading": "Importierte Inflation: Der Ölpreis als Transmissionskanal",
+      "body": "Eine wichtige Inflationsquelle, die oft unterschätzt wird, ist die importierte Inflation. Europa importiert einen Großteil seiner Energie — und wenn die globalen Energiepreise steigen, verteuert sich nicht nur das Heizen und Tanken, sondern auch die gesamte Produktion.\n\nDas Öl-Preisbeispiel von 2022 illustriert das drastisch: Brent-Rohöl stieg von etwa 80 USD pro Barrel Ende 2021 auf über 130 USD im März 2022 — ein Anstieg von mehr als 60% in weniger als drei Monaten. Der Auslöser war der russische Angriff auf die Ukraine und die damit verbundenen Sanktionen gegen russische Energieexporte. Diese Kostenexplosion arbeitete sich durch die gesamte Lieferkette: Transportunternehmen, Produzenten, Supermärkte — alle gaben höhere Kosten weiter.\n\nFür Anleger ist entscheidend: Bargeld und festverzinsliche Anlagen wie klassische Sparkonten verlieren in Inflationsphasen real an Wert. Sachwerte wie Aktien, Immobilien oder inflationsgeschützte Anleihen (TIPS) gelten historisch als bessere Inflations-Hedges. Das EZB-Inflationsziel von 2% ist bewusst positiv formuliert — leichte Inflation gilt als gesund für eine Volkswirtschaft, weil sie Konsum und Investitionen anreizt."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Kaufkraft",
+      "body": "Kaufkraft beschreibt, wie viele Güter und Dienstleistungen eine bestimmte Geldmenge kaufen kann. Bei 5% Inflation verliert Geld jedes Jahr 5% seiner Kaufkraft. Nach der Regel '72' halbiert sich die Kaufkraft bei 5% Inflation in etwa 14 Jahren (72 / 5 = 14,4). Wer langfristig Vermögen erhält, muss daher eine Rendite erzielen, die zumindest die Inflationsrate übersteigt."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Was misst der Verbraucherpreisindex (CPI)?",
+      "options": [
+        "Die durchschnittliche Rendite von Staatsanleihen",
+        "Die Preisentwicklung eines definierten Warenkorbs an Gütern und Dienstleistungen",
+        "Die Veränderung der Geldmenge im Bankensystem",
+        "Den Wechselkurs einer Währung gegenüber dem US-Dollar"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Der CPI erfasst die Preisveränderungen eines repräsentativen Warenkorbs, der typische Ausgaben eines Privathaushalts abbildet — von Lebensmitteln über Miete bis zu Transportkosten. Die prozentuale Veränderung dieses Indexes über einen Zeitraum ergibt die Inflationsrate."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Warum schauen Zentralbanken bevorzugt auf die Core Inflation statt auf die Headline Inflation?",
+      "options": [
+        "Weil die Core Inflation immer niedriger ist und die Zentralbank besser aussehen lässt",
+        "Weil Energie- und Lebensmittelpreise stark schwanken und strukturelle Trends verzerren",
+        "Weil die Headline Inflation nur in den USA berechnet wird",
+        "Weil Core Inflation die Immobilienpreise einschließt, was relevanter ist"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Energie- und Lebensmittelpreise sind sehr volatil — ein kalter Winter oder geopolitische Konflikte können sie kurzfristig drastisch verändern. Die Kerninflation ohne diese Komponenten gibt ein stabileres Bild der zugrundeliegenden Preistrends, auf das Zentralbanken ihre mittelfristige Geldpolitik ausrichten können."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Erklären Sie anhand des Ölpreisanstiegs 2022 (von 80 auf 130 USD), wie importierte Inflation entsteht und welche Konsequenzen das für Anleger hat, die ihr Geld auf einem Sparkonto halten.",
+      "explanation": "Musterlösung sollte enthalten: Transmissionskanal (Öl verteuert Transport, Produktion, Endpreise), Lieferketten-Effekt, dass Europa Energie importiert und damit besonders exponiert ist. Für Anleger mit Sparkonten: nominale Zinsen lagen 2022 nahe 0%, während Inflation 8-10% erreichte — realer Kaufkraftverlust von 8-10% p.a. Sachwerte wie Aktien oder TIPS als Alternative."
+    }
+  ]
+}

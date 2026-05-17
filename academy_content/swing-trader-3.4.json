@@ -1,0 +1,71 @@
+{
+  "id": "swing-3.4",
+  "track_id": "swing-trader",
+  "title": "Risk/Reward Ratio professionell anwenden",
+  "subtitle": "1:2 Minimum, Position Sizing und Kelly Criterion",
+  "duration_min": 9,
+  "sort_order": 7,
+  "status": "available",
+  "learning_goals": [
+    "Risk/Reward Ratio korrekt berechnen und als Entscheidungsfilter nutzen",
+    "Verstehen, warum 1:2 Minimum bei 40% Trefferquote profitabel ist",
+    "Positionsgroesse systematisch aus dem Depot-Risiko ableiten",
+    "Den Expectancy Value berechnen und als Massstaab fuer Strategiequalitaet nutzen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Warum die meisten Trader mit korrekten Prognosen trotzdem verlieren",
+      "body": "Das grösste Paradoxon im Trading: Viele Trader treffen in mehr als der Hälfte ihrer Trades die richtige Richtungsprognose — und verlieren trotzdem Geld. Die Ursache liegt im schiefen Risiko/Rendite-Verhältnis. Wenn ein Trader 60% seiner Trades richtig prognostiziert, aber im Gewinnfall 100 Euro verdient und im Verlustfall 300 Euro verliert, ist er trotz positiver Trefferquote langfristig pleite.\n\nDie Formel für den Erwartungswert (Expectancy): Expectancy = (Trefferquote x Durchschnittsgewinn) - (Verlustquote x Durchschnittsverlust). Wenn Gewinner durchschnittlich 200 Euro einbringen und Verlierer durchschnittlich 100 Euro kosten, bei einer Trefferquote von 40%: (0,4 x 200) - (0,6 x 100) = 80 - 60 = 20 Euro Erwartungswert pro Trade. Positiver Erwartungswert — selbst mit einer Trefferquote von nur 40%.\n\nDas Minimum-Verhältnis für professionelles Trading: 1:2 Risk/Reward. Das bedeutet: Für jeden Euro, den Sie riskieren, streben Sie mindestens 2 Euro Gewinn an. Mit einem 1:2 R/R und einer Trefferquote von nur 40% ist das Ergebnis bereits positiv. Sinkt das R/R auf 1:1, müssen Sie mehr als 50% richtig liegen, um profitabel zu sein — und die meisten Trader liegen nicht konsistent über 50%."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Risk/Reward Ratio (R/R)",
+      "body": "R/R = (Kursziel - Einstieg) / (Einstieg - Stop-Loss). Beispiel: Kauf bei 100 EUR, Stop bei 95 EUR, Ziel bei 110 EUR. Risiko = 5 EUR, Chance = 10 EUR, R/R = 1:2. Faustregel: Kein Trade ohne mindestens 1:2. Besser noch 1:3. Bei einem Trade mit 1:1 R/R muss man über 50% richtig liegen um zu gewinnen, was konsistent sehr schwierig ist."
+    },
+    {
+      "type": "text",
+      "heading": "Konkretes Rechenbeispiel: 10.000 EUR Depot, 10 Trades",
+      "body": "Angenommen, Sie haben ein Depot von 10.000 Euro und definieren Ihr maximales Risiko pro Trade auf 1% des Depots — also 100 Euro pro Trade. Sie führen 10 Trades mit einem R/R von 1:2 durch und haben eine Trefferquote von 40% (4 Gewinner, 6 Verlierer).\n\nGewinne: 4 Trades x (100 Euro Risiko x 2 R/R) = 4 x 200 = 800 Euro Gewinn. Verluste: 6 Trades x 100 Euro = 600 Euro Verlust. Netto: +200 Euro — ein Gewinn von 2% auf das Depot, trotz nur 40% Trefferquote. Wer dagegen mit 1:1 R/R und derselben 40%-Trefferquote arbeitet: 4 x 100 = 400 Gewinn minus 6 x 100 = 600 Verlust → Nettoverlust von 200 Euro (-2%).\n\nPositionsgrösse berechnen: Das Risiko ist die erste Entscheidung. Wenn ein Trade einen Stop-Loss von 5% des Aktienkurses erfordert (Einstieg bei 100, Stop bei 95 = 5% Abstand), und Sie maximal 100 Euro riskieren wollen: Positionsgrösse = Risikokapital / Stop-Loss in % = 100 / 5% = 2.000 Euro. Sie kaufen Aktien im Wert von 2.000 Euro — genau so viel, dass bei Erreichen des Stops 100 Euro Verlust entstehen.\n\nDas vereinfachte Kelly Criterion besagt: Optimale Positionsgrösse = Erwartungswert / durchschnittliches Gewinn-Verlust-Verhältnis. In der Praxis empfehlen Profis, nur einen Bruchteil der Kelly-Grösse einzusetzen (Half-Kelly oder Quarter-Kelly), um Drawdowns zu begrenzen. Der psychologische Faktor: Bei 1% Depot-Risiko pro Trade kann man 20 Verlierer in Folge hinnehmen, ohne das Depot zu halbieren. Bei 10% Risiko pro Trade sind fünf Verlierer in Folge bereits katastrophal."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Expectancy Value",
+      "body": "Expectancy = (Win Rate x Average Win) - (Loss Rate x Average Loss). Eine Strategie mit positivem Expectancy ist langfristig profitabel — unabhängig von Kurzfrist-Ergebnissen. Professionelles Trading bedeutet: Konsequent eine Strategie mit positivem Erwartungswert ausführen, auch durch Drawdown-Phasen. Die psychologische Herausforderung ist es, einer Strategie mit negativem kurzfristigen Ergebnis treu zu bleiben, wenn man weiss, dass der Erwartungswert langfristig positiv ist."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Ein Trader erzielt in 55% seiner Trades einen Gewinn. Sein durchschnittlicher Gewinn beträgt 80 Euro, sein durchschnittlicher Verlust 150 Euro. Ist seine Strategie langfristig profitabel?",
+      "options": [
+        "Ja — eine Trefferquote über 50% garantiert Profitabilität",
+        "Nein — Expectancy = (0,55 x 80) - (0,45 x 150) = 44 - 67,50 = -23,50 Euro pro Trade (negativ)",
+        "Ja — da Trefferquote 55% und Verlustquote 45% — die Differenz von 10% sichert Gewinne",
+        "Unentschieden — 55% Trefferquote mit 80 Euro Durchschnittsgewinn ist neutral"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Trotz 55% Trefferquote ist die Strategie verlustbringend: Expectancy = (0,55 x 80) - (0,45 x 150) = 44 - 67,50 = -23,50 Euro Erwartungsverlust pro Trade. Das illustriert, warum Trefferquote allein irreführend ist. Das Risiko/Rendite-Verhältnis muss passen: 80 Gewinn bei 150 Risiko entspricht ca. 1:0,53 R/R — weit unter dem empfohlenen 1:2 Minimum."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Sie haben ein Depot von 20.000 EUR und riskieren maximal 1% pro Trade. Eine Aktie bei 50 EUR hat einen Stop bei 46 EUR (8% Abstand). Wie gross ist Ihre Positionsgrösse?",
+      "options": [
+        "20.000 EUR — das gesamte Depot in einen Trade",
+        "2.500 EUR (500 Aktien zu 50 EUR, da 1% von 20.000 EUR = 200 EUR Risiko bei 8% Stop)",
+        "1.000 EUR (200 EUR Risiko / 20% Reserve = 1.000 EUR Position)",
+        "4.000 EUR (8% von 50.000 EUR, da man 50% Marge nutzt)"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. 1% von 20.000 EUR = 200 EUR maximales Risiko. Stop-Loss ist 8% vom Kaufpreis (50 - 46 = 4 EUR, das sind 8% von 50 EUR). Positionsgrösse = Risikokapital / Stop-Loss in Prozent = 200 EUR / 0,08 = 2.500 EUR. Bei 50 EUR pro Aktie kaufen Sie 50 Aktien. Wenn der Kurs auf 46 EUR fällt: 50 Aktien x 4 EUR Verlust = 200 EUR Verlust — exakt 1% des Depots."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Zwei Trader haben jeweils 10.000 EUR Depot und machen im gleichen Monat 10 Trades mit identischen Einstiegspunkten und identischen Gewinner/Verlierer-Sequenz (6 Verlierer, 4 Gewinner). Trader A riskiert 5% pro Trade mit einem R/R von 1:1. Trader B riskiert 1% pro Trade mit einem R/R von 1:3. Berechnen Sie das Ergebnis beider Trader nach 10 Trades und erklären Sie, warum Trader B strukturell im Vorteil ist.",
+      "explanation": "Trader A: Risiko 5% = 500 EUR/Trade, R/R 1:1 → Gewinn 500 EUR/Trade. 4 Gewinner: 4x500=2.000 EUR. 6 Verlierer: 6x500=3.000 EUR. Netto: -1.000 EUR (-10% Depot). Trader B: Risiko 1% = 100 EUR/Trade, R/R 1:3 → Gewinn 300 EUR/Trade. 4 Gewinner: 4x300=1.200 EUR. 6 Verlierer: 6x100=600 EUR. Netto: +600 EUR (+6% Depot). Gleiche Trades, völlig unterschiedliche Ergebnisse. Trader B's Vorteil: 1) Höheres R/R (1:3 vs 1:1) macht Strategie bei gleicher Trefferquote profitabel. 2) Kleineres Risiko pro Trade ermöglicht psychologische Stabilität — nach 6 Verlusttrades hat B erst 6% verloren, A 30%. 3) Kapital ist erhalten → zukünftige Chancen bleiben. Kernbotschaft: Position Sizing und R/R dominieren über Trefferquote."
+    }
+  ]
+}

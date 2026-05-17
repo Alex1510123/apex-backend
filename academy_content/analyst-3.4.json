@@ -1,0 +1,71 @@
+{
+  "id": "analyst-3.4",
+  "track_id": "analyst",
+  "title": "Red Flags in Bilanzen",
+  "subtitle": "Aggressive Bilanzierung, Goodwill-Inflation und Channel Stuffing",
+  "duration_min": 10,
+  "sort_order": 7,
+  "status": "available",
+  "learning_goals": [
+    "Channel Stuffing und aggressive Umsatzrealisierung als Warnsignale erkennen",
+    "Goodwill-Aufblasung als Bilanzrisiko einordnen",
+    "Den Cash Conversion Cycle und Days Sales Outstanding als Frühwarnindikatoren nutzen",
+    "Aus dem Wirecard-Fall lernen, wie Bilanzbetrug erkannt werden kann"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Warum Bilanzen nicht immer das zeigen, was sie zeigen sollten",
+      "body": "Die meisten Investoren lesen den Jahresabschluss eines Unternehmens, als wäre er eine neutrale Berichterstattung der Wirklichkeit. In vielen Fällen stimmt das — aber in manchen Fällen ist ein Jahresabschluss das Ergebnis kreativer Gestaltung. Das Verstehen dieser Techniken ist keine Paranoia, sondern grundlegendes Handwerkszeug für jeden Analysten.\n\nChannel Stuffing ist eine der häufigsten Manipulationstechniken: Ein Unternehmen liefert kurz vor Quartalsende übermässige Warenmengen an Händler oder Distributoren, die diese gar nicht bestellt haben oder zurückgeben können. Der Umsatz wird sofort als Einnahme verbucht — die Händler sitzen auf unverkäuflichem Bestand. Wenn dieser Bestand im nächsten Quartal zurückkommt, kollabiert der Umsatz. Das Erkennungsmuster: Umsatz wächst deutlich stärker als das Lager der Händler oder als der tatsächliche Endkundenmarkt wächst. Days Sales Outstanding (DSO) — die Kennzahl, die misst, wie viele Tage es dauert, bis Umsatz als Bargeld eingeht — steigt ebenfalls deutlich.\n\nAggressive Umsatzrealisierung ist die Verwandlung: Unternehmen erkennen langfristige Verträge sofort vollständig als Umsatz an, anstatt ihn über die Vertragslaufzeit zu verteilen. Das ist in der Softwarebranche (SaaS) besonders relevant — ein 3-Jahres-Vertrag über 300.000 Euro sollte als 100.000 Euro Jahresumsatz verbucht werden, nicht als 300.000 Euro im ersten Jahr."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Goodwill als roter Hahn",
+      "body": "Goodwill entsteht, wenn ein Unternehmen einen anderen Betrieb kauft und mehr zahlt als den Buchwert der Vermögenswerte. Ist Goodwill > 30% der Gesamtaktiva, ist Vorsicht geboten: Das Unternehmen hat möglicherweise zu viel für Akquisitionen gezahlt. Goodwill muss jährlich auf Wertminderung getestet werden (Impairment Test). Grosse Goodwill-Abschreibungen kommen oft dann, wenn die Überbewertung offensichtlich wird — häufig zu spät für Investoren."
+    },
+    {
+      "type": "text",
+      "heading": "Wirecard: Wie Bilanzbetrug im Detail aussieht",
+      "body": "Der Wirecard-Skandal 2020 ist das grösste Bilanz-Desaster der deutschen Nachkriegsgeschichte. Das Münchner Zahlungsunternehmen zählte zum DAX und wurde zeitweise mit über 20 Milliarden Euro bewertet. Im Juni 2020 musste das Unternehmen zugeben, dass 1,9 Milliarden Euro auf Treuhandkonten auf den Philippinen — die ca. 25% der Bilanzsumme ausmachten — wahrscheinlich nicht existierten.\n\nWelche Warnsignale waren vorhanden? Der Free Cash Flow war über Jahre schwach oder negativ, obwohl Wirecard hohe Gewinne auswies — eine klassische FCF-Divergenz. Das Unternehmen war stark auf undurchsichtige Drittpartnernetzwerke in Asien angewiesen, die kaum verifizierbar waren. Short-Seller wie Fraser Perring und Journalisten der Financial Times hatten diese Probleme jahrelang dokumentiert — wurden aber als Marktmanipulatoren diffamiert. Die Days Sales Outstanding stiegen unerklärlicherweise an. Der Abschlussprüfer EY testierte die Bücher über Jahre, ohne die fehlenden Milliarden zu finden.\n\nDie Lektionen für Investoren: Immer den Free Cash Flow gegen den ausgewiesenen Gewinn prüfen. Grosse Bargeldbestände auf Treuhandkonten oder in schwer verifizierbaren Jurisdiktionen sind ein Warnsignal. Undurchsichtige Unternehmensstrukturen mit vielen Drittpartnern misstrauisch beobachten. Short-Seller-Berichte ernst nehmen — nicht jeder Short-Seller hat Recht, aber sorgfältige Research-Berichte sollten nie ignoriert werden."
+    },
+    {
+      "type": "info_box",
+      "heading": "Kernbegriff: Days Sales Outstanding (DSO)",
+      "body": "DSO = (Forderungen aus Lieferungen und Leistungen / Umsatz) x 365. DSO misst, wie viele Tage ein Unternehmen im Durchschnitt wartet, bis ein Umsatz als Bargeld eingeht. Steigende DSO kann bedeuten: Kunden zahlen langsamer (schlechtere Bonität der Kunden), Umsatz wurde vorweggenommen (Channel Stuffing), oder das Unternehmen hat Schwierigkeiten, Rechnungen einzutreiben. DSO-Anstiege um mehr als 10-15% innerhalb eines Jahres sind ein klares Warnsignal."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Ein Unternehmen meldet 20% Umsatzwachstum, aber der Free Cash Flow ist negativ und die Days Sales Outstanding stiegen um 40%. Was ist die wahrscheinlichste Erklärung?",
+      "options": [
+        "Das Unternehmen investiert stark in Wachstum, was den FCF vorübergehend drückt — positives Signal",
+        "Mögliches Channel Stuffing oder aggressive Umsatzerfassung — Umsatz wird verbucht, aber Geld kommt nicht",
+        "Saisonale Schwankungen im Zahlungsverhalten der Kunden",
+        "Das Unternehmen zahlt sehr hohe Dividenden, die den FCF belasten"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Die Kombination aus starkem Umsatzwachstum, negativem FCF und stark steigenden DSO ist ein klassisches Warnsignal für manipulative Bilanzierung. Wenn Umsatz wächst aber das Geld nicht eingeht (hohe DSO), deutet das darauf hin, dass Umsatz verbucht wird, ohne dass entsprechende Zahlungen folgen. Channel Stuffing an Händler oder vorweggenommener Umsatz sind typische Ursachen."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Wirecard wies über Jahre hohe Gewinne aus, hatte aber schwachen Free Cash Flow. Warum ist diese Diskrepanz ein so wichtiges Warnsignal?",
+      "options": [
+        "Free Cash Flow ist bei Zahlungsdienstleistern immer negativ — das war branchenspezifisch normal",
+        "Weil echter wirtschaftlicher Wert als Cashflow fliessen muss — persistente FCF-Divergenz vom Gewinn deutet auf Bilanzierungsprobleme hin",
+        "Negative FCF sind in Wachstumsphasen immer akzeptabel, unabhängig von der Branche",
+        "Wirecard hatte hohe Capex-Investitionen, die den FCF legitimerweise belasteten"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Wenn ein profitables Unternehmen über mehrere Jahre keinen oder negativen FCF ausweist, muss man fragen: Wo bleibt das Geld? Bei Wirecard bestand der 'Gewinn' zu einem erheblichen Teil aus fingierten Treuhandkonten, die nie existierten. Der FCF kann nicht gefälscht werden, wenn er auf tatsächliche Bankauszüge basiert — deshalb ist er der ehrlichere Test für Unternehmensqualität."
+    },
+    {
+      "id": "q3",
+      "type": "open_question",
+      "question": "Sie analysieren ein mittelständisches Technologieunternehmen und stellen folgendes fest: Goodwill macht 45% der Bilanzsumme aus (mehrere Akquisitionen in den letzten 3 Jahren), DSO ist von 35 auf 58 Tage gestiegen, FCF ist negativ obwohl das Unternehmen einen Nettogewinn von 80 Millionen EUR meldet, und das Management hat in den letzten 12 Monaten einen CFO-Wechsel durchgeführt. Bewerten Sie diese Kombination von Signalen und erklären Sie, welche drei konkreten Prüfschritte Sie als nächstes unternehmen würden.",
+      "explanation": "Kombination von Red Flags: Goodwill >30% (erhöhtes Impairment-Risiko, möglicherweise überbezahlte Akquisitionen), steigende DSO (Umsatzqualität sinkt), FCF/Gewinn-Divergenz (Bilanzierungsqualität fraglich), CFO-Wechsel (häufig vorausgehend für Restatements oder Governance-Probleme). Prüfschritte: 1) Goodwill-Analyse: Welche Akquisitionen, zu welchen Preis/Umsatz-Multiples, welche Integration? Impairment-Test-Annahmen prüfen. 2) Forderungsanalyse: Welche Kunden, welche Branchen, hat sich die Kundenbasis verändert? Ageing der Forderungen (überfällige Posten)? 3) FCF-Analyse: Kapitalflussrechnung Zeile für Zeile — wo liegt die Quelle der FCF/Gewinn-Divergenz? Sind es legitime Investitionen oder Working-Capital-Aufbau ohne klare Begründung?"
+    }
+  ]
+}
