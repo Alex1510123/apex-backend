@@ -2562,23 +2562,26 @@ async def complete_lesson(body: CompleteLessonBody):
     if not user_id:
         raise HTTPException(status_code=400, detail="user_id erforderlich")
 
-    # XP
+    # XP: 50 base + bonus for passing score
     xp = 50
     if score >= 90:
         xp += 20
     elif score >= 60:
-        xp += 30
+        xp += 10
 
     today     = _date.today().isoformat()
     yesterday = (_date.today() - _td(days=1)).isoformat()
     two_ago   = (_date.today() - _td(days=2)).isoformat()
 
+    # ── Fetch existing progress row ──────────────────────────────────────────
     try:
-        row = sb_client.table("user_progress").select("*").eq("user_id", user_id).execute()
+        row     = sb_client.table("user_progress").select("*").eq("user_id", user_id).execute()
         current = row.data[0] if row.data else None
-    except Exception:
-        current = None
+    except Exception as e:
+        logger.error(f"[complete-lesson] SELECT failed user={user_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"DB-Lesefehler: {e}")
 
+    # ── Compute new values ───────────────────────────────────────────────────
     if current:
         last_date   = (current.get("last_activity_date") or "")[:10]
         streak_days = current.get("streak_days", 1)
@@ -2588,50 +2591,58 @@ async def complete_lesson(body: CompleteLessonBody):
             if last_date == yesterday:
                 streak_days += 1
             elif last_date == two_ago and current.get("streak_freeze_available"):
-                use_freeze = True           # keep streak, consume freeze
+                use_freeze = True
             else:
                 streak_days = 1
 
-        xp_total      = (current.get("xp_total") or 0) + xp
-        xp_this_week  = (current.get("xp_this_week") or 0) + xp
-        league        = _league_for_xp(xp_total)
+        xp_total     = (current.get("xp_total") or 0) + xp
+        xp_this_week = (current.get("xp_this_week") or 0) + xp
+        league       = _league_for_xp(xp_total)
 
-        update: dict = {
-            "xp_total":          xp_total,
-            "xp_this_week":      xp_this_week,
-            "streak_days":       streak_days,
+        update_data: dict = {
+            "xp_total":           xp_total,
+            "xp_this_week":       xp_this_week,
+            "streak_days":        streak_days,
             "last_activity_date": today,
-            "league":            league,
+            "league":             league,
         }
         if use_freeze:
-            update["streak_freeze_available"] = False
+            update_data["streak_freeze_available"] = False
 
-        sb_client.table("user_progress").update(update).eq("user_id", user_id).execute()
+        try:
+            sb_client.table("user_progress").update(update_data).eq("user_id", user_id).execute()
+            logger.info(f"[complete-lesson] UPDATE user={user_id} +{xp}XP → total={xp_total} league={league}")
+        except Exception as e:
+            logger.error(f"[complete-lesson] UPDATE failed user={user_id}: {e}")
+            raise HTTPException(status_code=500, detail=f"XP-Update fehlgeschlagen: {e}")
     else:
         xp_total     = xp
         xp_this_week = xp
         streak_days  = 1
         league       = _league_for_xp(xp_total)
+
         try:
             sb_client.table("user_progress").insert({
-                "user_id":              user_id,
-                "xp_total":             xp_total,
-                "xp_this_week":         xp_this_week,
-                "streak_days":          streak_days,
-                "last_activity_date":   today,
-                "league":               league,
+                "user_id":                 user_id,
+                "xp_total":                xp_total,
+                "xp_this_week":            xp_this_week,
+                "streak_days":             streak_days,
+                "last_activity_date":      today,
+                "league":                  league,
                 "streak_freeze_available": True,
             }).execute()
-        except Exception:
-            pass
+            logger.info(f"[complete-lesson] INSERT new user={user_id} +{xp}XP league={league}")
+        except Exception as e:
+            logger.error(f"[complete-lesson] INSERT failed user={user_id}: {e}")
+            raise HTTPException(status_code=500, detail=f"XP-Insert fehlgeschlagen: {e}")
 
     new_achievements = _check_achievements(user_id, streak_days, league)
 
     return {
-        "xp_earned":       xp,
-        "xp_total":        xp_total,
-        "streak_days":     streak_days,
-        "league":          league,
+        "xp_earned":        xp,
+        "xp_total":         xp_total,
+        "streak_days":      streak_days,
+        "league":           league,
         "new_achievements": new_achievements,
     }
 
