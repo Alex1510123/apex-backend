@@ -2475,6 +2475,238 @@ def set_specialization(body: SpecializationBody, user_id: str = Depends(verify_j
     return {"ok": True}
 
 
+# ─── Gamification ─────────────────────────────────────────────────────────────
+
+class CompleteLessonBody(BaseModel):
+    user_id:    str
+    lesson_id:  str
+    score:      int = 0
+    xp_earned:  int = 0
+
+
+def _league_for_xp(xp: int) -> str:
+    if xp >= 15000: return "black_swan"
+    if xp >= 5000:  return "portfolio_manager"
+    if xp >= 2000:  return "hedge_fund_analyst"
+    if xp >= 500:   return "floor_broker"
+    return "rookie_trader"
+
+
+def _award_achievement(user_id: str, achievement_id: str, name: str, results: list) -> None:
+    try:
+        existing = sb_client.table("user_achievements") \
+            .select("id").eq("user_id", user_id).eq("achievement_id", achievement_id).execute()
+        if not existing.data:
+            sb_client.table("user_achievements").insert({
+                "user_id": user_id,
+                "achievement_id": achievement_id,
+                "achievement_name": name,
+            }).execute()
+            results.append({"id": achievement_id, "name": name})
+    except Exception:
+        pass
+
+
+def _check_achievements(user_id: str, streak_days: int, league: str) -> list:
+    new_achievements: list = []
+    try:
+        # Sharp Ratio: 10+ open_answer_attempts with score >= 80
+        high = sb_client.table("open_answer_attempts") \
+            .select("id", count="exact").eq("user_id", user_id).gte("score", 80).execute()
+        if (high.count or 0) >= 10:
+            _award_achievement(user_id, "sharp_ratio", "Sharp Ratio", new_achievements)
+
+        # 100 Day Streak
+        if streak_days >= 100:
+            _award_achievement(user_id, "100_day_streak", "100 Day Streak", new_achievements)
+
+        # Black Swan league
+        if league == "black_swan":
+            _award_achievement(user_id, "black_swan", "Black Swan", new_achievements)
+
+        # Full Analyst: all available analyst lessons completed
+        analyst_ids = [
+            l["id"]
+            for l in ACADEMY_LESSONS_DATA.get("analyst", [])
+            if l.get("status") == "available"
+        ]
+        if analyst_ids:
+            done = sb_client.table("academy_progress") \
+                .select("lesson_id").eq("user_id", user_id).in_("lesson_id", analyst_ids).execute()
+            if len(done.data or []) >= len(analyst_ids):
+                _award_achievement(user_id, "full_analyst", "Full Analyst", new_achievements)
+    except Exception:
+        pass
+    return new_achievements
+
+
+@app.post("/academy/complete-lesson")
+async def complete_lesson(body: CompleteLessonBody):
+    from datetime import date as _date, timedelta as _td
+
+    user_id = body.user_id
+    score   = body.score
+    if not user_id:
+        raise HTTPException(status_code=400, detail="user_id erforderlich")
+
+    # XP
+    xp = 50
+    if score >= 90:
+        xp += 20
+    elif score >= 60:
+        xp += 30
+
+    today     = _date.today().isoformat()
+    yesterday = (_date.today() - _td(days=1)).isoformat()
+    two_ago   = (_date.today() - _td(days=2)).isoformat()
+
+    try:
+        row = sb_client.table("user_progress").select("*").eq("user_id", user_id).execute()
+        current = row.data[0] if row.data else None
+    except Exception:
+        current = None
+
+    if current:
+        last_date   = (current.get("last_activity_date") or "")[:10]
+        streak_days = current.get("streak_days", 1)
+        use_freeze  = False
+
+        if last_date != today:
+            if last_date == yesterday:
+                streak_days += 1
+            elif last_date == two_ago and current.get("streak_freeze_available"):
+                use_freeze = True           # keep streak, consume freeze
+            else:
+                streak_days = 1
+
+        xp_total      = (current.get("xp_total") or 0) + xp
+        xp_this_week  = (current.get("xp_this_week") or 0) + xp
+        league        = _league_for_xp(xp_total)
+
+        update: dict = {
+            "xp_total":          xp_total,
+            "xp_this_week":      xp_this_week,
+            "streak_days":       streak_days,
+            "last_activity_date": today,
+            "league":            league,
+        }
+        if use_freeze:
+            update["streak_freeze_available"] = False
+
+        sb_client.table("user_progress").update(update).eq("user_id", user_id).execute()
+    else:
+        xp_total     = xp
+        xp_this_week = xp
+        streak_days  = 1
+        league       = _league_for_xp(xp_total)
+        try:
+            sb_client.table("user_progress").insert({
+                "user_id":              user_id,
+                "xp_total":             xp_total,
+                "xp_this_week":         xp_this_week,
+                "streak_days":          streak_days,
+                "last_activity_date":   today,
+                "league":               league,
+                "streak_freeze_available": True,
+            }).execute()
+        except Exception:
+            pass
+
+    new_achievements = _check_achievements(user_id, streak_days, league)
+
+    return {
+        "xp_earned":       xp,
+        "xp_total":        xp_total,
+        "streak_days":     streak_days,
+        "league":          league,
+        "new_achievements": new_achievements,
+    }
+
+
+@app.get("/academy/my-progress")
+def get_my_progress(user_id: str = Depends(verify_jwt)):
+    try:
+        prog = sb_client.table("user_progress").select("*").eq("user_id", user_id).execute()
+        progress = prog.data[0] if prog.data else {}
+    except Exception:
+        progress = {}
+
+    try:
+        ach = sb_client.table("user_achievements").select("*").eq("user_id", user_id).execute()
+        achievements = ach.data or []
+    except Exception:
+        achievements = []
+
+    return {"progress": progress, "achievements": achievements}
+
+
+@app.get("/academy/leaderboard")
+def get_leaderboard(league: str = "all"):
+    try:
+        q = sb_client.table("user_progress") \
+            .select("user_id, xp_this_week, streak_days, league") \
+            .order("xp_this_week", desc=True) \
+            .limit(50)
+        if league != "all":
+            q = q.eq("league", league)
+        rows = q.execute().data or []
+    except Exception:
+        return []
+
+    if not rows:
+        return []
+
+    user_ids = [r["user_id"] for r in rows]
+    try:
+        profiles_res = sb_client.table("profiles") \
+            .select("id, username, first_name, last_name") \
+            .in_("id", user_ids).execute()
+        profiles_map = {p["id"]: p for p in (profiles_res.data or [])}
+    except Exception:
+        profiles_map = {}
+
+    result = []
+    for i, row in enumerate(rows):
+        p    = profiles_map.get(row["user_id"], {})
+        name = (
+            p.get("username")
+            or f"{p.get('first_name', '')} {p.get('last_name', '')}".strip()
+            or f"Trader #{i + 1}"
+        )
+        result.append({
+            "rank":         i + 1,
+            "user_id":      row["user_id"],
+            "display_name": name,
+            "xp_this_week": row.get("xp_this_week", 0),
+            "streak_days":  row.get("streak_days", 0),
+            "league":       row.get("league", "rookie_trader"),
+        })
+    return result
+
+
+@app.post("/academy/use-streak-freeze")
+async def use_streak_freeze(request: Request):
+    body    = await request.json()
+    user_id = body.get("user_id", "")
+    if not user_id:
+        raise HTTPException(status_code=400, detail="user_id erforderlich")
+
+    try:
+        row = sb_client.table("user_progress") \
+            .select("streak_freeze_available").eq("user_id", user_id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    if not row.data:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+    if not row.data[0].get("streak_freeze_available"):
+        raise HTTPException(status_code=400, detail="Kein Streak Freeze verfügbar")
+
+    sb_client.table("user_progress") \
+        .update({"streak_freeze_available": False}).eq("user_id", user_id).execute()
+    return {"ok": True}
+
+
 # ─── Run ──────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
