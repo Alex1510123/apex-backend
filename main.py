@@ -2326,6 +2326,125 @@ def get_academy_dashboard(user_id: str = Depends(verify_jwt)):
     }
 
 
+@app.post("/academy/evaluate-answer")
+async def evaluate_answer(request: Request):
+    body = await request.json()
+    lesson_title = body.get("lesson_title", "")
+    question     = body.get("question", "")
+    user_answer  = body.get("answer", "")
+    user_id      = body.get("user_id", "")
+
+    prompt = f"""Du bist ein strenger aber fairer Finanz-Tutor. Bewerte die folgende Antwort eines Lernenden.
+
+Lektion: {lesson_title}
+Frage: {question}
+Antwort des Lernenden: {user_answer}
+
+Bewerte auf einer Skala von 0-100 und antworte NUR als JSON (kein Markdown, keine Codeblöcke):
+{{
+  "score": <0-100>,
+  "passed": <true wenn score >= 60>,
+  "feedback": "<1-2 Sätze Gesamtfeedback auf Deutsch>",
+  "strengths": "<was gut war, 1 Satz>",
+  "improvement": "<was verbessert werden könnte, 1 Satz, oder null wenn passed>"
+}}"""
+
+    try:
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "Content-Type":      "application/json",
+                "x-api-key":         ANTHROPIC_API_KEY,
+                "anthropic-version": "2023-06-01",
+            },
+            json={
+                "model":      "claude-sonnet-4-5-20250929",
+                "max_tokens": 400,
+                "messages":   [{"role": "user", "content": prompt}],
+            },
+            timeout=30,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(status_code=502, detail=f"Anthropic API network error: {exc}")
+
+    if not resp.ok:
+        err = resp.json() if resp.content else {}
+        raise HTTPException(status_code=502, detail=err.get("error", {}).get("message", f"Anthropic Fehler {resp.status_code}"))
+
+    raw = resp.json()["content"][0]["text"].strip()
+    # Strip markdown code fences if present
+    raw = re.sub(r"^```(?:json)?\n?", "", raw).strip()
+    raw = re.sub(r"\n?```$", "", raw).strip()
+
+    try:
+        result = json.loads(raw)
+    except Exception:
+        raise HTTPException(status_code=502, detail="Ungültige JSON-Antwort von Anthropic")
+
+    if user_id:
+        try:
+            sb_client.table("open_answer_attempts").insert({
+                "user_id":      user_id,
+                "lesson_title": lesson_title,
+                "question":     question,
+                "answer":       user_answer,
+                "score":        result["score"],
+                "passed":       result["passed"],
+            }).execute()
+        except Exception:
+            pass  # Don't fail the request if DB insert fails
+
+    return result
+
+
+@app.post("/academy/tutor-chat")
+async def tutor_chat(request: Request):
+    body = await request.json()
+    lesson_title   = body.get("lesson_title", "")
+    lesson_context = body.get("lesson_context", "")
+    user_message   = body.get("message", "")
+    chat_history   = body.get("history", [])
+
+    system_prompt = (
+        f"Du bist ein präziser Finanz-Tutor für die Finscope Academy.\n"
+        f"Aktuelle Lektion: {lesson_title}\n"
+        f"Lektionsinhalt: {lesson_context}\n\n"
+        f"Regeln:\n"
+        f"- Antworte auf Deutsch, max 4 Sätze\n"
+        f"- Bleib strikt beim Lektionsthema\n"
+        f"- Bei Off-Topic: freundlich zurücklenken\n"
+        f"- Keine Anlageempfehlungen\n"
+        f"- Erkläre Konzepte klar und praxisnah"
+    )
+
+    messages = chat_history + [{"role": "user", "content": user_message}]
+
+    try:
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "Content-Type":      "application/json",
+                "x-api-key":         ANTHROPIC_API_KEY,
+                "anthropic-version": "2023-06-01",
+            },
+            json={
+                "model":      "claude-sonnet-4-5-20250929",
+                "max_tokens": 300,
+                "system":     system_prompt,
+                "messages":   messages,
+            },
+            timeout=30,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(status_code=502, detail=f"Anthropic API network error: {exc}")
+
+    if not resp.ok:
+        err = resp.json() if resp.content else {}
+        raise HTTPException(status_code=502, detail=err.get("error", {}).get("message", f"Anthropic Fehler {resp.status_code}"))
+
+    return {"reply": resp.json()["content"][0]["text"]}
+
+
 @app.get("/academy/specializations")
 def get_specializations(user_id: str = Depends(verify_jwt)):
     try:
