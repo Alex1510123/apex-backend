@@ -18,6 +18,7 @@ from supabase_client import supabase as sb_client
 from yahoo_finance import fetch_yahoo_quote   # TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source (EODHD upgrade or Tiingo) before commercial launch
 from fred_api import fetch_fred_series, fetch_fred_cpi_yoy, fetch_fred_indpro_yoy, fetch_fred_yield_history
 from ecb_api import fetch_ecb_series, fetch_ecb_yield_history
+import yfinance as yf
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -3100,6 +3101,156 @@ async def weekly_boss_submit(request: Request):
             pass
 
     return {**result, "xp_earned": xp_earned}
+
+
+# ─── Fundamentals ─────────────────────────────────────────────────────────────
+
+def _to_yf_ticker(ticker: str) -> str:
+    """Convert EODHD ticker format to Yahoo Finance format."""
+    t = ticker.upper()
+    if t.endswith(".US"):         return t[:-3]
+    if t.endswith(".XETRA"):      return t[:-6] + ".DE"
+    if t.endswith(".INDX"):       return t[:-5]
+    if t.endswith(".CC"):         return t[:-3] + "-USD"
+    if t.endswith(".FOREX"):      return t[:-6] + "=X"
+    return t
+
+
+@app.get("/fundamentals/{ticker}")
+async def get_fundamentals(ticker: str):
+    yf_ticker = _to_yf_ticker(ticker)
+
+    def safe_val(df, row, col=0):
+        try:
+            val = df.loc[row].iloc[col]
+            return None if pd.isna(val) else float(val)
+        except Exception:
+            return None
+
+    def get_series(df, row):
+        try:
+            series = df.loc[row].dropna()
+            return {
+                str(dt.date()): float(v)
+                for dt, v in series.items()
+            }
+        except Exception:
+            return {}
+
+    try:
+        stock        = yf.Ticker(yf_ticker)
+        info         = stock.info or {}
+        balance_sheet = stock.balance_sheet
+        income_stmt  = stock.income_stmt
+        cash_flow    = stock.cash_flow
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"yfinance Fehler: {e}")
+
+    # If yfinance returned an empty info dict the ticker is invalid
+    if not info.get("symbol") and not info.get("longName") and not info.get("regularMarketPrice"):
+        raise HTTPException(status_code=404, detail=f"Ticker '{yf_ticker}' nicht gefunden")
+
+    try:
+        total_debt  = info.get("totalDebt") or 0
+        total_cash  = info.get("totalCash") or 0
+        shares_out  = info.get("sharesOutstanding") or 1
+        fcf         = info.get("freeCashflow")
+
+        result = {
+            "ticker":    ticker,
+            "yf_ticker": yf_ticker,
+            "company": {
+                "name":        info.get("longName", ticker),
+                "sector":      info.get("sector", ""),
+                "industry":    info.get("industry", ""),
+                "country":     info.get("country", ""),
+                "employees":   info.get("fullTimeEmployees"),
+                "description": (info.get("longBusinessSummary") or "")[:500],
+            },
+            "market": {
+                "price":       info.get("currentPrice") or info.get("regularMarketPrice"),
+                "market_cap":  info.get("marketCap"),
+                "high_52w":    info.get("fiftyTwoWeekHigh"),
+                "low_52w":     info.get("fiftyTwoWeekLow"),
+                "beta":        info.get("beta"),
+                "avg_volume":  info.get("averageVolume"),
+            },
+            "valuation": {
+                "pe_ratio":    info.get("trailingPE"),
+                "forward_pe":  info.get("forwardPE"),
+                "peg_ratio":   info.get("pegRatio"),
+                "pb_ratio":    info.get("priceToBook"),
+                "ps_ratio":    info.get("priceToSalesTrailing12Months"),
+                "ev_ebitda":   info.get("enterpriseToEbitda"),
+                "ev_revenue":  info.get("enterpriseToRevenue"),
+            },
+            "profitability": {
+                "gross_margin":     info.get("grossMargins"),
+                "operating_margin": info.get("operatingMargins"),
+                "net_margin":       info.get("profitMargins"),
+                "roe":              info.get("returnOnEquity"),
+                "roa":              info.get("returnOnAssets"),
+            },
+            "balance_sheet": {
+                "total_cash":         total_cash if total_cash else None,
+                "total_debt":         total_debt if total_debt else None,
+                "net_debt":           total_debt - total_cash,
+                "debt_to_equity":     info.get("debtToEquity"),
+                "current_ratio":      info.get("currentRatio"),
+                "quick_ratio":        info.get("quickRatio"),
+                "total_assets":       safe_val(balance_sheet, "Total Assets"),
+                "total_equity":       safe_val(balance_sheet, "Stockholders Equity"),
+                "book_value_per_share": info.get("bookValue"),
+                "history": {
+                    "total_debt": get_series(balance_sheet, "Total Debt"),
+                    "cash":       get_series(balance_sheet, "Cash And Cash Equivalents"),
+                    "equity":     get_series(balance_sheet, "Stockholders Equity"),
+                },
+            },
+            "income": {
+                "revenue_ttm":    info.get("totalRevenue"),
+                "revenue_growth": info.get("revenueGrowth"),
+                "gross_profit":   safe_val(income_stmt, "Gross Profit"),
+                "ebitda":         info.get("ebitda"),
+                "net_income":     info.get("netIncomeToCommon"),
+                "eps_ttm":        info.get("trailingEps"),
+                "eps_forward":    info.get("forwardEps"),
+                "history": {
+                    "revenue":    get_series(income_stmt, "Total Revenue"),
+                    "net_income": get_series(income_stmt, "Net Income"),
+                    "ebitda":     get_series(income_stmt, "EBITDA"),
+                },
+            },
+            "cash_flow": {
+                "operating_cf":    safe_val(cash_flow, "Operating Cash Flow"),
+                "capex":           safe_val(cash_flow, "Capital Expenditure"),
+                "free_cash_flow":  fcf,
+                "fcf_per_share":   (fcf / shares_out) if fcf else None,
+                "dividend_yield":  info.get("dividendYield"),
+                "payout_ratio":    info.get("payoutRatio"),
+                "history": {
+                    "operating_cf":   get_series(cash_flow, "Operating Cash Flow"),
+                    "capex":          get_series(cash_flow, "Capital Expenditure"),
+                    "free_cash_flow": get_series(cash_flow, "Free Cash Flow"),
+                },
+            },
+            "growth": {
+                "revenue_growth_yoy":        info.get("revenueGrowth"),
+                "earnings_growth_yoy":       info.get("earningsGrowth"),
+                "earnings_quarterly_growth": info.get("earningsQuarterlyGrowth"),
+            },
+            "analyst": {
+                "recommendation": info.get("recommendationKey"),
+                "target_price":   info.get("targetMeanPrice"),
+                "target_high":    info.get("targetHighPrice"),
+                "target_low":     info.get("targetLowPrice"),
+                "num_analysts":   info.get("numberOfAnalystOpinions"),
+            },
+        }
+        return result
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Fundamentals Verarbeitungsfehler: {e}")
 
 
 # ─── Run ──────────────────────────────────────────────────────────────────────
