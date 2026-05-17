@@ -1,0 +1,110 @@
+{
+  "id": "swing-trader-2.3",
+  "track_id": "swing-trader",
+  "title": "Stop-Loss und Position Sizing",
+  "subtitle": "Kapital schuetzen mit der 1-2%-Risiko-Regel und korrektem Sizing",
+  "duration_min": 10,
+  "sort_order": 3,
+  "status": "available",
+  "learning_goals": [
+    "Die 1-2%-Risiko-Regel als Grundlage des Kapitalschutzes anwenden",
+    "Stop-Loss korrekt platzieren (technisch, nicht willkuerlich)",
+    "Positionsgroesse aus Risiko, Stop-Loss und Kontogroesse berechnen",
+    "Risk-Reward-Ratios bewerten und nur asymmetrische Trades eingehen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Warum Kapitalschutz vor Gewinnen kommt",
+      "body": "Die meisten Anfaenger denken beim Traden zuerst an Gewinne. Professionelle Trader denken zuerst an Verluste.\n\nWarum? Mathematik. Ein Verlust von 50% erfordert eine anschliessende Rendite von 100%, um wieder auf den Ausgangspunkt zu kommen. Ein Verlust von 20% erfordert nur 25% Gewinn zur Erholung. Grosse Verluste sind exponentiell schwerer aufzuholen.\n\nDas primaere Ziel eines Swing Traders ist es nicht, moeglichst viel zu verdienen -- es ist, im Spiel zu bleiben. Wer sein Kapital schuetzt, hat die Zeit und die Ressourcen, um langfristig profitabel zu sein. Wer sein Kapital zerstoert, ist raus.\n\nDieses Kapitel behandelt die drei Saeulen des Risikomanagements: Stop-Loss-Platzierung, Positionsgroesse und Risk-Reward-Ratio."
+    },
+    {
+      "type": "text",
+      "heading": "Die 1-2%-Risiko-Regel",
+      "body": "Die wichtigste Regel im Trading: Riskieren Sie nie mehr als 1-2% Ihres gesamten Handelskapitals in einem einzigen Trade.\n\n**Was das bedeutet:**\nBei einem Konto von 10.000 Euro bedeutet 1% Risiko: maximal 100 Euro Verlust pro Trade. 2%: maximal 200 Euro.\n\n**Warum das funktioniert:**\nSelbst eine unwahrscheinliche Verlustserie von 10 aufeinanderfolgenden Trades (jeder mit 2% Risiko) reduziert das Konto um ca. 18% -- schmerzhaft, aber ueberlebbar. Mit 10% Risiko pro Trade wuerde dieselbe Serie das Konto um 65% vernichten.\n\n**Die psychologische Seite:**\nBei 1% Risiko pro Trade koennen Sie 100 Trades in Folge verlieren, bevor das Konto auf die Haelfte faellt. Das gibt Ihnen genug Datenpunkte, um Ihre Strategie zu bewerten und zu verbessern -- ohne emotional abgebrannt zu sein.\n\n**Faustregel fuer Anfaenger:** Starten Sie mit 0.5-1% Risiko pro Trade, bis Sie eine nachgewiesene Erfolgsserie von mindestens 50 Trades haben."
+    },
+    {
+      "type": "text",
+      "heading": "Stop-Loss -- technisch platzieren, nicht willkuerlich",
+      "body": "Ein Stop-Loss ist kein willkuerlicher Prozentwert ('ich setze immer 5% Stop'). Ein guter Stop-Loss wird technisch platziert -- basierend auf dem Chart.\n\n**Grundprinzip:** Platziere den Stop-Loss an einem Preis, der die Handelshypothese ungueltig macht. Wenn der Kurs diesen Punkt erreicht, war Ihre Analyse falsch -- und der Trade sollte beendet werden.\n\n**Technische Stop-Platzierungen:**\n\n- **Unter der Unterstuetzungszone:** Kaufen Sie einen Ausbruch aus einem Ascending Triangle, setzen Sie den Stop knapp unter die horizontale Unterstuetzung des Dreiecks.\n- **Unter dem Handle-Tief:** Beim Cup-and-Handle Stop knapp unter das tiefste Niveau des Handle.\n- **Unter dem letzten signifikanten Tief:** In einem Aufwaertstrend kaufen Sie an der Unterstuetzung -- Stop unter das letzte Tief.\n- **Unter einem gleitenden Durchschnitt:** Der 20-Tage-EMA oder 50-Tage-EMA als dynamischer Stop fuer Trend-Trades.\n\n**Stop-Loss und Slippage:**\nBei schnell fallenden Aktien kann der Ausfuehrungspreis schlechter sein als der Stop-Preis ('Slippage'). Bei sehr illiquiden Aktien oder Gaps nach unten kann der Verlust groesser sein als geplant. Deshalb bei volatilen Aktien konservativeres Sizing."
+    },
+    {
+      "type": "info_box",
+      "heading": "Position Sizing Formel -- so berechnen Sie die richtige Positionsgroesse",
+      "body": "Positionsgroesse = (Kontogroesse x Risikoprozent) / (Einstiegspreis - Stop-Loss-Preis)\n\nBeispiel: Konto 10.000 EUR, 1% Risiko (100 EUR), Einstieg 50 EUR, Stop bei 47 EUR (3 EUR Risiko pro Aktie).\nPositionsgroesse = 100 / 3 = 33 Aktien. Gesamtinvestition: 1.650 EUR (16.5% des Kontos)."
+    },
+    {
+      "type": "text",
+      "heading": "Position Sizing -- die Formel im Detail",
+      "body": "Positionsgroesse und Stop-Loss sind untrennbar verknuepft. Erst wenn Sie den Stop-Loss-Preis kennen, koennen Sie die Positionsgroesse berechnen.\n\n**Die Formel:**\nPositionsgroesse (Anzahl Aktien) = Maximaler Verlust in EUR / Verlust pro Aktie\n\nMit:\n- Maximaler Verlust in EUR = Kontogroesse x Risiko% (z.B. 10.000 x 1% = 100 EUR)\n- Verlust pro Aktie = Einstiegspreis - Stop-Loss-Preis\n\n**Drei Beispiele:**\n\n**Beispiel 1 -- enger Stop:**\nKonto: 10.000 EUR, Risiko: 1% = 100 EUR. Einstieg: 100 EUR, Stop: 97 EUR (3 EUR Abstand).\nPositionsgroesse: 100 / 3 = 33 Aktien = 3.300 EUR Investition.\n\n**Beispiel 2 -- weiter Stop:**\nKonto: 10.000 EUR, Risiko: 1% = 100 EUR. Einstieg: 100 EUR, Stop: 88 EUR (12 EUR Abstand).\nPositionsgroesse: 100 / 12 = 8 Aktien = 800 EUR Investition.\n\n**Beispiel 3 -- volatile Aktie:**\nKonto: 10.000 EUR, Risiko: 0.5% = 50 EUR (reduziert bei volatiler Aktie). Einstieg: 200 EUR, Stop: 188 EUR (12 EUR Abstand).\nPositionsgroesse: 50 / 12 = 4 Aktien = 800 EUR Investition.\n\n**Lektion:** Je weiter der Stop (je mehr Puffer Sie benoetigen), desto kleiner die Positionsgroesse. Das ist mathematisch korrekt und schutzt Ihr Risikomanagement."
+    },
+    {
+      "type": "text",
+      "heading": "Risk-Reward-Ratio -- nur asymmetrische Trades",
+      "body": "Das Risk-Reward-Ratio (RRR) ist das Verhaeltnis von potenziellen Gewinn zu potenziellen Verlust eines Trades.\n\n**Berechnung:** RRR = (Kursziel - Einstieg) / (Einstieg - Stop-Loss)\n\n**Beispiel:** Einstieg 50 EUR, Stop 47 EUR (3 EUR Risiko), Kursziel 59 EUR (9 EUR Gewinnpotenzial).\nRRR = 9 / 3 = 3:1. Fuer jeden riskierten Euro koennen Sie 3 verdienen.\n\n**Warum das entscheidend ist:**\nMit einem RRR von 2:1 koennen Sie langfristig profitabel sein, selbst wenn nur 40% Ihrer Trades gewinnen:\n- 10 Trades: 4 Gewinner x 2 EUR + 6 Verlierer x (-1 EUR) = +8 - 6 = +2 EUR Gewinn\n\nMit RRR von 1:1 muessten Sie 55%+ Gewinnquote haben, um profitabel zu bleiben.\n\n**Mindestanforderungen:**\n- Minimum 1.5:1 RRR, um einen Trade ueberhaupt in Betracht zu ziehen\n- Angestrebtes RRR fuer Swing Trades: 2:1 bis 3:1\n- Bei starken, hochqualitativen Setups: RRR bis 5:1 moeglich\n\n**Kursziel bestimmen:**\nNutzen Sie technische Level: naechster Widerstand, Fibonacci-Extension, Musterziel (Cup-and-Handle, Bull Flag). Kein willkuerliches Kursziel setzen -- es muss eine technische Begruendung haben."
+    },
+    {
+      "type": "text",
+      "heading": "Trailing Stop -- Gewinne laufen lassen",
+      "body": "Ein Trailing Stop ist ein dynamischer Stop-Loss, der sich mit dem Kurs nach oben bewegt, aber nie nach unten.\n\n**Ziel:** Gewinne 'einsperren' und gleichzeitig der Aktie Raum lassen, weiter zu steigen.\n\n**Methoden:**\n\n- **Prozentbasierter Trailing Stop:** Stop folgt dem Kurs mit einem fixen Prozentabstand (z.B. immer 8% unter dem hoechsten Kurs seit Einstieg).\n- **EMA-basierter Trailing Stop:** Verwende den 20-Tage-EMA als Trailing Stop -- solange der Kurs darueber bleibt, halten Sie die Position.\n- **Manueller Trailing Stop:** Nach jedem signifikanten neuen Hoch setzen Sie den Stop manuell unter das letzte Tief (Swing-Tief).\n\n**Wann Teilgewinne mitnehmen:**\nEine konservative Strategie: Bei Erreichen des ersten Kursziels (z.B. 1.5x Risiko) die halbe Position verkaufen und den Stop auf den Einstiegspreis setzen (Break-Even-Stop). Die verbleibende Haelfte laesst man mit Trailing Stop laufen.\n\nDas eliminiert das Risiko eines Totalverlusts im Trade und gibt gleichzeitig die Moeglichkeit, grosse Trends mitzunehmen."
+    },
+    {
+      "type": "live_widget",
+      "widget_type": "ticker_card",
+      "ticker": "NVDA",
+      "label": "NVIDIA (NVDA) -- Beispiel fuer volatiles Position Sizing"
+    },
+    {
+      "type": "app_link",
+      "label": "-> Portfolio-Risiko im Research-Tab pruefen",
+      "target_tab": "research"
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Was bedeutet die 1%-Risiko-Regel fuer ein Konto von 20.000 Euro?",
+      "options": [
+        "Maximal 200 Euro Verlust pro Trade",
+        "Maximal 20% des Kontos pro Trade investieren",
+        "Den Stop-Loss immer bei 1% unter dem Einstieg setzen",
+        "Nie mehr als 1 Trade gleichzeitig halten"
+      ],
+      "correct": 0,
+      "explanation": "Richtig. 1% von 20.000 EUR = 200 EUR maximaler Verlust pro Trade. Damit kann man 200 aufeinanderfolgende Verlusttrades erleiden, bevor das Konto halbiert ist -- genuegend Zeit, um die Strategie zu ueberdenken und anzupassen."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Konto: 5.000 EUR, Risiko: 1%. Einstieg bei 40 EUR, Stop-Loss bei 37 EUR. Wie viele Aktien kaufen?",
+      "options": [
+        "50 Aktien",
+        "33 Aktien",
+        "17 Aktien",
+        "125 Aktien"
+      ],
+      "correct": 2,
+      "explanation": "Korrekt. Maximaler Verlust = 5.000 x 1% = 50 EUR. Verlust pro Aktie = 40 - 37 = 3 EUR. Positionsgroesse = 50 / 3 = 16.7 -- gerundet auf 17 Aktien (Gesamtinvestition: 680 EUR)."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "question": "Was ist das Mindest-Risk-Reward-Ratio, das ein Swing Trade erfuellen sollte?",
+      "options": [
+        "Mindestens 1:1",
+        "Mindestens 1.5:1",
+        "Mindestens 5:1",
+        "Das RRR spielt keine Rolle, nur die Trefferquote zaehlt"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Ein Mindest-RRR von 1.5:1 (besser 2:1) ist die Basis asymmetrischen Tradings. Bei 1:1 muesste man eine Trefferquote von ueber 50% erreichen -- was ohne eindeutigen Edge schwer ist. Mit 2:1 ist man bei 40% Trefferquote bereits profitabel."
+    },
+    {
+      "id": "q4",
+      "type": "open_question",
+      "question": "Erklaeren Sie, warum ein Trader mit einer 40%-Trefferquote trotzdem profitabel sein kann. Welche Bedingung muss erfuellt sein?",
+      "explanation": "Profitabilitaet haengt nicht allein von der Trefferquote ab, sondern vom Produkt aus Trefferquote und Risk-Reward-Ratio. Beispiel: 40% Trefferquote x 2.5:1 RRR: Bei 10 Trades gewinnen 4 je 250 EUR und verlieren 6 je 100 EUR. Ergebnis: +1.000 EUR - 600 EUR = +400 EUR Gewinn. Die Bedingung: Das durchschnittliche RRR muss groesser sein als (1 / Trefferquote) - 1. Bei 40% Trefferquote: (1 / 0.4) - 1 = 1.5. Das RRR muss also groesser als 1.5:1 sein."
+    }
+  ]
+}

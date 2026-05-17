@@ -1,0 +1,115 @@
+{
+  "id": "swing-trader-2.1",
+  "track_id": "swing-trader",
+  "title": "Chartmuster erkennen",
+  "subtitle": "Bullische und baerische Formationen fuer den Swing Trade",
+  "duration_min": 12,
+  "sort_order": 1,
+  "status": "available",
+  "learning_goals": [
+    "Die wichtigsten bullischen Chartmuster identifizieren (Cup-and-Handle, Bull Flag, Ascending Triangle)",
+    "Baerische Umkehrmuster erkennen (Head-and-Shoulders, Bear Flag, Descending Triangle)",
+    "Volumen als Bestaetigung fuer Ausbrueche interpretieren",
+    "Realistische Erwartungen an Trefferquoten und Risiko entwickeln"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Warum Chartmuster funktionieren",
+      "body": "Chartmuster sind keine Magie -- sie sind das visuelle Abbild von Marktpsychologie. Kaeufer und Verkaeufer hinterlassen in Preis und Volumen Spuren, die sich wiederholen, weil menschliches Verhalten (Gier, Angst, Herdeninstinkt) konstant ist.\n\nEin Swing Trader nutzt diese Muster, um asymmetrische Trades zu finden: Situationen, in denen das potenzielle Gewinnziel groesser ist als das definierte Risiko. Das ist kein Hokuspokus -- institutionelle Haendler, Hedgefonds und Algorithmen reagieren auf dieselben Schluesselzonen, weil alle denselben Chart sehen.\n\nWichtig: Kein Chartmuster hat eine 100%-Trefferquote. Die besten Muster liefern 55-65% Gewinntradesim Backtesting. Der Edge kommt nicht aus der Trefferquote allein, sondern aus dem Verhaeltnis von Gewinn zu Verlust pro Trade -- dem Risk-Reward-Ratio."
+    },
+    {
+      "type": "text",
+      "heading": "Bullisches Muster 1: Cup-and-Handle",
+      "body": "Das Cup-and-Handle-Muster ist eines der zuverlaessigsten bullischen Fortsetzungsmuster. Es wurde von William O'Neil (Gruender von Investor's Business Daily) popularisiert.\n\n**Struktur:**\n- **Cup:** Eine U-foermige Konsolidierung, typisch 7-65 Wochen. Der rechte Rand sollte den linken Rand auf dem gleichen Preisniveau erreichen -- wie der Rand einer Tasse.\n- **Handle:** Nach Erreichen des linken Randes konsolidiert der Kurs kurz und formt einen kleinen Ruecksetzer (5-15%), oft in Form eines leichten Abwaertstrends oder einer Seitwaertsbewegung.\n- **Ausbruch:** Wenn der Kurs aus dem Handle ausbricht -- idealerweise mit signifikant hohem Volumen (mindestens 40% ueber dem 50-Tage-Durchschnittsvolumen).\n\n**Kaufpunkt:** Am Ausbruch ueber den Handle-Widerstand, oft auch als 'Pivot Point' bezeichnet.\n\n**Kursziel:** Hoehe des Cups (vom Tassenboden bis zum Tassrenrand) projiziert nach oben ab dem Ausbruchspunkt.\n\n**Beispiel:** NVIDIA brach Ende 2023 aus einem 8-Wochen-Cup-and-Handle aus. Wer am Ausbruchstag kaufte und ein 2:1 Risk-Reward-Ratio verwendete, erzielte einen erheblichen Gewinn innerhalb weniger Wochen."
+    },
+    {
+      "type": "text",
+      "heading": "Bullisches Muster 2: Bull Flag",
+      "body": "Die Bull Flag ist ein schnelles Fortsetzungsmuster nach einer starken Aufwaertsbewegung. Sie ist eines der am haeufigsten vorkommenden und am leichtesten erkennbaren Muster.\n\n**Struktur:**\n- **Fahnenstange (Flagpole):** Ein steiler, starker Kursanstieg in kurzer Zeit -- oft 10-30% in wenigen Tagen.\n- **Flag:** Eine ruhige Konsolidierungsphase mit leicht abwaerts gerichtetem oder seitwaertigem Preis auf niedrigem Volumen. Der Kurs 'atmet durch', bevor die naechste Bewegung beginnt.\n\n**Schluessel:** Waehrend der Flag-Phase faellt das Volumen deutlich ab -- das ist ein gesundes Zeichen. Wenn das Volumen waehrend der Konsolidierung hoch bleibt, ist das ein Warnsignal (moegliche Distribution).\n\n**Kaufpunkt:** Ausbruch ueber die obere Trendlinie der Flag mit erhoehtem Volumen.\n\n**Kursziel:** Laenge der Fahnenstange ab dem Ausbruchspunkt nach oben projiziert.\n\n**Zeitrahmen:** Bull Flags auf Tages-Charts sind ideal fuer Swing Trades (Haltedauer 3-15 Tage). Auf Wochen-Charts fuer laengere Swing Positionen."
+    },
+    {
+      "type": "text",
+      "heading": "Bullisches Muster 3: Ascending Triangle",
+      "body": "Das Ascending Triangle (aufsteigendes Dreieck) ist ein bullisches Konsolidierungsmuster mit einer klaren Aussage: Kaeufer werden aggressiver, waehrend Verkaeufer passiv bleiben.\n\n**Struktur:**\n- **Horizontaler Widerstand:** Eine flache obere Begrenzungslinie, an der der Kurs mehrfach abprallt -- Verkaeufer treten immer wieder bei demselben Preisniveau ein.\n- **Aufsteigende Unterstuetzung:** Eine steigende Trendlinie verbindet hoehere Tiefs -- Kaeufer kaufen jede Korrektur auf einem hoeheren Niveau.\n\n**Interpretation:** Die hoeher liegenden Tiefs zeigen, dass Kaeufer nicht mehr so lange warten wollen. Der Druck steigt. Irgendwann bricht der Widerstand.\n\n**Ausbruch:** Typisch nach oben, durch den horizontalen Widerstand -- mit erhoehtem Volumen.\n\n**Kursziel:** Hoehe des Dreiecks am breitesten Punkt projiziert nach oben.\n\n**Achtung:** Ca. 25% der Ascending Triangles brechen nach unten aus (sogenannte 'failed breakout'). Deshalb immer einen Stop-Loss unter der unteren Trendlinie platzieren."
+    },
+    {
+      "type": "text",
+      "heading": "Baerisches Muster 1: Head-and-Shoulders",
+      "body": "Das Head-and-Shoulders-Muster ist das bekannteste Umkehrmuster -- es signalisiert das Ende eines Aufwaertstrends.\n\n**Struktur:**\n- **Linke Schulter:** Anstieg auf ein neues Hoch, dann Ruecksetzer.\n- **Kopf:** Erneuter Anstieg auf ein noch hoeheres Hoch, dann Ruecksetzer auf aehnliches Niveau wie nach der linken Schulter.\n- **Rechte Schulter:** Anstieg -- aber nicht mehr bis auf das Niveau des Kopfes. Das ist der Schluesselpunkt: Der Trend verliert Kraft.\n- **Neckline:** Eine horizontale oder leicht geneigte Linie, die die Tiefs nach linker Schulter und Kopf verbindet.\n\n**Signal:** Wenn der Kurs die Neckline nach dem Rueckgang von der rechten Schulter unterschreitet -- idealerweise mit erhoehtem Volumen.\n\n**Kursziel:** Abstand zwischen Neckline und Kopf -- projiziert nach unten ab dem Ausbruch.\n\n**Hinweis fuer Swing Trader:** Short-Positionen auf das Head-and-Shoulders setzen ein erhoehtes Risiko voraus. Moeglichkeit: Verkauf bestehender Long-Positionen beim Erreichen der rechten Schulter."
+    },
+    {
+      "type": "text",
+      "heading": "Baerische Muster 2 und 3: Bear Flag und Descending Triangle",
+      "body": "**Bear Flag -- das Spiegelbild der Bull Flag:**\n\nNach einem steilen Kursverfall konsolidiert der Kurs leicht aufwaerts oder seitwaerts auf niedrigem Volumen -- die 'Erholung'. Wenn der Kurs aus dieser Konsolidierung nach unten ausbricht (mit erhoehtem Volumen), setzt sich der Abwaertstrend fort.\n\nBear Flags sind haeufig nach Earnings-Disappointments, negativen Makrodaten oder Sektorschwaeche zu sehen. Sie sind nuetzlich, um den optimalen Punkt fuer Short-Einstiege oder das Schliessen von Long-Positionen zu identifizieren.\n\n**Descending Triangle -- sinkende Hochs bei gleichem Tief:**\n\nDas Gegenteil des Ascending Triangle. Eine horizontale Unterstuetzungslinie (Kaeufer kaufen immer beim selben Preis), aber die Hochs sinken -- Verkaeufer werden aggressiver. Der zunehmende Verkaufsdruck fuehrt typisch zu einem Ausbruch nach unten.\n\nAuch hier gilt: Ca. 25% der Descending Triangles brechen entgegen der Erwartung nach oben aus. Stop-Loss-Placement ist obligatorisch."
+    },
+    {
+      "type": "info_box",
+      "heading": "Volumen ist die wichtigste Bestaetigung",
+      "body": "Jeder Ausbruch aus einem Chartmuster sollte mit signifikant erhoehtem Volumen bestaetigt werden -- idealerweise 50-100% ueber dem 20-Tage-Durchschnittsvolumen. Ausbrueche auf sehr niedrigem Volumen schlagen haeufig fehl ('false breakout'). Wenn ein Muster klar ist, aber das Volumen fehlt: warten oder Position verkleinern."
+    },
+    {
+      "type": "text",
+      "heading": "Realistische Erwartungen -- was Chartmuster koennen und was nicht",
+      "body": "Ehrliche Einordnung fuer neue Swing Trader:\n\n**Trefferquoten:** Selbst die besten Chartmuster haben in Backtests Trefferquoten von 55-65%. Das bedeutet: 35-45% der Trades laufen gegen Sie. Das ist normal und kein Versagen -- es ist Statistik.\n\n**Der eigentliche Edge:** Nicht die Trefferquote entscheidet ueber den langfristigen Erfolg, sondern das Risk-Reward-Ratio. Wenn Sie im Schnitt 2 Euro gewinnen, aber nur 1 Euro riskieren, sind Sie bei 50% Trefferquote profitabel.\n\n**Fehlerquellen:** Muster im Nachhinein erkennen ist einfach -- in Echtzeit zu handeln ist schwer. Emotionen, Confirmation Bias (man sieht, was man sehen will) und mangelnde Disziplin beim Stop-Loss sind die groessten Fehler.\n\n**Best Practice:** Fuehren Sie ein Trading-Tagebuch. Notieren Sie fuer jeden Trade: Muster, Einstiegspunkt, Stop-Loss, Kursziel, Ergebnis. Nach 50 Trades sehen Sie Ihre eigenen Staerken und Schwaechen."
+    },
+    {
+      "type": "live_widget",
+      "widget_type": "mini_chart",
+      "ticker": "NVDA",
+      "label": "NVIDIA (NVDA) -- 3-Monats-Chart fuer Mustererkennung"
+    },
+    {
+      "type": "app_link",
+      "label": "-> Charts im Research-Tab analysieren",
+      "target_tab": "research"
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Was unterscheidet eine echte Bull Flag von einer zunaechst aehnlich aussehenden Topbildung?",
+      "options": [
+        "Die Bull Flag hat einen staerkeren Anstieg vor der Konsolidierung",
+        "Das Volumen faellt waehrend der Flag-Konsolidierung stark ab",
+        "Die Bull Flag bildet sich nur auf Wochencharts",
+        "Bei der Bull Flag sinken die Hochs waehrend der Konsolidierung staerker"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Das entscheidende Merkmal einer gesunden Bull Flag ist das stark sinkende Volumen waehrend der Konsolidierungsphase. Es zeigt, dass kein echtes Verkaufsinteresse besteht -- die Aktie 'atmet durch'. Bleibt das Volumen hoch, liegt moeglicherweise Distribution vor."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was ist der Kaufpunkt (Pivot Point) beim Cup-and-Handle-Muster?",
+      "options": [
+        "Am Tassenboden, wenn der Kurs das Tief erreicht",
+        "Am Ausbruch ueber den Widerstand des Handle-Bereichs",
+        "Wenn das Volumen auf den hoechsten Stand seit 6 Monaten steigt",
+        "Bei der linken Schulter des Cups"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Der Kaufpunkt beim Cup-and-Handle liegt am Ausbruch ueber den Handle-Widerstand -- idealerweise mit mindestens 40% ueber dem Durchschnittsvolumen. Zu frueh zu kaufen (am Tassenboden) ist riskant, weil der Handle-Ruecksetzer noch bevorsteht."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "question": "Was signalisiert das Head-and-Shoulders-Muster?",
+      "options": [
+        "Eine Fortsetzung des bestehenden Aufwaertstrends nach kurzer Pause",
+        "Eine potenzielle Trendumkehr von aufwaerts zu abwaerts",
+        "Ein starkes Kaufsignal wenn die rechte Schulter ausgebildet ist",
+        "Eine Seitwertsbewegung ohne klare Richtung"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Head-and-Shoulders ist ein Umkehrmuster -- es signalisiert das moegliche Ende eines Aufwaertstrends. Der entscheidende Moment ist der Bruch der Neckline nach Ausbildung der rechten Schulter, die -- anders als der Kopf -- das alte Hoch nicht mehr erreicht."
+    },
+    {
+      "id": "q4",
+      "type": "open_question",
+      "question": "Warum ist Volumen fuer die Beurteilung eines Chartmusters unverzichtbar? Geben Sie ein konkretes Beispiel.",
+      "explanation": "Volumen zeigt, ob hinter einer Kursbewegung echtes Commitment steckt. Beispiel: Ein Ausbruch aus einem Ascending Triangle auf 3x normalem Volumen signalisiert, dass Institutionen kaufen -- der Ausbruch ist wahrscheinlich nachhaltig. Derselbe Ausbruch auf halbem Normalvolumen ist verdaechtig -- es koennte ein 'false breakout' sein, der schnell zurueckfaellt. Gleiches gilt fuer die Bull Flag: Niedriges Volumen in der Konsolidierung bestaetigt die Gesundheit des Musters; hohes Volumen waere ein Warnsignal."
+    }
+  ]
+}

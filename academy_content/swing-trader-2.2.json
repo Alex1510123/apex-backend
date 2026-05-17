@@ -1,0 +1,105 @@
+{
+  "id": "swing-trader-2.2",
+  "track_id": "swing-trader",
+  "title": "Momentum-Indikatoren",
+  "subtitle": "RSI, MACD und Stochastic im Swing Trading einsetzen",
+  "duration_min": 11,
+  "sort_order": 2,
+  "status": "available",
+  "learning_goals": [
+    "RSI (Relative Strength Index) korrekt interpretieren und Divergenzen erkennen",
+    "MACD-Signal- und Histogramm-Kreuzungen als Einstiegssignal nutzen",
+    "Den Stochastic Oscillator fuer kurzfristige Extremzonen einsetzen",
+    "Verstehen, wann welcher Indikator am zuverlaessigsten ist"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Momentum-Indikatoren -- Hilfsmittel, keine Orakel",
+      "body": "Technische Indikatoren sind mathematische Ableitungen aus Kurs- und Volumendaten. Sie messen Momentum (die Geschwindigkeit einer Kursbewegung), ueberkaufte und ueberverkaufte Zustaende, und die Staerke eines Trends.\n\nIm Swing Trading ersetzen Indikatoren keine Chartmuster -- sie erganzen sie. Ein Ausbruch aus einem Bull Flag-Muster mit einem aufsteigenden MACD ist ein staerkeres Signal als einer der beiden Faktoren allein.\n\nGrundprinzip: Je mehr unabhaengige Signale in dieselbe Richtung zeigen (Muster + Indikator + Volumen), desto hoeher die Wahrscheinlichkeit eines erfolgreichen Trades. In der Fachsprache nennt man das 'Confluence' -- Zusammenfallen von Signalen."
+    },
+    {
+      "type": "text",
+      "heading": "RSI -- Relative Strength Index",
+      "body": "Der RSI (entwickelt von J. Welles Wilder, 1978) ist der meistgenutzte Momentum-Indikator. Er misst, wie stark ein Instrument in einem bestimmten Zeitraum gestiegen oder gefallen ist, und normiert das Ergebnis auf eine Skala von 0 bis 100.\n\n**Berechnung (vereinfacht):** RSI = 100 - (100 / (1 + RS))\nRS = durchschnittliche Gewinne / durchschnittliche Verluste der letzten 14 Perioden\n\n**Interpretation:**\n- **RSI > 70:** Ueberkauft -- der Kurs hat schnell stark gestiegen. Potenzielle Korrektur oder Pause. Kein automatisches Verkaufssignal -- in starken Trends kann der RSI Wochen ueber 70 bleiben.\n- **RSI < 30:** Ueberverkauft -- der Kurs hat schnell stark gefallen. Potenzielle Erholung. Kein automatisches Kaufsignal -- in Abwaertstrends kann der RSI lange unter 30 bleiben.\n- **RSI 40-60:** Neutrale Zone, schwaches Signal.\n\n**Das maechtigste RSI-Signal -- Divergenz:**\n- **Bullische Divergenz:** Der Kurs macht ein neues Tief, aber der RSI macht ein hoeherens Tief. Das zeigt nachlassendes Abwaertsmomentum -- moegliche Trendwende.\n- **Baerische Divergenz:** Der Kurs macht ein neues Hoch, aber der RSI macht ein niedrigeres Hoch -- nachlassendes Aufwaertsmomentum, moegliche Trendwende.\n\n**Best Practice:** RSI-Divergenzen auf dem Wochen-Chart identifizieren, dann auf dem Tages-Chart den genauen Einstieg suchen."
+    },
+    {
+      "type": "text",
+      "heading": "MACD -- Moving Average Convergence Divergence",
+      "body": "Der MACD (entwickelt von Gerald Appel) zeigt die Beziehung zwischen zwei exponentiellen gleitenden Durchschnitten -- und ist damit ein Trendfolge- und Momentum-Indikator gleichzeitig.\n\n**Komponenten:**\n- **MACD-Linie:** 12-Tage-EMA minus 26-Tage-EMA\n- **Signallinie:** 9-Tage-EMA der MACD-Linie\n- **Histogramm:** Differenz zwischen MACD-Linie und Signallinie (visuell als Balken dargestellt)\n\n**Handelssignale:**\n\n**1. Kreuzung (Crossover):**\nMit der maechtigsten Aussagekraft: Wenn die MACD-Linie die Signallinie von unten nach oben kreuzt -- bullisches Signal. Von oben nach unten -- baerisches Signal.\n\n**2. Nulllinien-Kreuzung:**\nWenn die MACD-Linie die Nulllinie von unten kreuzt (MACD wird positiv), bestaetigt das einen Aufwaertstrend.\n\n**3. Histogramm-Momentum:**\nWachsende Histogrammbalken nach oben zeigen zunehmenden Aufwaertsdruck. Wenn die Balken kleiner werden (aber noch positiv), schwaeaht der Aufwaertsschwung -- moegliche Pause.\n\n**Einschraenkung:** MACD ist ein 'laggender' Indikator -- er reagiert mit Verzoegerung auf Preisbewegungen. Ideal fuer Trendbestaetigung, nicht fuer praezise Timing-Entscheidungen an Extrempunkten.\n\n**Empfehlung:** MACD auf dem Wochen-Chart fuer die Richtung, RSI auf dem Tages-Chart fuer den Einstieg."
+    },
+    {
+      "type": "info_box",
+      "heading": "Confluence -- warum mehrere Signale wichtig sind",
+      "body": "Ein einzelner Indikator liefert viele falsche Signale. Wenn RSI ueberverkauft zeigt UND ein MACD-Crossover stattfindet UND der Kurs eine wichtige Unterstuetzungszone erreicht -- ist das Confluence. Die Wahrscheinlichkeit eines erfolgreichen Trades steigt mit jedem zusaetzlichen bestaetigenden Signal."
+    },
+    {
+      "type": "text",
+      "heading": "Stochastic Oscillator -- Extremzonen im Kurzfrist-Chart",
+      "body": "Der Stochastic Oscillator (entwickelt von George Lane) misst, wo der aktuelle Kurs im Verhaeltnis zur Hoch-Tief-Spanne der letzten N Perioden liegt. Er oszilliert zwischen 0 und 100.\n\n**Formel:** %K = (aktueller Kurs - niedrigstes Tief) / (hoechstes Hoch - niedrigstes Tief) x 100\n\n**Signale:**\n- **%K > 80:** Ueberkauft -- Kurs am oberen Ende seiner juengsten Spanne\n- **%K < 20:** Ueberverkauft -- Kurs am unteren Ende seiner juengsten Spanne\n- **Crossover %K und %D (glaettende Signallinie):** Kaufsignal wenn %K von unten durch %D nach oben kreuzt (in ueberverkaufter Zone); Verkaufssignal umgekehrt\n\n**Unterschied zum RSI:**\nDer Stochastic ist sensibler und reagiert schneller auf kurzfristige Kursbewegungen -- ideal fuer Trades auf dem 1h oder 4h-Chart. Der RSI ist stabiler und besser fuer Tages-/Wochen-Charts.\n\n**Wann Stochastic am besten funktioniert:**\n- In Seitwaerts-Maerkten und Trading-Ranges (pendelt zwischen Extremen)\n- Fuer Timing innerhalb eines Trendrahmens (kurzer Stochastic-Dip in einem Aufwaertstrend als Einstiegspunkt)\n\n**Wann er versagt:**\n- In starken Trendbewegungen (kann Wochen im ueberkauften Bereich bleiben und trotzdem weiter steigen)"
+    },
+    {
+      "type": "text",
+      "heading": "Wann welcher Indikator -- praktische Entscheidungsmatrix",
+      "body": "Diese Uebersicht hilft, den richtigen Indikator fuer die Situation zu waehlen:\n\n**Trendrichtung bestimmen:** MACD (Wochen-Chart) -- zeigt, ob der uebergeordnete Trend bullisch oder baerisch ist. Preisaktion ueber dem 200-Tage-EMA bestaetigt den Trend.\n\n**Ueberkauft/Ueberverkauft bewerten:** RSI (Tages-Chart) -- die erste Anlaufstelle. Divergenzen suchen als fruehes Warnsignal.\n\n**Praezises Einstieg-Timing:** Stochastic (Tages- oder 4h-Chart) -- wenn RSI nahe an Extremen ist, hilft Stochastic beim praezisen Timing des Einstiegs.\n\n**Fehler vermeiden:**\n- Nie nur auf einem Indikator basieren\n- Indikatoren immer im Kontext des uebergeordneten Trends interpretieren (Stochastic-Kaufsignal in einem Baermarkt ist riskant)\n- Zu viele Indikatoren verwirren mehr als sie helfen -- 2-3 komplementaere Indikatoren genuegen\n\n**Primaer-Regel:** Chartmuster + Preisaktion kommen zuerst. Indikatoren sind Filter und Bestaetigung -- keine Erloser."
+    },
+    {
+      "type": "live_widget",
+      "widget_type": "ticker_card",
+      "ticker": "TSLA",
+      "label": "Tesla (TSLA) -- Volatiles Momentum-Instrument"
+    },
+    {
+      "type": "app_link",
+      "label": "-> Charts und Indikatoren im Research-Tab",
+      "target_tab": "research"
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Was bedeutet eine bullische RSI-Divergenz?",
+      "options": [
+        "Der RSI steigt ueber 70 waehrend der Kurs auch steigt",
+        "Der Kurs faellt auf ein neues Tief, aber der RSI bildet ein hoeherens Tief",
+        "Der RSI kreuzt die 50er-Linie von unten nach oben",
+        "Der RSI ist unter 30 und steigt dann auf 40"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Eine bullische Divergenz liegt vor, wenn der Kurs ein neues Tief macht, der RSI aber nicht mehr so tief faellt wie beim vorherigen Tief. Das signalisiert nachlassendes Abwaertsmomentum -- Verkaeufer verlieren an Kraft. Es ist eines der zuverlaessigsten fruehen Warnsignale fuer eine moegliche Trendwende."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Welches MACD-Signal ist besonders bedeutsam?",
+      "options": [
+        "MACD-Linie ist positiv fuer mehr als 30 Tage",
+        "MACD-Histogramm erreicht einen neuen Hoechstwert",
+        "MACD-Linie kreuzt die Signallinie von unten nach oben",
+        "MACD liegt nah an der Nulllinie"
+      ],
+      "correct": 2,
+      "explanation": "Korrekt. Der bullische Crossover -- MACD-Linie kreuzt die Signallinie von unten nach oben -- ist das klassische Kaufsignal. Noch staerker, wenn dieser Crossover gleichzeitig mit einem Bruch der Nulllinie stattfindet oder in einer ueberverkauften Zone auftritt."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "question": "In welcher Marktsituation funktioniert der Stochastic Oscillator am besten?",
+      "options": [
+        "In starken Aufwaertstrends mit hohem Momentum",
+        "In Baermaerkten mit scharfen Abwaertsbewegungen",
+        "In Seitwaertsmaerkten und Trading-Ranges",
+        "Ausschliesslich auf Wochen-Charts"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. Der Stochastic funktioniert am besten in Seitwaertsmaerkten und klar definierten Trading-Ranges, wo er zwischen ueberkauft und ueberverkauft pendelt. In starken Trends kann er Wochen im Extrembereich verharren und gibt dabei viele Fehlsignale."
+    },
+    {
+      "id": "q4",
+      "type": "open_question",
+      "question": "Beschreiben Sie eine Trade-Situation, in der RSI, MACD und ein Chartmuster alle dasselbe Signal geben. Warum ist das wertvoller als ein einzelnes Signal?",
+      "explanation": "Beispiel: Eine Aktie bildet ein Ascending Triangle (Chartmuster). Gleichzeitig kreuzt der MACD die Signallinie von unten nach oben (Aufwaertsmomentum nimmt zu). Der RSI steht bei 55 -- weder ueberkauft noch ueberverkauft, hat aber gerade aus der 40er-Zone nach oben gedreht. Das ist Confluence: Drei unabhaengige Analyseansaetze zeigen alle in dieselbe Richtung. Das reduziert das Risiko eines Fehlsignals erheblich, weil alle drei voneinander unabhaengig sind und auf dieselbe Schlussfolgerung kommen."
+    }
+  ]
+}

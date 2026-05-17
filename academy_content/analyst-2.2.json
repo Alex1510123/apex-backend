@@ -1,0 +1,105 @@
+{
+  "id": "analyst-2.2",
+  "track_id": "analyst",
+  "title": "Bilanzen richtig lesen",
+  "subtitle": "Aktiva, Passiva und die Qualitaet von Unternehmensgewinnen",
+  "duration_min": 11,
+  "sort_order": 2,
+  "status": "available",
+  "learning_goals": [
+    "Die drei Finanzberichte und ihre Beziehung zueinander verstehen",
+    "Wichtige Bilanzposten (Cash, Goodwill, Schulden) korrekt interpretieren",
+    "Den Unterschied zwischen Gewinn und Cash erkennen",
+    "Warnzeichen fuer geringe Ertragsqualitaet identifizieren"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Die drei Finanzberichte -- ein System",
+      "body": "Jedes boesennotierte Unternehmen muss quartaerlich und jaehrlich drei Standardberichte veroeffentlichen. Diese sind eng miteinander verknuepft und ergeben zusammen ein vollstaendiges Bild der finanziellen Lage.\n\n**Bilanz (Balance Sheet):** Snapshot der Vermoegensstruktur zu einem bestimmten Datum. Zeigt, was das Unternehmen besitzt (Aktiva) und wie es finanziert wird (Passiva + Eigenkapital).\n\n**Gewinn-und-Verlust-Rechnung (Income Statement / GuV):** Zeigt alle Einnahmen und Ausgaben ueber einen Zeitraum (Quartal oder Jahr). Ergebnis: der Buchgewinn -- der allerdings durch Bilanzierungswahlrechte beeinflusst werden kann.\n\n**Kapitalflussrechnung (Cash Flow Statement):** Zeigt, wie Geld tatsaechlich geflossen ist -- in drei Teile gegliedert: Betrieb (Operating), Investitionen (Investing), Finanzierung (Financing). Diesen Bericht kann man kaum manipulieren."
+    },
+    {
+      "type": "text",
+      "heading": "Die Bilanz -- Aktiva und Passiva",
+      "body": "Die Bilanz folgt der eisernen Regel: Aktiva = Passiva + Eigenkapital. Jede Seite muss gleich gross sein -- daher der Name.\n\n**Aktiva (Was das Unternehmen hat):**\n- Umlaufvermoegen: Cash und Aequivalente, Forderungen (Kunden haben noch nicht gezahlt), Vorraete. Kurzfristig liquidierbar.\n- Anlageversmoegen: Gebaeude, Maschinen, Patente (immaterielle Werte), Goodwill (Aufpreis bei Akquisitionen).\n\n**Passiva (Wie es finanziert wird):**\n- Kurzfristige Verbindlichkeiten: Zahlbar innerhalb eines Jahres (Lieferanten, kurzfristige Kredite).\n- Langfristige Schulden: Anleihen, Bankdarlehen mit Laufzeit >1 Jahr.\n- Eigenkapital: Was den Aktionaeren gehoert (eingezahltes Kapital + einbehaltene Gewinne - Aktienrueckkaeufe).\n\n**Wichtige Verhaeltnisse:**\n- Current Ratio = Umlaufvermoegen / kurzfristige Verbindlichkeiten. Sollte > 1 sein.\n- Net Debt = Langfristige Schulden + kurzfristige verzinsliche Schulden - Cash. Negatives Net Debt bedeutet mehr Cash als Schulden."
+    },
+    {
+      "type": "text",
+      "heading": "Goodwill -- der Posten, den man verstehen muss",
+      "body": "Goodwill entsteht, wenn ein Unternehmen ein anderes zu einem Preis ueber dem Buchwert kauft. Kauft Microsoft ein Start-up fuer 5 Mrd. Dollar, das bilanziell nur 1 Mrd. Dollar wert ist, entstehen 4 Mrd. Dollar Goodwill in der Bilanz.\n\nGoodwill ist ein immaterieller Vermoegenswert -- er wird jaehrlich auf Wertminderung geprueft (Impairment Test). Wenn sich eine Akquisition als Fehlinvestition herausstellt, muss der Goodwill abgeschrieben werden -- das erzeugt einen bilanziellen Verlust, ohne dass tatsaechlich Geld fliesst.\n\n**Warnzeichen:** Ein Goodwill, der einen grossen Teil der Bilanzsumme ausmacht, zeigt, dass das Unternehmen viel durch Akquisitionen gewachsen ist. Hoher Goodwill kombiniert mit stagnierendem organischem Wachstum ist ein Warnsignal. Beispiel: Telekommunikations-Konzerne, die in den 2000er Jahren massiv uebernahmen und spaeter massive Goodwill-Abschreibungen verbuchen mussten."
+    },
+    {
+      "type": "info_box",
+      "heading": "Gewinn ist eine Meinung -- Cash ist eine Tatsache",
+      "body": "Buchgewinn kann durch Abschreibungsmethoden, Rueckstellungen und andere Bilanzierungsentscheidungen beeinflusst werden. Der Operating Cash Flow dagegen zeigt, wie viel Geld tatsaechlich ins Unternehmen geflossen ist. Divergenz zwischen steigendem Gewinn und fallendem Operating Cash Flow ist eines der starksten Warnsignale fuer Bilanztrickserei."
+    },
+    {
+      "type": "text",
+      "heading": "Die Kapitalflussrechnung -- der ehrlichste Bericht",
+      "body": "Das Cash Flow Statement ist in drei Teile unterteilt:\n\n**Operating Cash Flow (OCF):** Cash aus dem Kerngeschaeft. Der wichtigste Indikator fuer die operative Qualitaet des Unternehmens. Sollte konsistent positiv und wachsend sein.\n\n**Investing Cash Flow:** Investitionen in Anlagegueter (Capex), Akquisitionen, Verkauf von Assets. Normalerweise negativ -- das Unternehmen investiert fuer die Zukunft. Exzessiver Capex kann ein Problem sein oder ein Zeichen fuer starkes Wachstum.\n\n**Financing Cash Flow:** Schuldenaufnahme/-rueckzahlung, Aktienausgaben/-rueckkaeufe, Dividenden. Gibt Aufschluss ueber die Kapitalallokationsstrategie des Managements.\n\n**Free Cash Flow:** OCF - Capex. Das, was nach notwendigen Investitionen uebrig bleibt."
+    },
+    {
+      "type": "text",
+      "heading": "Earnings Quality -- wann sind Gewinne vertrauenswuerdig?",
+      "body": "Ertragsqualitaet (Earnings Quality) beschreibt, wie zuverlaessig die ausgewiesenen Gewinne den tatsaechlichen wirtschaftlichen Erfolg widerspiegeln.\n\n**Zeichen fuer hohe Ertragsqualitaet:**\n- OCF/Gewinn-Verhaeltnis nahe 1 oder darueber (Cash-Conversion)\n- Stabile oder wachsende Margen ohne aggressive Bilanzierungswahlrechte\n- Keine unregelmaessigen einmaligen Posten (Sonderabschreibungen, Restrukturierungen)\n- Forderungswachstum proportional zum Umsatzwachstum\n\n**Warnzeichen fuer niedrige Ertragsqualitaet:**\n- Gewinn steigt, aber OCF stagniert oder faellt\n- Forderungen wachsen viel schneller als Umsatz (Kunden zahlen spaeter -- oder gar nicht)\n- Haeufige Aenderungen von Bilanzierungsmethoden\n- Starke Abhaengigkeit von 'anderen Ertraegen' oder einmaligen Gewinnen"
+    },
+    {
+      "type": "live_widget",
+      "widget_type": "ticker_card",
+      "ticker": "AAPL",
+      "label": "Apple Inc. -- Benchmark fuer Bilanzqualitaet und Cash-Generierung"
+    },
+    {
+      "type": "app_link",
+      "label": "-> Bilanzdaten im Research-Tab analysieren",
+      "target_tab": "research"
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Welcher Finanzbericht zeigt den Vermoegensstand zu einem bestimmten Datum?",
+      "options": [
+        "Die Gewinn-und-Verlust-Rechnung",
+        "Die Kapitalflussrechnung",
+        "Die Bilanz (Balance Sheet)",
+        "Das Earnings Statement"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. Die Bilanz ist ein Snapshot: Sie zeigt zu einem bestimmten Stichtag, was das Unternehmen besitzt (Aktiva) und wie es finanziert wird (Passiva + Eigenkapital). Im Gegensatz dazu zeigen GuV und Cashflow-Statement Flows ueber einen Zeitraum."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Wie entsteht Goodwill in der Bilanz?",
+      "options": [
+        "Durch jaehrliche Ueberhoehung des Eigenkapitals",
+        "Wenn ein Unternehmen fuer eine Akquisition mehr als den Buchwert zahlt",
+        "Durch Abschreibung immaterieller Vermoegenswerte",
+        "Wenn Kunden mehr als vereinbart zahlen"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Goodwill entsteht als Differenz zwischen dem gezahlten Kaufpreis und dem bilanziellen Buchwert eines akquirierten Unternehmens. Er repraesentiert den Aufpreis fuer Marke, Kundenstamm, Technologie und Synergien -- und muss jaehrlich auf Wertminderung geprueft werden."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "question": "Was ist ein Warnsignal fuer niedrige Ertragsqualitaet?",
+      "options": [
+        "Steigender Operating Cash Flow bei stabilem Gewinn",
+        "Ruecklaeufige Forderungen bei wachsendem Umsatz",
+        "Steigender Gewinn waehrend der Operating Cash Flow stagniert oder faellt",
+        "Hohe Dividendenausschuettungen bei positivem FCF"
+      ],
+      "correct": 2,
+      "explanation": "Richtig. Wenn der Buchgewinn steigt, aber der Operating Cash Flow nicht Schritt haelt, stimmt etwas nicht. Das Unternehmen verdient auf dem Papier Geld, generiert aber keinen echten Cash. Ursachen: aggressive Umsatzerfassung, uneinbringliche Forderungen oder kosmetische Bilanzierungswahlrechte."
+    },
+    {
+      "id": "q4",
+      "type": "open_question",
+      "question": "Unternehmen A hat Gewinn +20%, aber Operating Cash Flow -10%. Unternehmen B hat Gewinn +8% und OCF +12%. Welches ist fundamental attraktiver?",
+      "explanation": "Unternehmen B ist fundamental attraktiver. Steigende Gewinne ohne entsprechenden Cash Flow (Unternehmen A) sind ein klassisches Warnsignal fuer niedrige Ertragsqualitaet. Unternehmen B's OCF uebertrifft sogar den Gewinn -- ein Zeichen fuer konservative Bilanzierung und robuste Cash-Generierung. In der Realitaet wuerde man beide Unternehmen vergleichen: Warum wachsen Forderungen oder Vorraete bei A schneller als der Umsatz?"
+    }
+  ]
+}

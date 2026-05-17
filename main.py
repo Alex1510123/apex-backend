@@ -1864,6 +1864,9 @@ class ProgressBody(BaseModel):
     lesson_id: str
     quiz_score: int = 0
 
+class SpecializationBody(BaseModel):
+    track_id: str
+
 ACADEMY_TRACKS = [
     {
         "id": "foundation",
@@ -1874,6 +1877,31 @@ ACADEMY_TRACKS = [
         "color": "#4C2EE5",
         "total_lessons": 10,
         "status": "available",
+        "category": "foundation",
+    },
+    {
+        "id": "analyst",
+        "title": "Analyst",
+        "subtitle": "Fundamentalanalyse & Unternehmensbewertung",
+        "description": "DCF-Modelle, Bilanzen lesen, Moats identifizieren — wie ein professioneller Aktienanalyst denken.",
+        "icon": "🔍",
+        "color": "#4C2EE5",
+        "total_lessons": 3,
+        "status": "available",
+        "category": "specialization",
+        "prerequisite": "Empfohlen: Foundation Track abgeschlossen",
+    },
+    {
+        "id": "swing-trader",
+        "title": "Swing Trader",
+        "subtitle": "Technische Analyse & kurzfristiges Trading",
+        "description": "Chartmuster, Momentum-Indikatoren, Stop-Loss und Position Sizing für aktive Trader.",
+        "icon": "📊",
+        "color": "#00d4a0",
+        "total_lessons": 3,
+        "status": "available",
+        "category": "specialization",
+        "prerequisite": "Empfohlen: Foundation Track abgeschlossen",
     },
     {
         "id": "technical",
@@ -1884,6 +1912,7 @@ ACADEMY_TRACKS = [
         "color": "#00d4a0",
         "total_lessons": 8,
         "status": "coming_soon",
+        "category": "coming_soon",
     },
     {
         "id": "macro",
@@ -1894,6 +1923,7 @@ ACADEMY_TRACKS = [
         "color": "#d29922",
         "total_lessons": 8,
         "status": "coming_soon",
+        "category": "coming_soon",
     },
 ]
 
@@ -2294,6 +2324,35 @@ def get_academy_dashboard(user_id: str = Depends(verify_jwt)):
         "next_lesson": next_lesson,
         "track_progress": track_progress,
     }
+
+
+@app.get("/academy/specializations")
+def get_specializations(user_id: str = Depends(verify_jwt)):
+    try:
+        rows = (
+            sb_client.table("user_specializations")
+            .select("track_id,selected_at")
+            .eq("user_id", user_id)
+            .execute()
+        ).data or []
+    except Exception:
+        rows = []
+    return rows
+
+
+@app.post("/academy/specialization", status_code=201)
+def set_specialization(body: SpecializationBody, user_id: str = Depends(verify_jwt)):
+    valid_ids = {t["id"] for t in ACADEMY_TRACKS if t.get("category") == "specialization"}
+    if body.track_id not in valid_ids:
+        raise HTTPException(status_code=400, detail=f"'{body.track_id}' ist keine gueltige Spezialisierung")
+    try:
+        sb_client.table("user_specializations").upsert(
+            {"user_id": user_id, "track_id": body.track_id},
+            on_conflict="user_id,track_id"
+        ).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return {"ok": True}
 
 
 # ─── Run ──────────────────────────────────────────────────────────────────────

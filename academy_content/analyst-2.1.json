@@ -1,0 +1,105 @@
+{
+  "id": "analyst-2.1",
+  "track_id": "analyst",
+  "title": "Aktien fundamental bewerten -- DCF Grundlagen",
+  "subtitle": "Discounted Cash Flow, WACC und der innere Wert einer Aktie",
+  "duration_min": 12,
+  "sort_order": 1,
+  "status": "available",
+  "learning_goals": [
+    "Das DCF-Modell als wichtigstes Bewertungsverfahren verstehen",
+    "Free Cash Flow Projektionen aufstellen",
+    "WACC als Diskontierungsrate korrekt interpretieren",
+    "Ein einfaches DCF-Beispiel von Anfang bis Ende durchrechnen"
+  ],
+  "sections": [
+    {
+      "type": "text",
+      "heading": "Was ist der innere Wert einer Aktie?",
+      "body": "Der innere Wert (Intrinsic Value) ist der Kern jeder fundamentalen Analyse. Die Idee: Jede Aktie hat einen fairen Preis, der sich aus den zukünftigen Einnahmen des Unternehmens ableitet -- unabhaengig davon, was der Markt gerade dafuer zahlt. Wenn der Marktpreis unter dem inneren Wert liegt, ist die Aktie eine potenzielle Kaufgelegenheit. Liegt er darueber, ist sie ueberbewertet.\n\nDiese Logik stammt von Benjamin Graham und wurde von Warren Buffett verfeinert. Der prominenteste Weg, den inneren Wert zu berechnen, ist das Discounted Cash Flow Modell (DCF). Es beantwortet die Frage: Wie viel ist ein Euro, den dieses Unternehmen in 5 Jahren verdient, heute wert?\n\nDie Antwort ist immer weniger als ein Euro -- denn Geld in der Zukunft ist weniger wert als Geld heute (Zeitwert des Geldes). Wie viel weniger haengt von der Diskontierungsrate ab."
+    },
+    {
+      "type": "text",
+      "heading": "Free Cash Flow -- die Grundlage des DCF",
+      "body": "Das DCF-Modell diskontiert den zukuenftigen Free Cash Flow (FCF) -- nicht den Buchgewinn. Der FCF ist das Geld, das nach allen Betriebsausgaben und Investitionen tatsaechlich uebrig bleibt.\n\n**Schritt 1 -- FCF der letzten Jahre bestimmen:** Schauen Sie sich die Cashflow-Statements der letzten 3-5 Jahre an. Wie hat sich der FCF entwickelt? Wachsend, stagnierend oder ruecklaeufig?\n\n**Schritt 2 -- FCF-Wachstumsrate schaetzen:** Basierend auf der historischen Wachstumsrate, der Branchenposition und dem adressierbaren Markt schatzen Sie, mit welcher Rate der FCF in den naechsten 5-10 Jahren wachsen wird. Seien Sie konservativ -- Ueberschaetzung ist der groesste Fehler in DCF-Modellen.\n\n**Schritt 3 -- Terminal Value berechnen:** Nach dem Projektionszeitraum (typisch 5-10 Jahre) existiert das Unternehmen weiter. Der Terminal Value berechnet den Wert dieser ewigen Cashflows: TV = FCF(letztes Jahr) x (1 + Wachstumsrate) / (WACC - Wachstumsrate). Typisch wird hier eine konservative Wachstumsrate von 2-3% (aehnlich dem langfristigen BIP-Wachstum) verwendet."
+    },
+    {
+      "type": "text",
+      "heading": "WACC -- die Diskontierungsrate erklaert",
+      "body": "Der Weighted Average Cost of Capital (WACC) ist die durchschnittliche Kapitalrendite, die ein Unternehmen erzielen muss, um seine Investoren zufriedenzustellen. Er dient im DCF als Diskontierungsrate.\n\n**Komponenten des WACC:**\n\n**Eigenkapitalkosten (Cost of Equity):** Was erwarten Aktionaere als Rendite? Berechnung ueber das Capital Asset Pricing Model (CAPM): Risikofreier Zins (z.B. 10J US-Treasury) + Beta x Marktrisikoprämie. Ein defensives Unternehmen (Beta 0.7) hat niedrigere Eigenkapitalkosten als ein volatiles Tech-Unternehmen (Beta 1.5).\n\n**Fremdkapitalkosten (Cost of Debt):** Der durchschnittliche Zinssatz auf das Fremdkapital, nach Steuern (Zinsen sind steuerlich absetzbar).\n\n**Gewichtung:** WACC = (Eigenkapital/Gesamtkapital) x Eigenkapitalkosten + (Fremdkapital/Gesamtkapital) x Fremdkapitalkosten x (1 - Steuersatz)\n\nFuer grosse, etablierte US-Unternehmen liegt WACC typisch zwischen 7% und 12%. Wachstumsaktien mit hoeherem Risiko haben hoehere WACCs (10-15%), was Bewertungen komprimiert."
+    },
+    {
+      "type": "info_box",
+      "heading": "DCF-Formel kompakt",
+      "body": "Innerer Wert = Summe(FCF_t / (1+WACC)^t) + Terminal Value / (1+WACC)^n -- wobei t die jeweilige Periode ist und n die Laenge des Projektionszeitraums. Jeder zukuenftige Cashflow wird durch (1+WACC) hoch der Periodenanzahl geteilt -- je weiter in der Zukunft, desto staerker diskontiert."
+    },
+    {
+      "type": "text",
+      "heading": "Einfaches DCF-Beispiel -- Microsoft",
+      "body": "**Ausgangslage:** Microsoft erzielt einen Free Cash Flow von 70 Mrd. Dollar. Sie schatzen 12% jaehrliches FCF-Wachstum fuer 5 Jahre, dann 3% dauerhaft. WACC: 9%. Aktien ausstehend: 7,4 Mrd.\n\n**Jahr 1-5 FCF (Mrd. $):** 78,4 -- 87,8 -- 98,4 -- 110,2 -- 123,4\n\n**Diskontierte FCFs:** 71,9 -- 73,9 -- 76,0 -- 78,1 -- 80,3 = 380 Mrd. $\n\n**Terminal Value:** 123,4 x 1,03 / (0,09 - 0,03) = 2.120 Mrd. $\nDiskontiert: 2.120 / 1,09^5 = 1.378 Mrd. $\n\n**Gesamtwert:** 380 + 1.378 = 1.758 Mrd. $\n**Wert pro Aktie:** 1.758 / 7,4 = ca. 237 Dollar\n\nWenn MSFT bei 300 Dollar notiert, ist die Aktie nach diesem Modell etwa 20% ueberbewertet. Aber: Aendern Sie die Wachstumsannahme auf 15% und schon aendert sich das Bild komplett. Der groesste Nachteil des DCF: Garbage in, garbage out."
+    },
+    {
+      "type": "text",
+      "heading": "Grenzen des DCF-Modells",
+      "body": "Das DCF-Modell ist ein maechtiges Werkzeug -- aber kein Orakel. Folgende Schwaechen sollten Sie kennen:\n\n**Sensitivitaet:** Kleine Aenderungen in WACC oder Wachstumsrate fuehren zu grossen Wertunterschieden. Ein WACC von 8% statt 9% kann die Bewertung um 20-30% erhoehen.\n\n**Prognosequalitaet:** Cashflows 10 Jahre in die Zukunft zu schaetzen ist inhaerent unsicher. Buffett loest das, indem er nur Unternehmen mit sehr vorhersagbaren Cashflows bewertet.\n\n**Keine Marktdynamik:** DCF ignoriert Wettbewerb, Disruption, Managementwechsel und andere qualitative Faktoren.\n\n**Best Practice:** Fuehren Sie mehrere DCF-Szenarien durch (konservativ, Basis, optimistisch) und berechnen Sie eine Bandbreite fuer den inneren Wert. Kaufen Sie nur mit ausreichender Sicherheitsmarge -- typisch 20-30% unter dem ermittelten Wert."
+    },
+    {
+      "type": "live_widget",
+      "widget_type": "ticker_card",
+      "ticker": "MSFT",
+      "label": "Microsoft -- Premiumunternehmen mit hohen FCF-Margen"
+    },
+    {
+      "type": "app_link",
+      "label": "-> Microsoft Fundamentaldaten im Research-Tab analysieren",
+      "target_tab": "research"
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "multiple_choice",
+      "question": "Was diskontiert ein DCF-Modell?",
+      "options": [
+        "Den Aktienkurs der vergangenen 5 Jahre",
+        "Den zukuenftigen Free Cash Flow auf den heutigen Wert",
+        "Die Dividenden der naechsten 10 Jahre",
+        "Die Eigenkapitalrendite des Unternehmens"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Das DCF-Modell berechnet den heutigen Wert aller zukuenftigen Free Cash Flows. Weil Geld in der Zukunft weniger wert ist als Geld heute (Zeitwert des Geldes), werden diese Cashflows mit dem WACC diskontiert."
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "question": "Was ist der WACC?",
+      "options": [
+        "Der maximale Verlust eines Portfolios in einem Jahr",
+        "Die gewichteten durchschnittlichen Kapitalkosten -- dient als Diskontierungsrate im DCF",
+        "Die jaehrliche Wachstumsrate des Free Cash Flows",
+        "Das Verhaeltnis von Eigen- zu Fremdkapital"
+      ],
+      "correct": 1,
+      "explanation": "Korrekt. Der Weighted Average Cost of Capital (WACC) ist die Rendite, die ein Unternehmen mindestens erzielen muss, um Eigenkapital- und Fremdkapitalgeber zu befriedigen. Im DCF bestimmt er, wie stark zukuenftige Cashflows diskontiert werden."
+    },
+    {
+      "id": "q3",
+      "type": "multiple_choice",
+      "question": "Warum ist das DCF-Modell sehr sensitiv?",
+      "options": [
+        "Weil es nur Dividenden, nicht Gewinne betrachtet",
+        "Weil kleine Aenderungen in Wachstum oder WACC grosse Wertunterschiede erzeugen",
+        "Weil es keine Schulden beruecksichtigt",
+        "Weil es nur fuer US-Unternehmen gilt"
+      ],
+      "correct": 1,
+      "explanation": "Richtig. Im DCF wirken sich selbst geringe Aenderungen der Wachstumsrate oder des WACCs erheblich auf das Ergebnis aus. Ein WACC-Unterschied von 1% kann die Bewertung um 15-25% veraendern -- daher ist konservatives Schaetzen und eine ausreichende Sicherheitsmarge entscheidend."
+    },
+    {
+      "id": "q4",
+      "type": "open_question",
+      "question": "Sie berechnen ein DCF und kommen auf einen inneren Wert von 150 Euro. Die Aktie notiert bei 180 Euro. Was tun Sie -- und warum?",
+      "explanation": "Bei 180 Euro (20% ueber dem ermittelten inneren Wert von 150 Euro) wuerden die meisten Wertinvestoren nicht kaufen -- die Aktie bietet keine ausreichende Sicherheitsmarge. Buffett und Graham empfehlen typisch eine Marge von 20-30% unter dem inneren Wert, um Modellfehler und unvorhergesehene Risiken abzupuffern. Man koennte die Position zur Watchlist hinzufuegen und auf guenstigere Einstiegskurse warten."
+    }
+  ]
+}
