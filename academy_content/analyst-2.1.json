@@ -96,10 +96,10 @@
       "explanation": "Richtig. Im DCF wirken sich selbst geringe Aenderungen der Wachstumsrate oder des WACCs erheblich auf das Ergebnis aus. Ein WACC-Unterschied von 1% kann die Bewertung um 15-25% veraendern -- daher ist konservatives Schaetzen und eine ausreichende Sicherheitsmarge entscheidend."
     },
     {
-      "id": "q4",
+      "id": "analyst-2.1-oq-1",
       "type": "open_question",
-      "question": "Sie berechnen ein DCF und kommen auf einen inneren Wert von 150 Euro. Die Aktie notiert bei 180 Euro. Was tun Sie -- und warum?",
-      "explanation": "Bei 180 Euro (20% ueber dem ermittelten inneren Wert von 150 Euro) wuerden die meisten Wertinvestoren nicht kaufen -- die Aktie bietet keine ausreichende Sicherheitsmarge. Buffett und Graham empfehlen typisch eine Marge von 20-30% unter dem inneren Wert, um Modellfehler und unvorhergesehene Risiken abzupuffern. Man koennte die Position zur Watchlist hinzufuegen und auf guenstigere Einstiegskurse warten."
+      "question": "Erklaere in eigenen Worten, warum ein hoeherer Diskontierungszinssatz zu einem niedrigeren fairen Wert fuehrt. Was bedeutet das fuer einen Investor in einem Hochzinsumfeld wie 2024/2025?",
+      "explanation": "Ein hoeherer WACC diskontiert zukuenftige Cashflows staerker -- 1.000 Euro in 5 Jahren sind bei 5% Diskontierung heute 784 Euro wert, bei 10% nur noch 621 Euro. Im Hochzinsumfeld 2024/2025 (Fed Funds Rate 5,25-5,5%) fallen DCF-Bewertungen -- besonders bei Wachstumsaktien mit weit in der Zukunft liegenden Cashflows. Investoren muessen entweder niedrigere Einstiegskurse akzeptieren oder ihre Wachstumsannahmen nach oben anpassen -- beides erfordert Disziplin."
     }
   ]
 }
