@@ -10,7 +10,7 @@ import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from fastapi import FastAPI, HTTPException, Query, Depends
+from fastapi import FastAPI, HTTPException, Query, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from auth import verify_jwt
