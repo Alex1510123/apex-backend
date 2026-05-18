@@ -5,6 +5,8 @@ import os
 import re
 import json
 import time
+import string
+import random
 import logging
 import requests
 import pandas as pd
@@ -3665,6 +3667,189 @@ async def economic_calendar():
 
     events.sort(key=lambda x: x["days_until"])
     return {"events": events[:8]}
+
+
+# ─── Family Office ────────────────────────────────────────────────────────────
+
+def generate_invite_code():
+    prefix = ''.join(random.choices(string.ascii_uppercase, k=3))
+    suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+    return f"{prefix}-{suffix}"
+
+
+@app.post("/fo/groups")
+async def create_fo_group(request: Request, user_id: str = Depends(verify_jwt)):
+    data = await request.json()
+    code = generate_invite_code()
+    for _ in range(5):
+        check = sb_client.table("fo_groups").select("id").eq("invite_code", code).execute()
+        if not check.data:
+            break
+        code = generate_invite_code()
+
+    result = sb_client.table("fo_groups").insert({
+        "name":        data.get("name"),
+        "description": data.get("description", ""),
+        "invite_code": code,
+        "owner_id":    user_id,
+    }).execute()
+    group = result.data[0]
+
+    sb_client.table("fo_members").insert({
+        "group_id":     group["id"],
+        "user_id":      user_id,
+        "display_name": data.get("display_name", "Owner"),
+        "avatar_emoji": data.get("avatar_emoji", "👤"),
+        "role":         "owner",
+    }).execute()
+
+    return {"group": group}
+
+
+@app.get("/fo/my-groups")
+def my_fo_groups(user_id: str = Depends(verify_jwt)):
+    memberships = sb_client.table("fo_members").select(
+        "group_id, role, display_name, avatar_emoji"
+    ).eq("user_id", user_id).execute()
+
+    group_ids = [m["group_id"] for m in memberships.data]
+    if not group_ids:
+        return {"groups": []}
+
+    groups = sb_client.table("fo_groups").select("*").in_("id", group_ids).execute()
+    enriched = []
+    for g in groups.data:
+        mc = sb_client.table("fo_members").select("id").eq("group_id", g["id"]).execute()
+        my = next((m for m in memberships.data if m["group_id"] == g["id"]), {})
+        enriched.append({
+            **g,
+            "member_count":    len(mc.data),
+            "my_role":         my.get("role"),
+            "my_display_name": my.get("display_name"),
+            "my_avatar":       my.get("avatar_emoji"),
+        })
+    return {"groups": enriched}
+
+
+@app.post("/fo/join")
+async def join_fo_group(request: Request, user_id: str = Depends(verify_jwt)):
+    data = await request.json()
+    code = data.get("invite_code", "").strip().upper()
+    group = sb_client.table("fo_groups").select("*").eq("invite_code", code).execute()
+    if not group.data:
+        raise HTTPException(status_code=404, detail="Ungültiger Code")
+    group_id = group.data[0]["id"]
+    existing = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if existing.data:
+        raise HTTPException(status_code=400, detail="Bereits Mitglied")
+    sb_client.table("fo_members").insert({
+        "group_id":     group_id,
+        "user_id":      user_id,
+        "display_name": data.get("display_name", "Mitglied"),
+        "avatar_emoji": data.get("avatar_emoji", "👤"),
+        "role":         "member",
+    }).execute()
+    return {"group": group.data[0]}
+
+
+@app.delete("/fo/groups/{group_id}/leave")
+def leave_fo_group(group_id: str, user_id: str = Depends(verify_jwt)):
+    sb_client.table("fo_members").delete().eq("group_id", group_id).eq("user_id", user_id).execute()
+    sb_client.table("fo_shared_portfolios").delete().eq("group_id", group_id).eq("user_id", user_id).execute()
+    return {"success": True}
+
+
+@app.get("/fo/groups/{group_id}/members")
+def fo_group_members(group_id: str, user_id: str = Depends(verify_jwt)):
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(status_code=403, detail="Nicht Mitglied")
+    members = sb_client.table("fo_members").select("*").eq("group_id", group_id).execute()
+    return {"members": members.data}
+
+
+@app.post("/fo/groups/{group_id}/share-portfolio")
+async def share_fo_portfolio(group_id: str, request: Request, user_id: str = Depends(verify_jwt)):
+    data = await request.json()
+    positions = data.get("positions", [])
+    validated = []
+    for p in positions:
+        if "symbol" not in p or "weight_pct" not in p:
+            continue
+        validated.append({
+            "symbol":     str(p["symbol"]),
+            "weight_pct": round(float(p["weight_pct"]), 2),
+            "sector":     str(p.get("sector", "Sonstige")),
+        })
+    cash_pct = float(data.get("cash_pct", 0))
+    existing = sb_client.table("fo_shared_portfolios").select("id").eq("user_id", user_id).eq("group_id", group_id).execute()
+    payload = {
+        "user_id":         user_id,
+        "group_id":        group_id,
+        "positions":       validated,
+        "cash_pct":        cash_pct,
+        "total_positions": len(validated),
+        "risk_profile":    data.get("risk_profile", "balanced"),
+        "updated_at":      datetime.now().isoformat(),
+    }
+    if existing.data:
+        sb_client.table("fo_shared_portfolios").update(payload).eq("id", existing.data[0]["id"]).execute()
+    else:
+        sb_client.table("fo_shared_portfolios").insert(payload).execute()
+    return {"success": True}
+
+
+@app.get("/fo/groups/{group_id}/portfolios")
+def fo_group_portfolios(group_id: str, user_id: str = Depends(verify_jwt)):
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(status_code=403, detail="Nicht Mitglied")
+    portfolios = sb_client.table("fo_shared_portfolios").select("*").eq("group_id", group_id).execute()
+    members = sb_client.table("fo_members").select("user_id, display_name, avatar_emoji").eq("group_id", group_id).execute()
+    member_map = {m["user_id"]: m for m in members.data}
+    enriched = []
+    for p in portfolios.data:
+        m = member_map.get(p["user_id"], {})
+        enriched.append({
+            **p,
+            "display_name": m.get("display_name", "Unbekannt"),
+            "avatar_emoji": m.get("avatar_emoji", "👤"),
+            "is_me":        p["user_id"] == user_id,
+        })
+    return {"portfolios": enriched}
+
+
+@app.get("/fo/groups/{group_id}/aggregate")
+def fo_group_aggregate(group_id: str, user_id: str = Depends(verify_jwt)):
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(status_code=403, detail="Nicht Mitglied")
+
+    portfolios = sb_client.table("fo_shared_portfolios").select("*").eq("group_id", group_id).execute()
+    sector_weights: dict = {}
+    symbol_holders: dict = {}
+    n = len(portfolios.data) or 1
+
+    for p in portfolios.data:
+        raw = p.get("positions") or []
+        if isinstance(raw, str):
+            raw = json.loads(raw)
+        for pos in raw:
+            sym = pos.get("symbol", "")
+            sec = pos.get("sector", "Sonstige")
+            w   = float(pos.get("weight_pct", 0))
+            sector_weights[sec] = sector_weights.get(sec, 0) + (w / n)
+            symbol_holders[sym] = symbol_holders.get(sym, 0) + 1
+
+    return {
+        "sectors": sorted(
+            [{"sector": k, "weight_pct": round(v, 1)} for k, v in sector_weights.items()],
+            key=lambda x: x["weight_pct"], reverse=True,
+        ),
+        "overlap_symbols":        {sym: cnt for sym, cnt in symbol_holders.items() if cnt > 1},
+        "total_unique_symbols":   len(symbol_holders),
+        "members_with_portfolio": len(portfolios.data),
+    }
 
 
 # ─── 13F Filing Tracker ───────────────────────────────────────────────────────
