@@ -3120,7 +3120,7 @@ async def weekly_boss_submit(request: Request):
 
 # ─── Fundamentals (FMP API) ───────────────────────────────────────────────────
 
-FMP_BASE = "https://financialmodelingprep.com/api/v3"
+FMP_BASE = "https://financialmodelingprep.com/stable"
 FMP_KEY  = os.environ.get("FMP_API_KEY", "")
 
 fundamentals_cache: dict = {}  # { "AAPL": {"data": {...}, "expires": datetime} }
@@ -3295,7 +3295,7 @@ async def test_fmp():
     key = os.environ.get("FMP_API_KEY", "NOT_SET")
     async with httpx.AsyncClient(timeout=10) as client:
         r = await client.get(
-            f"https://financialmodelingprep.com/api/v3/profile/AAPL?apikey={key}"
+            f"https://financialmodelingprep.com/stable/profile/AAPL?apikey={key}"
         )
         return {
             "key_prefix": key[:8] if key != "NOT_SET" else "NOT_SET",
