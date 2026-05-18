@@ -3137,12 +3137,13 @@ async def get_fundamentals(ticker: str):
 
     try:
         async with httpx.AsyncClient(timeout=20) as client:
-            overview_r, income_r, bs_r, cf_r = await asyncio.gather(
-                client.get(f"{AV_BASE}?function=OVERVIEW&symbol={t}&apikey={AV_KEY}"),
-                client.get(f"{AV_BASE}?function=INCOME_STATEMENT&symbol={t}&apikey={AV_KEY}"),
-                client.get(f"{AV_BASE}?function=BALANCE_SHEET&symbol={t}&apikey={AV_KEY}"),
-                client.get(f"{AV_BASE}?function=CASH_FLOW&symbol={t}&apikey={AV_KEY}"),
-            )
+            overview_r = await client.get(f"{AV_BASE}?function=OVERVIEW&symbol={t}&apikey={AV_KEY}")
+            await asyncio.sleep(13)
+            income_r   = await client.get(f"{AV_BASE}?function=INCOME_STATEMENT&symbol={t}&apikey={AV_KEY}")
+            await asyncio.sleep(13)
+            bs_r       = await client.get(f"{AV_BASE}?function=BALANCE_SHEET&symbol={t}&apikey={AV_KEY}")
+            await asyncio.sleep(13)
+            cf_r       = await client.get(f"{AV_BASE}?function=CASH_FLOW&symbol={t}&apikey={AV_KEY}")
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Alpha Vantage Netzwerkfehler: {e}")
 
@@ -3151,8 +3152,8 @@ async def get_fundamentals(ticker: str):
     bs_data     = bs_r.json()       if bs_r.status_code       == 200 else {}
     cf_data     = cf_r.json()       if cf_r.status_code       == 200 else {}
 
-    if not ov or "Symbol" not in ov:
-        raise HTTPException(status_code=404, detail=f"Ticker '{t}' nicht gefunden oder AV-Limit erreicht.")
+    if not ov.get("Symbol"):
+        raise HTTPException(status_code=429, detail="Alpha Vantage Limit erreicht. Bitte 60 Sekunden warten.")
 
     inc_reports = income_data.get("annualReports", [])
     bs_reports  = bs_data.get("annualReports", [])
