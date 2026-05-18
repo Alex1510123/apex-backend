@@ -18,7 +18,8 @@ from supabase_client import supabase as sb_client
 from yahoo_finance import fetch_yahoo_quote   # TODO PRE-LAUNCH: Replace Yahoo Finance with licensed source (EODHD upgrade or Tiingo) before commercial launch
 from fred_api import fetch_fred_series, fetch_fred_cpi_yoy, fetch_fred_indpro_yoy, fetch_fred_yield_history
 from ecb_api import fetch_ecb_series, fetch_ecb_yield_history
-import yfinance as yf
+import httpx
+import asyncio
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -3117,204 +3118,174 @@ async def weekly_boss_submit(request: Request):
     return {**result, "xp_earned": xp_earned}
 
 
-# ─── Fundamentals ─────────────────────────────────────────────────────────────
+# ─── Fundamentals (FMP API) ───────────────────────────────────────────────────
+
+FMP_BASE = "https://financialmodelingprep.com/api/v3"
+FMP_KEY  = os.environ.get("FMP_API_KEY", "")
 
 fundamentals_cache: dict = {}  # { "AAPL": {"data": {...}, "expires": datetime} }
 
 
-async def _fetch_yf_with_retry(yf_ticker: str, max_retries: int = 3):
-    import time
-    last_exc = None
-    for attempt in range(max_retries):
-        try:
-            import requests as _req
-            _session = _req.Session()
-            _session.headers.update({
-                "User-Agent":      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Accept":          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Language": "en-US,en;q=0.5",
-            })
-            stock = yf.Ticker(yf_ticker, session=_session)
-            info  = stock.info
-            if not info or len(info) < 5:
-                raise Exception("Empty response from yfinance")
-            return stock, info
-        except Exception as e:
-            last_exc = e
-            if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)  # 1s → 2s → 4s
-    raise last_exc
+def _fmp_ticker(ticker: str) -> str:
+    """Convert EODHD-style ticker to FMP ticker (plain symbol)."""
+    for suffix in (".US", ".XETRA", ".INDX", ".CC", ".FOREX"):
+        if ticker.upper().endswith(suffix):
+            return ticker[:-(len(suffix))].upper()
+    return ticker.upper()
 
 
-def _to_yf_ticker(ticker: str) -> str:
-    """Convert EODHD ticker format to Yahoo Finance format."""
-    t = ticker.upper()
-    if t.endswith(".US"):         return t[:-3]
-    if t.endswith(".XETRA"):      return t[:-6] + ".DE"
-    if t.endswith(".INDX"):       return t[:-5]
-    if t.endswith(".CC"):         return t[:-3] + "-USD"
-    if t.endswith(".FOREX"):      return t[:-6] + "=X"
-    return t
+def _fmp_series(data: list, key: str) -> list:
+    """Convert FMP annual statement list to [{year, value}] for Recharts."""
+    result = []
+    for item in reversed(data):        # FMP returns newest first → reverse for chronological
+        val = item.get(key)
+        if val is not None:
+            result.append({"year": str(item.get("date", ""))[:4], "value": val})
+    return result
 
 
 @app.get("/fundamentals/{ticker}")
 async def get_fundamentals(ticker: str):
+    if not FMP_KEY:
+        raise HTTPException(status_code=503, detail="FMP_API_KEY nicht konfiguriert.")
+
     cache_key = ticker.upper()
     cached = fundamentals_cache.get(cache_key)
     if cached and datetime.now() < cached["expires"]:
         return cached["data"]
 
-    yf_ticker = _to_yf_ticker(ticker)
-
-    def safe_val(df, *row_names, col=0):
-        for row in row_names:
-            try:
-                val = df.loc[row].iloc[col]
-                if not pd.isna(val):
-                    return float(val)
-            except Exception:
-                continue
-        return None
-
-    def get_series(df, *row_names):
-        for row in row_names:
-            try:
-                if row in df.index:
-                    series = df.loc[row].dropna()
-                    if len(series) > 0:
-                        return [
-                            {"year": str(d.year), "value": float(v)}
-                            for d, v in sorted(series.items())
-                        ]
-            except Exception:
-                continue
-        return []
+    t = _fmp_ticker(ticker)
 
     try:
-        stock, info   = await _fetch_yf_with_retry(yf_ticker)
-        info          = info or {}
-        balance_sheet = stock.balance_sheet
-        income_stmt   = stock.income_stmt
-        cash_flow     = stock.cash_flow
+        async with httpx.AsyncClient(timeout=15) as client:
+            profile_r, ratios_r, bs_r, income_r, cf_r = await asyncio.gather(
+                client.get(f"{FMP_BASE}/profile/{t}?apikey={FMP_KEY}"),
+                client.get(f"{FMP_BASE}/ratios-ttm/{t}?apikey={FMP_KEY}"),
+                client.get(f"{FMP_BASE}/balance-sheet-statement/{t}?apikey={FMP_KEY}&limit=4"),
+                client.get(f"{FMP_BASE}/income-statement/{t}?apikey={FMP_KEY}&limit=4"),
+                client.get(f"{FMP_BASE}/cash-flow-statement/{t}?apikey={FMP_KEY}&limit=4"),
+            )
     except Exception as e:
-        err = str(e)
-        if "Too Many Requests" in err or "rate" in err.lower() or "429" in err:
-            raise HTTPException(status_code=429, detail="Yahoo Finance Rate Limit erreicht. Bitte 60 Sekunden warten und erneut versuchen.")
-        raise HTTPException(status_code=502, detail=f"yfinance Fehler: {e}")
+        raise HTTPException(status_code=502, detail=f"FMP Netzwerkfehler: {e}")
 
-    if not info.get("symbol") and not info.get("longName") and not info.get("regularMarketPrice"):
-        raise HTTPException(status_code=404, detail=f"Ticker '{yf_ticker}' nicht gefunden")
+    profile_list = profile_r.json() if profile_r.status_code == 200 else []
+    ratios_list  = ratios_r.json()  if ratios_r.status_code  == 200 else []
+    bs_list      = bs_r.json()      if bs_r.status_code      == 200 else []
+    income_list  = income_r.json()  if income_r.status_code  == 200 else []
+    cf_list      = cf_r.json()      if cf_r.status_code      == 200 else []
 
+    if not profile_list or not isinstance(profile_list, list):
+        raise HTTPException(status_code=404, detail=f"Ticker '{t}' nicht gefunden oder FMP-Limit erreicht.")
+
+    profile = profile_list[0] if profile_list else {}
+    ratios  = ratios_list[0]  if ratios_list  else {}
+    bs0     = bs_list[0]      if bs_list      else {}
+    inc0    = income_list[0]  if income_list  else {}
+    cf0     = cf_list[0]      if cf_list      else {}
+
+    # Parse 52-week range "low-high" string from FMP profile
+    range_str = profile.get("range", "")
     try:
-        total_debt  = info.get("totalDebt") or 0
-        total_cash  = info.get("totalCash") or 0
-        shares_out  = info.get("sharesOutstanding") or 1
-        fcf         = info.get("freeCashflow")
+        range_parts = range_str.split("-")
+        high_52w = float(range_parts[-1]) if range_parts else None
+        low_52w  = float(range_parts[0])  if len(range_parts) >= 2 else None
+    except (ValueError, IndexError):
+        high_52w = low_52w = None
 
-        # Dividend yield: yfinance sometimes returns value already as percentage
-        dividend_yield_raw = info.get("dividendYield")
-        if dividend_yield_raw and dividend_yield_raw > 0.20:
-            dividend_yield_raw = dividend_yield_raw / 100
+    result = {
+        "ticker":    ticker,
+        "yf_ticker": t,
+        "company": {
+            "name":        profile.get("companyName", ticker),
+            "sector":      profile.get("sector", ""),
+            "industry":    profile.get("industry", ""),
+            "country":     profile.get("country", ""),
+            "employees":   profile.get("fullTimeEmployees"),
+            "description": (profile.get("description", ""))[:500],
+        },
+        "market": {
+            "price":      profile.get("price"),
+            "market_cap": profile.get("mktCap"),
+            "high_52w":   high_52w,
+            "low_52w":    low_52w,
+            "beta":       profile.get("beta"),
+            "avg_volume": profile.get("volAvg"),
+        },
+        "valuation": {
+            "pe_ratio":   ratios.get("peRatioTTM"),
+            "forward_pe": ratios.get("forwardPERatioTTM"),
+            "peg_ratio":  ratios.get("priceEarningsToGrowthRatioTTM"),
+            "pb_ratio":   ratios.get("priceToBookRatioTTM"),
+            "ps_ratio":   ratios.get("priceToSalesRatioTTM"),
+            "ev_ebitda":  ratios.get("enterpriseValueMultipleTTM"),
+            "ev_revenue": ratios.get("evToSalesTTM"),
+        },
+        "profitability": {
+            "gross_margin":     ratios.get("grossProfitMarginTTM"),
+            "operating_margin": ratios.get("operatingProfitMarginTTM"),
+            "net_margin":       ratios.get("netProfitMarginTTM"),
+            "roe":              ratios.get("returnOnEquityTTM"),
+            "roa":              ratios.get("returnOnAssetsTTM"),
+        },
+        "balance_sheet": {
+            "total_cash":           bs0.get("cashAndShortTermInvestments"),
+            "total_debt":           bs0.get("totalDebt"),
+            "net_debt":             bs0.get("netDebt"),
+            "debt_to_equity":       ratios.get("debtEquityRatioTTM"),
+            "current_ratio":        ratios.get("currentRatioTTM"),
+            "quick_ratio":          ratios.get("quickRatioTTM"),
+            "total_assets":         bs0.get("totalAssets"),
+            "total_equity":         bs0.get("totalStockholdersEquity"),
+            "book_value_per_share": ratios.get("bookValuePerShareTTM"),
+            "history": {
+                "total_debt": _fmp_series(bs_list, "totalDebt"),
+                "cash":       _fmp_series(bs_list, "cashAndCashEquivalents"),
+                "equity":     _fmp_series(bs_list, "totalStockholdersEquity"),
+            },
+        },
+        "income": {
+            "revenue_ttm":    inc0.get("revenue"),
+            "revenue_growth": ratios.get("revenueGrowthTTM"),
+            "gross_profit":   inc0.get("grossProfit"),
+            "ebitda":         inc0.get("ebitda"),
+            "net_income":     inc0.get("netIncome"),
+            "eps_ttm":        ratios.get("epsTTM"),
+            "eps_forward":    ratios.get("forwardEpsTTM"),
+            "history": {
+                "revenue":    _fmp_series(income_list, "revenue"),
+                "net_income": _fmp_series(income_list, "netIncome"),
+                "ebitda":     _fmp_series(income_list, "ebitda"),
+            },
+        },
+        "cash_flow": {
+            "operating_cf":   cf0.get("operatingCashFlow"),
+            "capex":          cf0.get("capitalExpenditure"),
+            "free_cash_flow": cf0.get("freeCashFlow"),
+            "fcf_per_share":  ratios.get("freeCashFlowPerShareTTM"),
+            "dividend_yield": ratios.get("dividendYieldTTM"),
+            "payout_ratio":   ratios.get("payoutRatioTTM"),
+            "history": {
+                "operating_cf":   _fmp_series(cf_list, "operatingCashFlow"),
+                "capex":          _fmp_series(cf_list, "capitalExpenditure"),
+                "free_cash_flow": _fmp_series(cf_list, "freeCashFlow"),
+            },
+        },
+        "growth": {
+            "revenue_growth_yoy":        ratios.get("revenueGrowthTTM"),
+            "earnings_growth_yoy":       ratios.get("epsgrowthTTM"),
+            "earnings_quarterly_growth": None,
+        },
+        "analyst": {
+            "recommendation": profile.get("dcfDiff"),
+            "target_price":   profile.get("dcf"),
+            "target_high":    None,
+            "target_low":     None,
+            "num_analysts":   None,
+        },
+    }
 
-        result = {
-            "ticker":    ticker,
-            "yf_ticker": yf_ticker,
-            "company": {
-                "name":        info.get("longName", ticker),
-                "sector":      info.get("sector", ""),
-                "industry":    info.get("industry", ""),
-                "country":     info.get("country", ""),
-                "employees":   info.get("fullTimeEmployees"),
-                "description": (info.get("longBusinessSummary") or "")[:500],
-            },
-            "market": {
-                "price":       info.get("currentPrice") or info.get("regularMarketPrice"),
-                "market_cap":  info.get("marketCap"),
-                "high_52w":    info.get("fiftyTwoWeekHigh"),
-                "low_52w":     info.get("fiftyTwoWeekLow"),
-                "beta":        info.get("beta"),
-                "avg_volume":  info.get("averageVolume"),
-            },
-            "valuation": {
-                "pe_ratio":    info.get("trailingPE"),
-                "forward_pe":  info.get("forwardPE"),
-                "peg_ratio":   info.get("pegRatio"),
-                "pb_ratio":    info.get("priceToBook"),
-                "ps_ratio":    info.get("priceToSalesTrailing12Months"),
-                "ev_ebitda":   info.get("enterpriseToEbitda"),
-                "ev_revenue":  info.get("enterpriseToRevenue"),
-            },
-            "profitability": {
-                "gross_margin":     info.get("grossMargins"),
-                "operating_margin": info.get("operatingMargins"),
-                "net_margin":       info.get("profitMargins"),
-                "roe":              info.get("returnOnEquity"),
-                "roa":              info.get("returnOnAssets"),
-            },
-            "balance_sheet": {
-                "total_cash":         total_cash if total_cash else None,
-                "total_debt":         total_debt if total_debt else None,
-                "net_debt":           total_debt - total_cash,
-                "debt_to_equity":     info.get("debtToEquity"),
-                "current_ratio":      info.get("currentRatio"),
-                "quick_ratio":        info.get("quickRatio"),
-                "total_assets":       safe_val(balance_sheet, "Total Assets", "TotalAssets"),
-                "total_equity":       safe_val(balance_sheet, "Stockholders Equity", "Total Stockholder Equity", "StockholdersEquity", "Common Stock Equity"),
-                "book_value_per_share": info.get("bookValue"),
-                "history": {
-                    "total_debt": get_series(balance_sheet, "Total Debt", "Long Term Debt", "LongTermDebt"),
-                    "cash":       get_series(balance_sheet, "Cash And Cash Equivalents", "Cash", "CashAndCashEquivalents", "Cash And Short Term Investments"),
-                    "equity":     get_series(balance_sheet, "Stockholders Equity", "Total Stockholder Equity", "StockholdersEquity", "Common Stock Equity"),
-                },
-            },
-            "income": {
-                "revenue_ttm":    info.get("totalRevenue"),
-                "revenue_growth": info.get("revenueGrowth"),
-                "gross_profit":   safe_val(income_stmt, "Gross Profit", "GrossProfit"),
-                "ebitda":         info.get("ebitda"),
-                "net_income":     info.get("netIncomeToCommon"),
-                "eps_ttm":        info.get("trailingEps"),
-                "eps_forward":    info.get("forwardEps"),
-                "history": {
-                    "revenue":    get_series(income_stmt, "Total Revenue", "TotalRevenue", "Revenue"),
-                    "net_income": get_series(income_stmt, "Net Income", "NetIncome", "Net Income Common Stockholders"),
-                    "ebitda":     get_series(income_stmt, "EBITDA", "Ebitda", "Normalized EBITDA"),
-                },
-            },
-            "cash_flow": {
-                "operating_cf":   safe_val(cash_flow, "Operating Cash Flow", "Total Cash From Operating Activities", "OperatingCashFlow"),
-                "capex":          safe_val(cash_flow, "Capital Expenditure", "Capital Expenditures", "CapitalExpenditure"),
-                "free_cash_flow": fcf,
-                "fcf_per_share":  (fcf / shares_out) if fcf else None,
-                "dividend_yield": dividend_yield_raw,
-                "payout_ratio":   info.get("payoutRatio"),
-                "history": {
-                    "operating_cf":   get_series(cash_flow, "Operating Cash Flow", "Total Cash From Operating Activities", "OperatingCashFlow"),
-                    "capex":          get_series(cash_flow, "Capital Expenditure", "Capital Expenditures", "CapitalExpenditure"),
-                    "free_cash_flow": get_series(cash_flow, "Free Cash Flow", "FreeCashFlow"),
-                },
-            },
-            "growth": {
-                "revenue_growth_yoy":        info.get("revenueGrowth"),
-                "earnings_growth_yoy":       info.get("earningsGrowth"),
-                "earnings_quarterly_growth": info.get("earningsQuarterlyGrowth"),
-            },
-            "analyst": {
-                "recommendation": info.get("recommendationKey"),
-                "target_price":   info.get("targetMeanPrice"),
-                "target_high":    info.get("targetHighPrice"),
-                "target_low":     info.get("targetLowPrice"),
-                "num_analysts":   info.get("numberOfAnalystOpinions"),
-            },
-        }
-        fundamentals_cache[cache_key] = {"data": result, "expires": datetime.now() + timedelta(hours=48)}
-        return result
-
-    except Exception as e:
-        err = str(e)
-        if "Too Many Requests" in err or "rate" in err.lower() or "429" in err:
-            raise HTTPException(status_code=429, detail="Yahoo Finance Rate Limit erreicht. Bitte 60 Sekunden warten und erneut versuchen.")
-        raise HTTPException(status_code=500, detail=f"Fundamentals Verarbeitungsfehler: {e}")
+    fundamentals_cache[cache_key] = {"data": result, "expires": datetime.now() + timedelta(hours=48)}
+    return result
 
 
 # ─── Run ──────────────────────────────────────────────────────────────────────
