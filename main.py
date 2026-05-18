@@ -3300,6 +3300,111 @@ async def get_fundamentals(ticker: str):
     return result
 
 
+@app.post("/fundamentals/ai-analysis")
+async def fundamentals_ai_analysis(request: Request):
+    if not ANTHROPIC_API_KEY:
+        raise HTTPException(status_code=503, detail="ANTHROPIC_API_KEY nicht konfiguriert.")
+
+    body   = await request.json()
+    ticker = body.get("ticker", "").upper()
+    d      = body.get("data", {})
+
+    if not ticker or not d:
+        raise HTTPException(status_code=400, detail="ticker und data erforderlich.")
+
+    co  = d.get("company", {})
+    mkt = d.get("market", {})
+    val = d.get("valuation", {})
+    pro = d.get("profitability", {})
+    bs  = d.get("balance_sheet", {})
+    inc = d.get("income", {})
+    cf  = d.get("cash_flow", {})
+    gr  = d.get("growth", {})
+
+    def pct(v):
+        return f"{v*100:.1f}%" if v is not None else "n/a"
+
+    def fmt(v, decimals=2):
+        return f"{v:,.{decimals}f}" if v is not None else "n/a"
+
+    def bn(v):
+        return f"${v/1e9:.2f}B" if v is not None else "n/a"
+
+    user_prompt = (
+        f"Erstelle eine strukturierte Fundamentalanalyse für {ticker} ({co.get('name', ticker)}).\n\n"
+        f"UNTERNEHMEN\n"
+        f"Sektor: {co.get('sector', 'n/a')} | Branche: {co.get('industry', 'n/a')} | Land: {co.get('country', 'n/a')}\n"
+        f"Mitarbeiter: {fmt(co.get('employees'), 0)}\n\n"
+        f"MARKTDATEN\n"
+        f"Market Cap: {bn(mkt.get('market_cap'))} | Beta: {fmt(mkt.get('beta'))}\n"
+        f"52W Hoch: {fmt(mkt.get('52w_high'))} | 52W Tief: {fmt(mkt.get('52w_low'))}\n\n"
+        f"BEWERTUNG\n"
+        f"KGV (TTM): {fmt(val.get('pe_ratio'))} | Forward KGV: {fmt(val.get('forward_pe'))}\n"
+        f"KBV: {fmt(val.get('pb_ratio'))} | KUV: {fmt(val.get('ps_ratio'))}\n"
+        f"EV/EBITDA: {fmt(val.get('ev_ebitda'))} | PEG: {fmt(val.get('peg_ratio'))}\n\n"
+        f"PROFITABILITÄT\n"
+        f"Bruttomarge: {pct(pro.get('gross_margin'))} | Betriebsmarge: {pct(pro.get('operating_margin'))}\n"
+        f"Nettomarge: {pct(pro.get('net_margin'))} | ROE: {pct(pro.get('roe'))} | ROA: {pct(pro.get('roa'))}\n\n"
+        f"BILANZ\n"
+        f"Cash: {bn(bs.get('total_cash'))} | Schulden: {bn(bs.get('total_debt'))} | Nettoverschuldung: {bn(bs.get('net_debt'))}\n"
+        f"Debt/Equity: {fmt(bs.get('debt_to_equity'))} | Current Ratio: {fmt(bs.get('current_ratio'))}\n\n"
+        f"GEWINN & UMSATZ\n"
+        f"Umsatz (TTM): {bn(inc.get('revenue_ttm'))} | Umsatzwachstum YoY: {pct(inc.get('revenue_growth'))}\n"
+        f"EBITDA: {bn(inc.get('ebitda'))} | Nettogewinn: {bn(inc.get('net_income'))}\n"
+        f"EPS (TTM): {fmt(inc.get('eps_ttm'))} | Forward EPS: {fmt(inc.get('eps_forward'))}\n\n"
+        f"CASHFLOW\n"
+        f"Operating CF: {bn(cf.get('operating_cf'))} | Capex: {bn(cf.get('capex'))}\n"
+        f"Free Cashflow: {bn(cf.get('free_cash_flow'))} | FCF/Aktie: {fmt(cf.get('fcf_per_share'))}\n"
+        f"Dividendenrendite: {pct(cf.get('dividend_yield'))}\n\n"
+        f"WACHSTUM\n"
+        f"Umsatzwachstum YoY: {pct(gr.get('revenue_growth_yoy'))} | Gewinnwachstum YoY: {pct(gr.get('earnings_growth_yoy'))}\n"
+    )
+
+    system_prompt = (
+        "Du bist ein erfahrener Finanzanalyst und erstellst präzise, faktenbasierte Fundamentalanalysen. "
+        "Strukturiere deine Analyse mit diesen Abschnitten (## als Markdown-Header):\n"
+        "## Unternehmensüberblick\n"
+        "## Bewertung\n"
+        "## Profitabilität & Effizienz\n"
+        "## Bilanzstärke\n"
+        "## Wachstum & Cashflow\n"
+        "## Risiko-Rendite-Profil\n\n"
+        "Regeln:\n"
+        "- Verwende '• ' für Bullet Points\n"
+        "- Keine Anlageempfehlungen (kein Kaufen/Verkaufen/Halten)\n"
+        "- Sachlich, direkt, auf Deutsch\n"
+        "- Endet mit: 'Disclaimer: Diese Analyse dient ausschließlich zu Informationszwecken und stellt keine individuelle Anlageberatung dar.'"
+    )
+
+    try:
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "Content-Type":      "application/json",
+                "x-api-key":         ANTHROPIC_API_KEY,
+                "anthropic-version": "2023-06-01",
+            },
+            json={
+                "model":      "claude-sonnet-4-6",
+                "max_tokens": 2048,
+                "system":     system_prompt,
+                "messages":   [{"role": "user", "content": user_prompt}],
+            },
+            timeout=60,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(status_code=502, detail=f"Anthropic Netzwerkfehler: {exc}")
+
+    if not resp.ok:
+        err = resp.json() if resp.content else {}
+        raise HTTPException(
+            status_code=502,
+            detail=err.get("error", {}).get("message", f"Anthropic API Fehler {resp.status_code}"),
+        )
+
+    return {"analysis": resp.json()["content"][0]["text"]}
+
+
 # ─── Debug ────────────────────────────────────────────────────────────────────
 
 @app.get("/test-av")
