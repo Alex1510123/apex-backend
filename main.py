@@ -4133,6 +4133,7 @@ def fo_leaderboard(group_id: str, user_id: str = Depends(verify_jwt)):
                 total_w += w
         ytd_pct = (ytd / total_w * 100) if total_w > 0 else 0.0
         entries.append({
+            "user_id":      p["user_id"],
             "display_name": m.get("display_name", "Unbekannt"),
             "avatar":       m.get("avatar_emoji", "👤"),
             "ytd_pct":      round(ytd_pct, 2),
@@ -4260,6 +4261,83 @@ def fo_delete_poll(poll_id: str, user_id: str = Depends(verify_jwt)):
     sb_client.table("fo_poll_votes").delete().eq("poll_id", poll_id).execute()
     sb_client.table("fo_polls").delete().eq("id", poll_id).execute()
     return {"success": True}
+
+
+@app.get("/fo/groups/{group_id}/member-profile/{target_user_id}")
+def fo_member_profile(group_id: str, target_user_id: str, user_id: str = Depends(verify_jwt)):
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    target = sb_client.table("fo_members").select("*").eq("group_id", group_id).eq("user_id", target_user_id).execute()
+    if not target.data:
+        raise HTTPException(404, "Mitglied nicht gefunden")
+    mem = target.data[0]
+
+    league = None
+    xp = None
+    try:
+        prog = sb_client.table("user_progress").select("league, xp_total").eq("user_id", target_user_id).execute()
+        if prog.data:
+            league = prog.data[0].get("league")
+            xp = prog.data[0].get("xp_total")
+    except Exception:
+        pass
+
+    port = sb_client.table("fo_shared_portfolios").select("positions").eq("group_id", group_id).eq("user_id", target_user_id).execute()
+    positions = []
+    ytd_pct = None
+    if port.data:
+        raw = port.data[0].get("positions") or []
+        if isinstance(raw, str):
+            raw = json.loads(raw)
+        positions = raw
+        try:
+            ytd_year = datetime.now().year
+            ytd_start = f"{ytd_year}-01-01"
+            ytd_end = f"{ytd_year}-01-10"
+            price_start: dict = {}
+            price_now: dict = {}
+            syms = list({pos.get("symbol") for pos in positions if pos.get("symbol")})
+            for sym in syms:
+                hist = requests.get(
+                    f"{EODHD_BASE}/eod/{sym}.US",
+                    params={"from": ytd_start, "to": ytd_end, "api_token": EODHD_API_KEY, "fmt": "json"},
+                    timeout=5,
+                ).json()
+                if isinstance(hist, list) and hist:
+                    price_start[sym] = float(hist[0]["close"])
+                rt = requests.get(
+                    f"{EODHD_BASE}/real-time/{sym}.US",
+                    params={"api_token": EODHD_API_KEY, "fmt": "json"},
+                    timeout=5,
+                ).json()
+                if isinstance(rt, dict):
+                    price_now[sym] = float(rt.get("close") or rt.get("adjusted_close") or 0)
+            ytd = 0.0
+            total_w = 0.0
+            for pos in positions:
+                sym = pos.get("symbol", "")
+                w = float(pos.get("weight_pct", 0)) / 100
+                ps = price_start.get(sym, 0)
+                pn = price_now.get(sym, 0)
+                if ps > 0 and pn > 0:
+                    ytd += ((pn - ps) / ps) * w
+                    total_w += w
+            if total_w > 0:
+                ytd_pct = round((ytd / total_w) * 100, 2)
+        except Exception:
+            ytd_pct = None
+
+    return {
+        "display_name": mem.get("display_name", "Unbekannt"),
+        "avatar_emoji": mem.get("avatar_emoji", "👤"),
+        "joined_at":    mem.get("joined_at"),
+        "role":         mem.get("role", "member"),
+        "ytd_pct":      ytd_pct,
+        "league":       league,
+        "xp":           xp,
+        "positions":    positions,
+    }
 
 
 # ─── 13F Filing Tracker ───────────────────────────────────────────────────────
