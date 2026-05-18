@@ -3502,6 +3502,144 @@ async def portfolio_ai_analysis(request: Request):
     return {"analysis": resp.json()["content"][0]["text"]}
 
 
+# ─── News Feed ────────────────────────────────────────────────────────────────
+
+@app.get("/news/market")
+async def market_news():
+    cache_key = "market_news"
+    if cache_key in fundamentals_cache:
+        cached = fundamentals_cache[cache_key]
+        if datetime.now() < cached["expires"]:
+            return cached["data"]
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            r = await client.get(
+                f"{AV_BASE}?function=NEWS_SENTIMENT&topics=financial_markets&limit=10&apikey={AV_KEY}"
+            )
+        data = r.json()
+        feed = data.get("feed", [])[:8]
+        news = [{
+            "title": item.get("title", ""),
+            "url": item.get("url", ""),
+            "source": item.get("source", ""),
+            "time": item.get("time_published", ""),
+            "sentiment": item.get("overall_sentiment_label", "Neutral"),
+            "summary": (item.get("summary", "") or "")[:200],
+        } for item in feed]
+        result = {"news": news}
+        fundamentals_cache[cache_key] = {
+            "data": result,
+            "expires": datetime.now() + timedelta(hours=1),
+        }
+        return result
+    except Exception as e:
+        return {"news": [], "error": str(e)}
+
+
+# ─── Earnings Calendar ────────────────────────────────────────────────────────
+
+@app.get("/earnings/today")
+async def earnings_today():
+    cache_key = "earnings_today"
+    if cache_key in fundamentals_cache:
+        cached = fundamentals_cache[cache_key]
+        if datetime.now() < cached["expires"]:
+            return cached["data"]
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            r = await client.get(
+                f"{AV_BASE}?function=EARNINGS_CALENDAR&horizon=3month&apikey={AV_KEY}"
+            )
+        text = r.text
+        lines = text.strip().split("\n")
+        if len(lines) < 2:
+            return {"earnings": []}
+        headers = [h.strip() for h in lines[0].split(",")]
+        this_week = [(datetime.now() + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+        upcoming = []
+        for line in lines[1:]:
+            parts = line.split(",")
+            if len(parts) < len(headers):
+                continue
+            row = dict(zip(headers, [p.strip() for p in parts]))
+            report_date = row.get("reportDate", "")
+            if report_date in this_week:
+                upcoming.append({
+                    "symbol": row.get("symbol", ""),
+                    "name": row.get("name", ""),
+                    "date": report_date,
+                    "estimate": row.get("estimate", "—"),
+                    "currency": row.get("currency", "USD"),
+                })
+        result = {"earnings": upcoming[:10]}
+        fundamentals_cache[cache_key] = {
+            "data": result,
+            "expires": datetime.now() + timedelta(hours=6),
+        }
+        return result
+    except Exception as e:
+        return {"earnings": [], "error": str(e)}
+
+
+# ─── Economic Calendar ────────────────────────────────────────────────────────
+
+@app.get("/economic-calendar")
+async def economic_calendar():
+    today = datetime.now()
+    events = []
+
+    fomc_2026 = [
+        "2026-01-28", "2026-03-18", "2026-04-29", "2026-06-17",
+        "2026-07-29", "2026-09-16", "2026-10-28", "2026-12-09",
+    ]
+    for date_str in fomc_2026:
+        event_date = datetime.strptime(date_str, "%Y-%m-%d")
+        days_until = (event_date - today).days
+        if 0 <= days_until <= 30:
+            events.append({
+                "name": "FOMC Zinsentscheidung",
+                "date": date_str,
+                "days_until": days_until,
+                "importance": "high",
+                "category": "Fed",
+            })
+
+    for month_offset in range(2):
+        try:
+            cpi_date = (today.replace(day=13) + timedelta(days=30 * month_offset))
+            days_until = (cpi_date - today).days
+            if 0 <= days_until <= 30:
+                events.append({
+                    "name": "CPI Inflation",
+                    "date": cpi_date.strftime("%Y-%m-%d"),
+                    "days_until": days_until,
+                    "importance": "high",
+                    "category": "Inflation",
+                })
+        except Exception:
+            pass
+
+    for month_offset in range(2):
+        try:
+            first_day = (today.replace(day=1) + timedelta(days=30 * month_offset)).replace(day=1)
+            days_to_friday = (4 - first_day.weekday()) % 7
+            nfp_date = first_day + timedelta(days=days_to_friday)
+            days_until = (nfp_date - today).days
+            if 0 <= days_until <= 30:
+                events.append({
+                    "name": "Nonfarm Payrolls",
+                    "date": nfp_date.strftime("%Y-%m-%d"),
+                    "days_until": days_until,
+                    "importance": "high",
+                    "category": "Arbeitsmarkt",
+                })
+        except Exception:
+            pass
+
+    events.sort(key=lambda x: x["days_until"])
+    return {"events": events[:8]}
+
+
 # ─── Debug ────────────────────────────────────────────────────────────────────
 
 @app.get("/debug-av/{ticker}")
