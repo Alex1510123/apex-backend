@@ -3405,6 +3405,79 @@ async def fundamentals_ai_analysis(request: Request):
     return {"analysis": resp.json()["content"][0]["text"]}
 
 
+@app.post("/portfolio/ai-analysis")
+async def portfolio_ai_analysis(request: Request):
+    if not ANTHROPIC_API_KEY:
+        raise HTTPException(status_code=503, detail="ANTHROPIC_API_KEY nicht konfiguriert.")
+
+    body      = await request.json()
+    positions = body.get("positions", [])
+    metrics   = body.get("metrics", {})
+
+    if not positions:
+        raise HTTPException(status_code=400, detail="positions erforderlich.")
+
+    positions_text = "\n".join([
+        f"- {p.get('symbol','?')}: {p.get('shares','?')} Stück, "
+        f"Kaufkurs {p.get('buyPrice','?')}, "
+        f"Aktuell {p.get('currentPrice','?')}, "
+        f"Gewichtung {p.get('weight','?')}%, "
+        f"Sektor: {p.get('sector','?')}"
+        for p in positions
+    ])
+
+    prompt = (
+        f"Du bist ein erfahrener Portfolio-Manager. "
+        f"Analysiere folgendes Portfolio objektiv auf Deutsch.\n\n"
+        f"PORTFOLIO KENNZAHLEN:\n"
+        f"- Gesamtwert: {metrics.get('totalValue', 'n/a')}\n"
+        f"- Gesamt P&L: {metrics.get('totalPnL', 'n/a')}\n"
+        f"- Anzahl Positionen: {len(positions)}\n"
+        f"- Portfolio Beta: {metrics.get('beta', 'n/a')}\n\n"
+        f"POSITIONEN:\n{positions_text}\n\n"
+        f"Erstelle eine strukturierte Analyse mit exakt diesen 5 Sektionen:\n\n"
+        f"## DIVERSIFIKATION\n"
+        f"2-3 Sätze: Wie gut ist das Portfolio diversifiziert? Klumpenrisiken?\n\n"
+        f"## STÄRKEN\n"
+        f"2-3 konkrete Stärken als Stichpunkte (• ...)\n\n"
+        f"## RISIKEN\n"
+        f"2-3 konkrete Risiken als Stichpunkte (• ...)\n\n"
+        f"## OPTIMIERUNG\n"
+        f"2-3 konkrete Verbesserungsvorschläge als Stichpunkte (• ...)\n\n"
+        f"## FAZIT\n"
+        f"1-2 Sätze Gesamtbewertung.\n\n"
+        f"Disclaimer: Keine Anlageempfehlung.\n\n"
+        f"Ton: Objektiv, professionell, faktenbasiert. Keine Kaufempfehlungen."
+    )
+
+    try:
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "Content-Type":      "application/json",
+                "x-api-key":         ANTHROPIC_API_KEY,
+                "anthropic-version": "2023-06-01",
+            },
+            json={
+                "model":      "claude-sonnet-4-6",
+                "max_tokens": 800,
+                "messages":   [{"role": "user", "content": prompt}],
+            },
+            timeout=60,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(status_code=502, detail=f"Anthropic Netzwerkfehler: {exc}")
+
+    if not resp.ok:
+        err = resp.json() if resp.content else {}
+        raise HTTPException(
+            status_code=502,
+            detail=err.get("error", {}).get("message", f"Anthropic API Fehler {resp.status_code}"),
+        )
+
+    return {"analysis": resp.json()["content"][0]["text"]}
+
+
 # ─── Debug ────────────────────────────────────────────────────────────────────
 
 @app.get("/debug-av/{ticker}")
