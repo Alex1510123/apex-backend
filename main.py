@@ -3667,6 +3667,235 @@ async def economic_calendar():
     return {"events": events[:8]}
 
 
+# ─── 13F Filing Tracker ───────────────────────────────────────────────────────
+
+INVESTORS = {
+    "berkshire": {
+        "id": "berkshire",
+        "name": "Berkshire Hathaway",
+        "manager": "Warren Buffett",
+        "aum": "354B",
+        "strategy": "Value Investing — Quality Compounders",
+        "quarter": "Q4 2024",
+        "holdings": [
+            {"ticker": "AAPL",  "name": "Apple Inc.",           "pct": 28.1, "value_m": 75217, "change": "sold"},
+            {"ticker": "AXP",   "name": "American Express",     "pct": 16.8, "value_m": 44975, "change": "held"},
+            {"ticker": "BAC",   "name": "Bank of America",      "pct": 11.4, "value_m": 30511, "change": "sold"},
+            {"ticker": "KO",    "name": "Coca-Cola",            "pct": 9.2,  "value_m": 24611, "change": "held"},
+            {"ticker": "CVX",   "name": "Chevron",              "pct": 6.4,  "value_m": 17131, "change": "sold"},
+            {"ticker": "OXY",   "name": "Occidental Petroleum", "pct": 5.3,  "value_m": 14181, "change": "held"},
+            {"ticker": "MCO",   "name": "Moody's Corp.",        "pct": 4.9,  "value_m": 13111, "change": "held"},
+            {"ticker": "KHC",   "name": "Kraft Heinz",          "pct": 2.1,  "value_m": 5616,  "change": "held"},
+        ],
+    },
+    "bridgewater": {
+        "id": "bridgewater",
+        "name": "Bridgewater Associates",
+        "manager": "Ray Dalio",
+        "aum": "124B",
+        "strategy": "All Weather / Risk Parity — Macro Diversification",
+        "quarter": "Q4 2024",
+        "holdings": [
+            {"ticker": "SPY",   "name": "S&P 500 ETF (SPDR)",   "pct": 22.4, "value_m": 2150, "change": "bought"},
+            {"ticker": "IVV",   "name": "iShares S&P 500 ETF",  "pct": 18.1, "value_m": 1738, "change": "held"},
+            {"ticker": "EEM",   "name": "Emerging Markets ETF", "pct": 12.6, "value_m": 1210, "change": "sold"},
+            {"ticker": "GLD",   "name": "SPDR Gold Shares",     "pct": 9.4,  "value_m": 902,  "change": "bought"},
+            {"ticker": "VWO",   "name": "Vanguard EM ETF",      "pct": 7.8,  "value_m": 749,  "change": "held"},
+            {"ticker": "VOO",   "name": "Vanguard S&P 500 ETF", "pct": 7.2,  "value_m": 691,  "change": "held"},
+            {"ticker": "IAU",   "name": "iShares Gold Trust",   "pct": 5.4,  "value_m": 518,  "change": "bought"},
+            {"ticker": "BRK.B", "name": "Berkshire Hathaway B", "pct": 4.1,  "value_m": 394,  "change": "held"},
+        ],
+    },
+    "pershing": {
+        "id": "pershing",
+        "name": "Pershing Square Capital",
+        "manager": "Bill Ackman",
+        "aum": "18B",
+        "strategy": "Concentrated Value — Activist Investing",
+        "quarter": "Q4 2024",
+        "holdings": [
+            {"ticker": "GOOG",  "name": "Alphabet Inc. (C)",         "pct": 22.3, "value_m": 2167, "change": "bought"},
+            {"ticker": "HLT",   "name": "Hilton Worldwide",          "pct": 18.7, "value_m": 1817, "change": "held"},
+            {"ticker": "CMG",   "name": "Chipotle Mexican Grill",    "pct": 17.1, "value_m": 1661, "change": "held"},
+            {"ticker": "QSR",   "name": "Restaurant Brands Intl.",   "pct": 13.4, "value_m": 1301, "change": "held"},
+            {"ticker": "CP",    "name": "Canadian Pacific Kansas",   "pct": 12.8, "value_m": 1243, "change": "held"},
+            {"ticker": "NFLX",  "name": "Netflix",                   "pct": 9.6,  "value_m": 932,  "change": "bought"},
+            {"ticker": "NKE",   "name": "Nike Inc.",                 "pct": 6.1,  "value_m": 592,  "change": "bought"},
+        ],
+    },
+    "scion": {
+        "id": "scion",
+        "name": "Scion Asset Management",
+        "manager": "Michael Burry",
+        "aum": "0.3B",
+        "strategy": "Deep Value / Contrarian — Short Seller",
+        "quarter": "Q3 2024",
+        "holdings": [
+            {"ticker": "JD",    "name": "JD.com",          "pct": 28.1, "value_m": 51,  "change": "bought"},
+            {"ticker": "BABA",  "name": "Alibaba Group",   "pct": 22.4, "value_m": 41,  "change": "held"},
+            {"ticker": "BIDU",  "name": "Baidu Inc.",      "pct": 16.8, "value_m": 30,  "change": "held"},
+            {"ticker": "PDD",   "name": "PDD Holdings",    "pct": 13.2, "value_m": 24,  "change": "bought"},
+            {"ticker": "HCA",   "name": "HCA Healthcare",  "pct": 7.4,  "value_m": 13,  "change": "sold"},
+            {"ticker": "GEO",   "name": "GEO Group",       "pct": 6.1,  "value_m": 11,  "change": "bought"},
+            {"ticker": "GOOGL", "name": "Alphabet (A)",    "pct": 4.3,  "value_m": 8,   "change": "sold"},
+            {"ticker": "CVS",   "name": "CVS Health",      "pct": 1.7,  "value_m": 3,   "change": "bought"},
+        ],
+    },
+    "tepper": {
+        "id": "tepper",
+        "name": "Appaloosa Management",
+        "manager": "David Tepper",
+        "aum": "22B",
+        "strategy": "Distressed Assets / Growth at Reasonable Price",
+        "quarter": "Q4 2024",
+        "holdings": [
+            {"ticker": "AMZN",  "name": "Amazon.com",     "pct": 18.4, "value_m": 1247, "change": "bought"},
+            {"ticker": "META",  "name": "Meta Platforms", "pct": 16.2, "value_m": 1098, "change": "held"},
+            {"ticker": "NVDA",  "name": "NVIDIA Corp.",   "pct": 14.1, "value_m": 955,  "change": "sold"},
+            {"ticker": "GOOGL", "name": "Alphabet (A)",   "pct": 13.3, "value_m": 901,  "change": "held"},
+            {"ticker": "AAPL",  "name": "Apple Inc.",     "pct": 10.8, "value_m": 731,  "change": "bought"},
+            {"ticker": "MSFT",  "name": "Microsoft",      "pct": 9.2,  "value_m": 623,  "change": "held"},
+            {"ticker": "MGM",   "name": "MGM Resorts",    "pct": 5.4,  "value_m": 366,  "change": "bought"},
+            {"ticker": "JD",    "name": "JD.com",         "pct": 4.1,  "value_m": 278,  "change": "held"},
+        ],
+    },
+}
+
+
+@app.get("/13f")
+async def list_13f():
+    return {"funds": [
+        {
+            "id":            v["id"],
+            "name":          v["name"],
+            "manager":       v["manager"],
+            "aum":           v["aum"],
+            "strategy":      v["strategy"],
+            "quarter":       v["quarter"],
+            "top_holding":   v["holdings"][0]["ticker"] if v["holdings"] else None,
+            "holding_count": len(v["holdings"]),
+        }
+        for v in INVESTORS.values()
+    ]}
+
+
+@app.get("/13f/{fund_id}")
+async def get_13f(fund_id: str):
+    fund = INVESTORS.get(fund_id)
+    if not fund:
+        raise HTTPException(status_code=404, detail="Fund not found")
+    return fund
+
+
+# ─── Super-Investor Screener ──────────────────────────────────────────────────
+
+BUFFETT_UNIVERSE = ["KO", "JNJ", "WMT", "PG", "JPM", "BAC", "AXP", "V"]
+BURRY_UNIVERSE   = ["NVDA", "TSLA", "AMZN", "CRM", "SHOP", "PLTR", "NET", "SNOW"]
+
+
+@app.get("/screener/buffett")
+async def screener_buffett():
+    cache_key = "screener_buffett"
+    if cache_key in fundamentals_cache:
+        cached = fundamentals_cache[cache_key]
+        if datetime.now() < cached["expires"]:
+            return cached["data"]
+
+    results = []
+    async with httpx.AsyncClient(timeout=20) as client:
+        for i, ticker in enumerate(BUFFETT_UNIVERSE):
+            if i > 0:
+                await asyncio.sleep(13)
+            try:
+                r = await client.get(f"{AV_BASE}?function=OVERVIEW&symbol={ticker}&apikey={AV_KEY}")
+                d = r.json()
+                if "Symbol" not in d:
+                    continue
+                def safe_float(key):
+                    try: return float(d.get(key) or 0)
+                    except: return 0.0
+                roe        = safe_float("ReturnOnEquityTTM") * 100
+                pe         = safe_float("PERatio")
+                pb         = safe_float("PriceToBookRatio")
+                debt_eq    = safe_float("DebtToEquityRatio")
+                net_margin = safe_float("ProfitMargin") * 100
+                score = 0
+                if roe > 15:        score += 20
+                if 0 < pe < 20:     score += 20
+                if 0 < pb < 5:      score += 20
+                if 0 < debt_eq < 1: score += 20
+                if net_margin > 10: score += 20
+                results.append({
+                    "ticker":     ticker,
+                    "name":       d.get("Name", ticker),
+                    "sector":     d.get("Sector", ""),
+                    "roe":        round(roe, 1),
+                    "pe":         round(pe, 1),
+                    "pb":         round(pb, 2),
+                    "debt_eq":    round(debt_eq, 2),
+                    "net_margin": round(net_margin, 1),
+                    "score":      score,
+                    "verdict":    "Value-Kandidat" if score >= 60 else "Kein Fit",
+                })
+            except Exception as e:
+                print(f"[buffett screener] {ticker}: {e}")
+
+    results.sort(key=lambda x: x["score"], reverse=True)
+    data = {"results": results, "timestamp": datetime.now().isoformat()}
+    fundamentals_cache[cache_key] = {"data": data, "expires": datetime.now() + timedelta(hours=24)}
+    return data
+
+
+@app.get("/screener/burry")
+async def screener_burry():
+    cache_key = "screener_burry"
+    if cache_key in fundamentals_cache:
+        cached = fundamentals_cache[cache_key]
+        if datetime.now() < cached["expires"]:
+            return cached["data"]
+
+    results = []
+    async with httpx.AsyncClient(timeout=20) as client:
+        for i, ticker in enumerate(BURRY_UNIVERSE):
+            if i > 0:
+                await asyncio.sleep(13)
+            try:
+                r = await client.get(f"{AV_BASE}?function=OVERVIEW&symbol={ticker}&apikey={AV_KEY}")
+                d = r.json()
+                if "Symbol" not in d:
+                    continue
+                def safe_float(key):
+                    try: return float(d.get(key) or 0)
+                    except: return 0.0
+                pe  = safe_float("PERatio")
+                pb  = safe_float("PriceToBookRatio")
+                ps  = safe_float("PriceToSalesRatioTTM")
+                peg = safe_float("PEGRatio")
+                score = 0
+                if pe  > 50: score += 25
+                if pb  > 10: score += 25
+                if ps  > 10: score += 25
+                if peg > 2:  score += 25
+                results.append({
+                    "ticker":  ticker,
+                    "name":    d.get("Name", ticker),
+                    "sector":  d.get("Sector", ""),
+                    "pe":      round(pe, 1),
+                    "pb":      round(pb, 2),
+                    "ps":      round(ps, 1),
+                    "peg":     round(peg, 2),
+                    "score":   score,
+                    "verdict": "Überbewertungs-Signal" if score >= 50 else "Moderat bewertet",
+                })
+            except Exception as e:
+                print(f"[burry screener] {ticker}: {e}")
+
+    results.sort(key=lambda x: x["score"], reverse=True)
+    data = {"results": results, "timestamp": datetime.now().isoformat()}
+    fundamentals_cache[cache_key] = {"data": data, "expires": datetime.now() + timedelta(hours=24)}
+    return data
+
+
 # ─── Debug ────────────────────────────────────────────────────────────────────
 
 @app.get("/debug-av/{ticker}")
