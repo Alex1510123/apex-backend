@@ -3509,15 +3509,18 @@ async def market_news():
     cache_key = "market_news"
     if cache_key in fundamentals_cache:
         cached = fundamentals_cache[cache_key]
-        if datetime.now() < cached["expires"]:
+        if datetime.now() < cached["expires"] and cached["data"].get("news"):
             return cached["data"]
     try:
-        async with httpx.AsyncClient(timeout=10) as client:
+        async with httpx.AsyncClient(timeout=15) as client:
             r = await client.get(
-                f"{AV_BASE}?function=NEWS_SENTIMENT&topics=financial_markets&limit=10&apikey={AV_KEY}"
+                f"{AV_BASE}?function=NEWS_SENTIMENT&topics=financial_markets,economy_macro,finance&limit=20&apikey={AV_KEY}"
             )
         data = r.json()
-        feed = data.get("feed", [])[:8]
+        feed = data.get("feed", [])
+        if not feed:
+            print(f"[news] empty feed. keys={list(data.keys())} body={str(data)[:200]}")
+            return {"news": [], "debug": str(data)[:200]}
         news = [{
             "title": item.get("title", ""),
             "url": item.get("url", ""),
@@ -3525,12 +3528,13 @@ async def market_news():
             "time": item.get("time_published", ""),
             "sentiment": item.get("overall_sentiment_label", "Neutral"),
             "summary": (item.get("summary", "") or "")[:200],
-        } for item in feed]
+        } for item in feed[:8]]
         result = {"news": news}
-        fundamentals_cache[cache_key] = {
-            "data": result,
-            "expires": datetime.now() + timedelta(hours=1),
-        }
+        if news:
+            fundamentals_cache[cache_key] = {
+                "data": result,
+                "expires": datetime.now() + timedelta(hours=1),
+            }
         return result
     except Exception as e:
         return {"news": [], "error": str(e)}
@@ -3545,6 +3549,25 @@ async def earnings_today():
         cached = fundamentals_cache[cache_key]
         if datetime.now() < cached["expires"]:
             return cached["data"]
+
+    KNOWN_TICKERS = {
+        # US Tech
+        'AAPL','MSFT','GOOGL','GOOG','AMZN','META','NVDA','TSLA','NFLX',
+        'AMD','INTC','CRM','ORCL','ADBE','CSCO','IBM','QCOM','TXN','AVGO',
+        # US Finance
+        'JPM','BAC','WFC','GS','MS','C','BLK','AXP','V','MA',
+        # US Healthcare
+        'JNJ','UNH','PFE','MRK','LLY','ABBV','TMO','ABT','BMY','CVS',
+        # US Consumer
+        'WMT','HD','PG','KO','PEP','MCD','NKE','SBUX','DIS','COST',
+        # US Energy / Industrial
+        'XOM','CVX','BA','CAT','GE','HON','UPS','LMT','RTX','DE',
+        # German
+        'SAP','SIE','ALV','DTE','BMW','MBG','VOW3','BAS','DBK','ADS','MUV2',
+        # Other notable
+        'BRK.A','BRK.B','BABA','TSM','ASML','NVO','TM','NESN','RHHBY',
+    }
+
     try:
         async with httpx.AsyncClient(timeout=10) as client:
             r = await client.get(
@@ -3562,16 +3585,20 @@ async def earnings_today():
             if len(parts) < len(headers):
                 continue
             row = dict(zip(headers, [p.strip() for p in parts]))
+            symbol = row.get("symbol", "").upper()
             report_date = row.get("reportDate", "")
-            if report_date in this_week:
-                upcoming.append({
-                    "symbol": row.get("symbol", ""),
-                    "name": row.get("name", ""),
-                    "date": report_date,
-                    "estimate": row.get("estimate", "—"),
-                    "currency": row.get("currency", "USD"),
-                })
-        result = {"earnings": upcoming[:10]}
+            if symbol not in KNOWN_TICKERS:
+                continue
+            if report_date not in this_week:
+                continue
+            upcoming.append({
+                "symbol": symbol,
+                "name": row.get("name", ""),
+                "date": report_date,
+                "estimate": row.get("estimate", "") or "—",
+                "currency": row.get("currency", "USD"),
+            })
+        result = {"earnings": upcoming[:8]}
         fundamentals_cache[cache_key] = {
             "data": result,
             "expires": datetime.now() + timedelta(hours=6),
