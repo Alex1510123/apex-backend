@@ -3126,6 +3126,30 @@ AV_KEY  = os.environ.get("ALPHA_VANTAGE_KEY", "")
 fundamentals_cache: dict = {}  # { "AAPL": {"data": {...}, "expires": datetime} }
 
 
+@app.get("/sector/{ticker}")
+async def get_sector(ticker: str):
+    cache_key = f"sector_{ticker.upper()}"
+    if cache_key in fundamentals_cache:
+        cached = fundamentals_cache[cache_key]
+        if datetime.now() < cached["expires"]:
+            return cached["data"]
+    try:
+        t = ticker.replace(".US", "").replace(".XETRA", "").replace(".CC", "").upper()
+        async with httpx.AsyncClient(timeout=10) as client:
+            r = await client.get(f"{AV_BASE}?function=OVERVIEW&symbol={t}&apikey={AV_KEY}")
+        data   = r.json()
+        result = {
+            "ticker":   ticker,
+            "sector":   data.get("Sector", "Sonstige") or "Sonstige",
+            "industry": data.get("Industry", ""),
+            "name":     data.get("Name", ticker),
+        }
+        fundamentals_cache[cache_key] = {"data": result, "expires": datetime.now() + timedelta(days=7)}
+        return result
+    except Exception:
+        return {"ticker": ticker, "sector": "Sonstige", "industry": "", "name": ticker}
+
+
 @app.get("/fundamentals/{ticker}")
 async def get_fundamentals(ticker: str):
     cache_key = ticker.upper()
