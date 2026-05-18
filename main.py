@@ -3122,6 +3122,30 @@ async def weekly_boss_submit(request: Request):
 fundamentals_cache: dict = {}  # { "AAPL": {"data": {...}, "expires": datetime} }
 
 
+async def _fetch_yf_with_retry(yf_ticker: str, max_retries: int = 3):
+    import time
+    last_exc = None
+    for attempt in range(max_retries):
+        try:
+            import requests as _req
+            _session = _req.Session()
+            _session.headers.update({
+                "User-Agent":      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept":          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.5",
+            })
+            stock = yf.Ticker(yf_ticker, session=_session)
+            info  = stock.info
+            if not info or len(info) < 5:
+                raise Exception("Empty response from yfinance")
+            return stock, info
+        except Exception as e:
+            last_exc = e
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)  # 1s → 2s → 4s
+    raise last_exc
+
+
 def _to_yf_ticker(ticker: str) -> str:
     """Convert EODHD ticker format to Yahoo Finance format."""
     t = ticker.upper()
@@ -3136,8 +3160,6 @@ def _to_yf_ticker(ticker: str) -> str:
 @app.get("/fundamentals/{ticker}")
 async def get_fundamentals(ticker: str):
     cache_key = ticker.upper()
-    # Temporarily clear stale cache entries so fixes take effect
-    fundamentals_cache.pop(cache_key, None)
     cached = fundamentals_cache.get(cache_key)
     if cached and datetime.now() < cached["expires"]:
         return cached["data"]
@@ -3169,13 +3191,8 @@ async def get_fundamentals(ticker: str):
         return []
 
     try:
-        import requests as _req
-        _session = _req.Session()
-        _session.headers.update({
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-        })
-        stock         = yf.Ticker(yf_ticker, session=_session)
-        info          = stock.info or {}
+        stock, info   = await _fetch_yf_with_retry(yf_ticker)
+        info          = info or {}
         balance_sheet = stock.balance_sheet
         income_stmt   = stock.income_stmt
         cash_flow     = stock.cash_flow
@@ -3290,7 +3307,7 @@ async def get_fundamentals(ticker: str):
                 "num_analysts":   info.get("numberOfAnalystOpinions"),
             },
         }
-        fundamentals_cache[cache_key] = {"data": result, "expires": datetime.now() + timedelta(hours=24)}
+        fundamentals_cache[cache_key] = {"data": result, "expires": datetime.now() + timedelta(hours=48)}
         return result
 
     except Exception as e:
