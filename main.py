@@ -3852,6 +3852,178 @@ def fo_group_aggregate(group_id: str, user_id: str = Depends(verify_jwt)):
     }
 
 
+# ─── FO Chat & Posts ──────────────────────────────────────────────────────────
+
+REACTION_EMOJIS_ALLOWED = {'👍', '🚀', '💎', '🐻', '🔥', '🤔'}
+
+
+@app.get("/fo/groups/{group_id}/messages")
+def fo_messages(group_id: str, limit: int = 100, user_id: str = Depends(verify_jwt)):
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    msgs = sb_client.table("fo_messages").select("*").eq("group_id", group_id).order("created_at").limit(limit).execute()
+    members = sb_client.table("fo_members").select("user_id, display_name, avatar_emoji").eq("group_id", group_id).execute()
+    mmap = {m["user_id"]: m for m in members.data}
+    return {"messages": [{
+        **msg,
+        "display_name": mmap.get(msg["user_id"], {}).get("display_name", "Unbekannt"),
+        "avatar_emoji": mmap.get(msg["user_id"], {}).get("avatar_emoji", "👤"),
+        "is_me": msg["user_id"] == user_id,
+    } for msg in msgs.data]}
+
+
+@app.post("/fo/groups/{group_id}/messages")
+async def create_fo_message(group_id: str, request: Request, user_id: str = Depends(verify_jwt)):
+    data = await request.json()
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    content = (data.get("content") or "").strip()
+    if not content:
+        raise HTTPException(400, "Nachricht leer")
+    result = sb_client.table("fo_messages").insert({
+        "group_id": group_id, "user_id": user_id, "content": content[:2000],
+    }).execute()
+    return {"message": result.data[0]}
+
+
+@app.delete("/fo/messages/{message_id}")
+def delete_fo_message(message_id: str, user_id: str = Depends(verify_jwt)):
+    msg = sb_client.table("fo_messages").select("user_id").eq("id", message_id).execute()
+    if not msg.data:
+        raise HTTPException(404, "Nicht gefunden")
+    if msg.data[0]["user_id"] != user_id:
+        raise HTTPException(403, "Keine Berechtigung")
+    sb_client.table("fo_messages").delete().eq("id", message_id).execute()
+    return {"success": True}
+
+
+@app.get("/fo/groups/{group_id}/posts")
+def fo_posts(group_id: str, user_id: str = Depends(verify_jwt)):
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+
+    posts = sb_client.table("fo_posts").select("*").eq("group_id", group_id).order("created_at", desc=True).execute()
+    members = sb_client.table("fo_members").select("user_id, display_name, avatar_emoji").eq("group_id", group_id).execute()
+    mmap = {m["user_id"]: m for m in members.data}
+
+    post_ids = [p["id"] for p in posts.data] or ["00000000-0000-0000-0000-000000000000"]
+    reactions_all = sb_client.table("fo_reactions").select("post_id, user_id, emoji").in_("post_id", post_ids).execute()
+    comments_all  = sb_client.table("fo_comments").select("post_id").in_("post_id", post_ids).execute()
+
+    react_map: dict  = {}
+    my_react_map: dict = {}
+    for r in reactions_all.data:
+        pid = r["post_id"]
+        react_map.setdefault(pid, {})
+        react_map[pid][r["emoji"]] = react_map[pid].get(r["emoji"], 0) + 1
+        if r["user_id"] == user_id:
+            my_react_map.setdefault(pid, [])
+            my_react_map[pid].append(r["emoji"])
+
+    comment_count: dict = {}
+    for c in comments_all.data:
+        comment_count[c["post_id"]] = comment_count.get(c["post_id"], 0) + 1
+
+    return {"posts": [{
+        **p,
+        "display_name":  mmap.get(p["user_id"], {}).get("display_name", "Unbekannt"),
+        "avatar_emoji":  mmap.get(p["user_id"], {}).get("avatar_emoji", "👤"),
+        "is_me":         p["user_id"] == user_id,
+        "reactions":     react_map.get(p["id"], {}),
+        "my_reactions":  my_react_map.get(p["id"], []),
+        "comment_count": comment_count.get(p["id"], 0),
+    } for p in posts.data]}
+
+
+@app.post("/fo/groups/{group_id}/posts")
+async def create_fo_post(group_id: str, request: Request, user_id: str = Depends(verify_jwt)):
+    data = await request.json()
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    post_type = data.get("post_type", "thesis")
+    if post_type not in ("buy", "sell", "thesis", "question"):
+        raise HTTPException(400, "Ungültiger post_type")
+    result = sb_client.table("fo_posts").insert({
+        "group_id":  group_id,
+        "user_id":   user_id,
+        "post_type": post_type,
+        "symbol":    (data.get("symbol") or "").strip().upper()[:10] or None,
+        "title":     (data.get("title") or "").strip()[:200],
+        "thesis":    (data.get("thesis") or "").strip()[:2000],
+    }).execute()
+    return {"post": result.data[0]}
+
+
+@app.delete("/fo/posts/{post_id}")
+def delete_fo_post(post_id: str, user_id: str = Depends(verify_jwt)):
+    post = sb_client.table("fo_posts").select("user_id").eq("id", post_id).execute()
+    if not post.data:
+        raise HTTPException(404, "Nicht gefunden")
+    if post.data[0]["user_id"] != user_id:
+        raise HTTPException(403, "Keine Berechtigung")
+    sb_client.table("fo_comments").delete().eq("post_id", post_id).execute()
+    sb_client.table("fo_reactions").delete().eq("post_id", post_id).execute()
+    sb_client.table("fo_posts").delete().eq("id", post_id).execute()
+    return {"success": True}
+
+
+@app.post("/fo/posts/{post_id}/react")
+async def toggle_fo_reaction(post_id: str, request: Request, user_id: str = Depends(verify_jwt)):
+    data = await request.json()
+    emoji = data.get("emoji", "")
+    if emoji not in REACTION_EMOJIS_ALLOWED:
+        raise HTTPException(400, "Ungültiges Emoji")
+    existing = sb_client.table("fo_reactions").select("id").eq("post_id", post_id).eq("user_id", user_id).eq("emoji", emoji).execute()
+    if existing.data:
+        sb_client.table("fo_reactions").delete().eq("id", existing.data[0]["id"]).execute()
+        return {"action": "removed"}
+    sb_client.table("fo_reactions").insert({"post_id": post_id, "user_id": user_id, "emoji": emoji}).execute()
+    return {"action": "added"}
+
+
+@app.get("/fo/posts/{post_id}/comments")
+def fo_comments(post_id: str, user_id: str = Depends(verify_jwt)):
+    post = sb_client.table("fo_posts").select("group_id").eq("id", post_id).execute()
+    if not post.data:
+        raise HTTPException(404, "Post nicht gefunden")
+    group_id = post.data[0]["group_id"]
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    comments = sb_client.table("fo_comments").select("*").eq("post_id", post_id).order("created_at").execute()
+    members = sb_client.table("fo_members").select("user_id, display_name, avatar_emoji").eq("group_id", group_id).execute()
+    mmap = {m["user_id"]: m for m in members.data}
+    return {"comments": [{
+        **c,
+        "display_name": mmap.get(c["user_id"], {}).get("display_name", "Unbekannt"),
+        "avatar_emoji": mmap.get(c["user_id"], {}).get("avatar_emoji", "👤"),
+        "is_me":        c["user_id"] == user_id,
+    } for c in comments.data]}
+
+
+@app.post("/fo/posts/{post_id}/comments")
+async def create_fo_comment(post_id: str, request: Request, user_id: str = Depends(verify_jwt)):
+    data = await request.json()
+    post = sb_client.table("fo_posts").select("group_id").eq("id", post_id).execute()
+    if not post.data:
+        raise HTTPException(404, "Post nicht gefunden")
+    group_id = post.data[0]["group_id"]
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    content = (data.get("content") or "").strip()
+    if not content:
+        raise HTTPException(400, "Kommentar leer")
+    result = sb_client.table("fo_comments").insert({
+        "post_id": post_id, "user_id": user_id, "content": content[:1000],
+    }).execute()
+    return {"comment": result.data[0]}
+
+
 # ─── 13F Filing Tracker ───────────────────────────────────────────────────────
 
 INVESTORS = {
