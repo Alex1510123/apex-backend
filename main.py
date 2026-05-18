@@ -3118,169 +3118,180 @@ async def weekly_boss_submit(request: Request):
     return {**result, "xp_earned": xp_earned}
 
 
-# ─── Fundamentals (FMP API) ───────────────────────────────────────────────────
+# ─── Fundamentals (Alpha Vantage API) ────────────────────────────────────────
 
-FMP_BASE = "https://financialmodelingprep.com/stable"
-FMP_KEY  = os.environ.get("FMP_API_KEY", "")
+AV_BASE = "https://www.alphavantage.co/query"
+AV_KEY  = os.environ.get("ALPHA_VANTAGE_KEY", "")
 
 fundamentals_cache: dict = {}  # { "AAPL": {"data": {...}, "expires": datetime} }
 
 
-def _fmp_ticker(ticker: str) -> str:
-    """Convert EODHD-style ticker to FMP ticker (plain symbol)."""
-    for suffix in (".US", ".XETRA", ".INDX", ".CC", ".FOREX"):
-        if ticker.upper().endswith(suffix):
-            return ticker[:-(len(suffix))].upper()
-    return ticker.upper()
-
-
-def _fmp_series(data: list, key: str) -> list:
-    """Convert FMP annual statement list to [{year, value}] for Recharts."""
-    result = []
-    for item in reversed(data):        # FMP returns newest first → reverse for chronological
-        val = item.get(key)
-        if val is not None:
-            result.append({"year": str(item.get("date", ""))[:4], "value": val})
-    return result
-
-
 @app.get("/fundamentals/{ticker}")
 async def get_fundamentals(ticker: str):
-    if not FMP_KEY:
-        raise HTTPException(status_code=503, detail="FMP_API_KEY nicht konfiguriert.")
-
     cache_key = ticker.upper()
     cached = fundamentals_cache.get(cache_key)
     if cached and datetime.now() < cached["expires"]:
         return cached["data"]
 
-    t = _fmp_ticker(ticker)
+    t = ticker.replace(".US", "").replace(".XETRA", "").replace(".CC", "").replace(".FOREX", "").upper()
 
     try:
-        async with httpx.AsyncClient(timeout=15) as client:
-            profile_r, ratios_r, bs_r, income_r, cf_r = await asyncio.gather(
-                client.get(f"{FMP_BASE}/profile/{t}?apikey={FMP_KEY}"),
-                client.get(f"{FMP_BASE}/ratios-ttm/{t}?apikey={FMP_KEY}"),
-                client.get(f"{FMP_BASE}/balance-sheet-statement/{t}?apikey={FMP_KEY}&limit=4"),
-                client.get(f"{FMP_BASE}/income-statement/{t}?apikey={FMP_KEY}&limit=4"),
-                client.get(f"{FMP_BASE}/cash-flow-statement/{t}?apikey={FMP_KEY}&limit=4"),
+        async with httpx.AsyncClient(timeout=20) as client:
+            overview_r, income_r, bs_r, cf_r = await asyncio.gather(
+                client.get(f"{AV_BASE}?function=OVERVIEW&symbol={t}&apikey={AV_KEY}"),
+                client.get(f"{AV_BASE}?function=INCOME_STATEMENT&symbol={t}&apikey={AV_KEY}"),
+                client.get(f"{AV_BASE}?function=BALANCE_SHEET&symbol={t}&apikey={AV_KEY}"),
+                client.get(f"{AV_BASE}?function=CASH_FLOW&symbol={t}&apikey={AV_KEY}"),
             )
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"FMP Netzwerkfehler: {e}")
+        raise HTTPException(status_code=502, detail=f"Alpha Vantage Netzwerkfehler: {e}")
 
-    profile_list = profile_r.json() if profile_r.status_code == 200 else []
-    ratios_list  = ratios_r.json()  if ratios_r.status_code  == 200 else []
-    bs_list      = bs_r.json()      if bs_r.status_code      == 200 else []
-    income_list  = income_r.json()  if income_r.status_code  == 200 else []
-    cf_list      = cf_r.json()      if cf_r.status_code      == 200 else []
+    ov          = overview_r.json() if overview_r.status_code == 200 else {}
+    income_data = income_r.json()   if income_r.status_code   == 200 else {}
+    bs_data     = bs_r.json()       if bs_r.status_code       == 200 else {}
+    cf_data     = cf_r.json()       if cf_r.status_code       == 200 else {}
 
-    if not profile_list or not isinstance(profile_list, list):
-        raise HTTPException(status_code=404, detail=f"Ticker '{t}' nicht gefunden oder FMP-Limit erreicht.")
+    if not ov or "Symbol" not in ov:
+        raise HTTPException(status_code=404, detail=f"Ticker '{t}' nicht gefunden oder AV-Limit erreicht.")
 
-    profile = profile_list[0] if profile_list else {}
-    ratios  = ratios_list[0]  if ratios_list  else {}
-    bs0     = bs_list[0]      if bs_list      else {}
-    inc0    = income_list[0]  if income_list  else {}
-    cf0     = cf_list[0]      if cf_list      else {}
+    inc_reports = income_data.get("annualReports", [])
+    bs_reports  = bs_data.get("annualReports", [])
+    cf_reports  = cf_data.get("annualReports", [])
 
-    # Parse 52-week range "low-high" string from FMP profile
-    range_str = profile.get("range", "")
-    try:
-        range_parts = range_str.split("-")
-        high_52w = float(range_parts[-1]) if range_parts else None
-        low_52w  = float(range_parts[0])  if len(range_parts) >= 2 else None
-    except (ValueError, IndexError):
-        high_52w = low_52w = None
+    inc0 = inc_reports[0] if inc_reports else {}
+    bs0  = bs_reports[0]  if bs_reports  else {}
+    cf0  = cf_reports[0]  if cf_reports  else {}
+
+    def to_float(val):
+        try:
+            return float(val) if val and val != "None" else None
+        except Exception:
+            return None
+
+    def av_series(reports, key):
+        result = {}
+        for r in reversed(reports):
+            year = r.get("fiscalDateEnding", "")[:4]
+            val  = to_float(r.get(key))
+            if year and val is not None:
+                result[year] = val
+        return result
+
+    total_debt     = to_float(bs0.get("shortLongTermDebtTotal")) or (
+                         (to_float(bs0.get("shortTermDebt")) or 0) +
+                         (to_float(bs0.get("longTermDebt")) or 0)
+                     )
+    cash           = to_float(bs0.get("cashAndCashEquivalentsAtCarryingValue"))
+    net_debt       = (total_debt or 0) - (cash or 0)
+    revenue        = to_float(inc0.get("totalRevenue"))
+    net_income     = to_float(inc0.get("netIncome"))
+    gross_profit   = to_float(inc0.get("grossProfit"))
+    ebitda         = to_float(inc0.get("ebitda"))
+    operating_inc  = to_float(inc0.get("operatingIncome"))
+    gross_margin   = (gross_profit   / revenue) if gross_profit   and revenue else None
+    net_margin     = (net_income     / revenue) if net_income     and revenue else None
+    operating_margin = (operating_inc / revenue) if operating_inc and revenue else None
+    operating_cf   = to_float(cf0.get("operatingCashflow"))
+    capex          = to_float(cf0.get("capitalExpenditures"))
+    free_cf        = (operating_cf - abs(capex)) if operating_cf and capex else None
+    shares         = to_float(ov.get("SharesOutstanding"))
+    fcf_per_share  = (free_cf / shares) if free_cf and shares else None
+    total_equity   = to_float(bs0.get("totalShareholderEquity"))
+    total_assets   = to_float(bs0.get("totalAssets"))
+    roe            = (net_income / total_equity) if net_income and total_equity else None
+    roa            = (net_income / total_assets) if net_income and total_assets else None
 
     result = {
         "ticker":    ticker,
         "yf_ticker": t,
         "company": {
-            "name":        profile.get("companyName", ticker),
-            "sector":      profile.get("sector", ""),
-            "industry":    profile.get("industry", ""),
-            "country":     profile.get("country", ""),
-            "employees":   profile.get("fullTimeEmployees"),
-            "description": (profile.get("description", ""))[:500],
+            "name":        ov.get("Name", ticker),
+            "sector":      ov.get("Sector", ""),
+            "industry":    ov.get("Industry", ""),
+            "country":     ov.get("Country", ""),
+            "employees":   to_float(ov.get("FullTimeEmployees")),
+            "description": (ov.get("Description", ""))[:500],
         },
         "market": {
-            "price":      profile.get("price"),
-            "market_cap": profile.get("mktCap"),
-            "high_52w":   high_52w,
-            "low_52w":    low_52w,
-            "beta":       profile.get("beta"),
-            "avg_volume": profile.get("volAvg"),
+            "price":      to_float(ov.get("50DayMovingAverage")),
+            "market_cap": to_float(ov.get("MarketCapitalization")),
+            "52w_high":   to_float(ov.get("52WeekHigh")),
+            "52w_low":    to_float(ov.get("52WeekLow")),
+            "beta":       to_float(ov.get("Beta")),
+            "avg_volume": to_float(ov.get("10DayAverageTradingVolume")),
         },
         "valuation": {
-            "pe_ratio":   ratios.get("peRatioTTM"),
-            "forward_pe": ratios.get("forwardPERatioTTM"),
-            "peg_ratio":  ratios.get("priceEarningsToGrowthRatioTTM"),
-            "pb_ratio":   ratios.get("priceToBookRatioTTM"),
-            "ps_ratio":   ratios.get("priceToSalesRatioTTM"),
-            "ev_ebitda":  ratios.get("enterpriseValueMultipleTTM"),
-            "ev_revenue": ratios.get("evToSalesTTM"),
+            "pe_ratio":   to_float(ov.get("TrailingPE")),
+            "forward_pe": to_float(ov.get("ForwardPE")),
+            "peg_ratio":  to_float(ov.get("PEGRatio")),
+            "pb_ratio":   to_float(ov.get("PriceToBookRatio")),
+            "ps_ratio":   to_float(ov.get("PriceToSalesRatioTTM")),
+            "ev_ebitda":  to_float(ov.get("EVToEBITDA")),
+            "ev_revenue": to_float(ov.get("EVToRevenue")),
         },
         "profitability": {
-            "gross_margin":     ratios.get("grossProfitMarginTTM"),
-            "operating_margin": ratios.get("operatingProfitMarginTTM"),
-            "net_margin":       ratios.get("netProfitMarginTTM"),
-            "roe":              ratios.get("returnOnEquityTTM"),
-            "roa":              ratios.get("returnOnAssetsTTM"),
+            "gross_margin":     gross_margin,
+            "operating_margin": operating_margin,
+            "net_margin":       net_margin,
+            "roe":              roe,
+            "roa":              roa,
+            "roic":             to_float(ov.get("ReturnOnCapitalEmployedTTM")),
         },
         "balance_sheet": {
-            "total_cash":           bs0.get("cashAndShortTermInvestments"),
-            "total_debt":           bs0.get("totalDebt"),
-            "net_debt":             bs0.get("netDebt"),
-            "debt_to_equity":       ratios.get("debtEquityRatioTTM"),
-            "current_ratio":        ratios.get("currentRatioTTM"),
-            "quick_ratio":          ratios.get("quickRatioTTM"),
-            "total_assets":         bs0.get("totalAssets"),
-            "total_equity":         bs0.get("totalStockholdersEquity"),
-            "book_value_per_share": ratios.get("bookValuePerShareTTM"),
+            "cash":                 cash,
+            "total_cash":           cash,
+            "total_debt":           total_debt,
+            "net_debt":             net_debt,
+            "debt_to_equity":       to_float(ov.get("DebtToEquityRatio")),
+            "current_ratio":        to_float(ov.get("CurrentRatio")),
+            "quick_ratio":          None,
+            "total_assets":         total_assets,
+            "total_equity":         total_equity,
+            "book_value_per_share": to_float(ov.get("BookValue")),
             "history": {
-                "total_debt": _fmp_series(bs_list, "totalDebt"),
-                "cash":       _fmp_series(bs_list, "cashAndCashEquivalents"),
-                "equity":     _fmp_series(bs_list, "totalStockholdersEquity"),
+                "total_debt": av_series(bs_reports, "shortLongTermDebtTotal"),
+                "cash":       av_series(bs_reports, "cashAndCashEquivalentsAtCarryingValue"),
+                "equity":     av_series(bs_reports, "totalShareholderEquity"),
             },
         },
         "income": {
-            "revenue_ttm":    inc0.get("revenue"),
-            "revenue_growth": ratios.get("revenueGrowthTTM"),
-            "gross_profit":   inc0.get("grossProfit"),
-            "ebitda":         inc0.get("ebitda"),
-            "net_income":     inc0.get("netIncome"),
-            "eps_ttm":        ratios.get("epsTTM"),
-            "eps_forward":    ratios.get("forwardEpsTTM"),
+            "revenue_ttm":    revenue,
+            "revenue_growth": to_float(ov.get("QuarterlyRevenueGrowthYOY")),
+            "gross_profit":   gross_profit,
+            "ebitda":         ebitda,
+            "net_income":     net_income,
+            "eps_ttm":        to_float(ov.get("EPS")),
+            "eps_forward":    to_float(ov.get("ForwardEPS")),
             "history": {
-                "revenue":    _fmp_series(income_list, "revenue"),
-                "net_income": _fmp_series(income_list, "netIncome"),
-                "ebitda":     _fmp_series(income_list, "ebitda"),
+                "revenue":    av_series(inc_reports, "totalRevenue"),
+                "net_income": av_series(inc_reports, "netIncome"),
+                "ebitda":     av_series(inc_reports, "ebitda"),
             },
         },
         "cash_flow": {
-            "operating_cf":   cf0.get("operatingCashFlow"),
-            "capex":          cf0.get("capitalExpenditure"),
-            "free_cash_flow": cf0.get("freeCashFlow"),
-            "fcf_per_share":  ratios.get("freeCashFlowPerShareTTM"),
-            "dividend_yield": ratios.get("dividendYieldTTM"),
-            "payout_ratio":   ratios.get("payoutRatioTTM"),
+            "operating_cf":   operating_cf,
+            "capex":          capex,
+            "free_cash_flow": free_cf,
+            "fcf_per_share":  fcf_per_share,
+            "dividend_yield": to_float(ov.get("DividendYield")),
+            "payout_ratio":   to_float(ov.get("PayoutRatio")),
             "history": {
-                "operating_cf":   _fmp_series(cf_list, "operatingCashFlow"),
-                "capex":          _fmp_series(cf_list, "capitalExpenditure"),
-                "free_cash_flow": _fmp_series(cf_list, "freeCashFlow"),
+                "operating_cf":   av_series(cf_reports, "operatingCashflow"),
+                "capex":          av_series(cf_reports, "capitalExpenditures"),
+                "free_cash_flow": {},
             },
         },
         "growth": {
-            "revenue_growth_yoy":        ratios.get("revenueGrowthTTM"),
-            "earnings_growth_yoy":       ratios.get("epsgrowthTTM"),
+            "revenue_growth_yoy":        to_float(ov.get("QuarterlyRevenueGrowthYOY")),
+            "earnings_growth_yoy":       to_float(ov.get("QuarterlyEarningsGrowthYOY")),
             "earnings_quarterly_growth": None,
         },
         "analyst": {
-            "recommendation": profile.get("dcfDiff"),
-            "target_price":   profile.get("dcf"),
+            "recommendation": ov.get("AnalystRatingStrongBuy"),
+            "target_price":   to_float(ov.get("AnalystTargetPrice")),
             "target_high":    None,
             "target_low":     None,
-            "num_analysts":   None,
+            "num_analysts":   to_float(ov.get("AnalystRatingBuy")),
         },
     }
 
@@ -3290,18 +3301,13 @@ async def get_fundamentals(ticker: str):
 
 # ─── Debug ────────────────────────────────────────────────────────────────────
 
-@app.get("/test-fmp")
-async def test_fmp():
-    key = os.environ.get("FMP_API_KEY", "NOT_SET")
+@app.get("/test-av")
+async def test_av():
     async with httpx.AsyncClient(timeout=10) as client:
         r = await client.get(
-            f"https://financialmodelingprep.com/stable/profile/AAPL?apikey={key}"
+            f"{AV_BASE}?function=OVERVIEW&symbol=AAPL&apikey={AV_KEY}"
         )
-        return {
-            "key_prefix": key[:8] if key != "NOT_SET" else "NOT_SET",
-            "status": r.status_code,
-            "response": r.text[:300],
-        }
+        return {"status": r.status_code, "keys": list(r.json().keys())[:10]}
 
 
 # ─── Run ──────────────────────────────────────────────────────────────────────
