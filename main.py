@@ -3407,6 +3407,24 @@ async def fundamentals_ai_analysis(request: Request):
 
 # ─── Debug ────────────────────────────────────────────────────────────────────
 
+@app.get("/debug-av/{ticker}")
+async def debug_av(ticker: str):
+    t = ticker.replace(".US", "").replace(".XETRA", "")
+    async with httpx.AsyncClient(timeout=20) as client:
+        bs_r = await client.get(
+            f"{AV_BASE}?function=BALANCE_SHEET&symbol={t}&apikey={AV_KEY}"
+        )
+    data   = bs_r.json()
+    annual = data.get("annualReports", [])
+    if annual:
+        return {
+            "count":             len(annual),
+            "first_report_keys": list(annual[0].keys()),
+            "sample":            annual[0],
+        }
+    return {"raw": data}
+
+
 @app.get("/test-av")
 async def test_av():
     async with httpx.AsyncClient(timeout=10) as client:
