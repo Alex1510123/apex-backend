@@ -3105,6 +3105,9 @@ async def weekly_boss_submit(request: Request):
 
 # ─── Fundamentals ─────────────────────────────────────────────────────────────
 
+fundamentals_cache: dict = {}  # { "AAPL": {"data": {...}, "expires": datetime} }
+
+
 def _to_yf_ticker(ticker: str) -> str:
     """Convert EODHD ticker format to Yahoo Finance format."""
     t = ticker.upper()
@@ -3118,6 +3121,11 @@ def _to_yf_ticker(ticker: str) -> str:
 
 @app.get("/fundamentals/{ticker}")
 async def get_fundamentals(ticker: str):
+    cache_key = ticker.upper()
+    cached = fundamentals_cache.get(cache_key)
+    if cached and datetime.now() < cached["expires"]:
+        return cached["data"]
+
     yf_ticker = _to_yf_ticker(ticker)
 
     def safe_val(df, row, col=0):
@@ -3138,12 +3146,20 @@ async def get_fundamentals(ticker: str):
             return {}
 
     try:
-        stock        = yf.Ticker(yf_ticker)
-        info         = stock.info or {}
+        import requests as _req
+        _session = _req.Session()
+        _session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+        })
+        stock         = yf.Ticker(yf_ticker, session=_session)
+        info          = stock.info or {}
         balance_sheet = stock.balance_sheet
-        income_stmt  = stock.income_stmt
-        cash_flow    = stock.cash_flow
+        income_stmt   = stock.income_stmt
+        cash_flow     = stock.cash_flow
     except Exception as e:
+        err = str(e)
+        if "Too Many Requests" in err or "rate" in err.lower() or "429" in err:
+            raise HTTPException(status_code=429, detail="Yahoo Finance Rate Limit erreicht. Bitte 60 Sekunden warten und erneut versuchen.")
         raise HTTPException(status_code=502, detail=f"yfinance Fehler: {e}")
 
     # If yfinance returned an empty info dict the ticker is invalid
@@ -3247,9 +3263,13 @@ async def get_fundamentals(ticker: str):
                 "num_analysts":   info.get("numberOfAnalystOpinions"),
             },
         }
+        fundamentals_cache[cache_key] = {"data": result, "expires": datetime.now() + timedelta(hours=24)}
         return result
 
     except Exception as e:
+        err = str(e)
+        if "Too Many Requests" in err or "rate" in err.lower() or "429" in err:
+            raise HTTPException(status_code=429, detail="Yahoo Finance Rate Limit erreicht. Bitte 60 Sekunden warten und erneut versuchen.")
         raise HTTPException(status_code=500, detail=f"Fundamentals Verarbeitungsfehler: {e}")
 
 
