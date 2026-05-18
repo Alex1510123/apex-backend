@@ -1930,6 +1930,17 @@ ACADEMY_TRACKS = [
         "prerequisite": "Empfohlen: Foundation Track abgeschlossen",
     },
     {
+        "id": "praktische_uebungen",
+        "title": "Praktische Übungen",
+        "subtitle": "Echte Fallstudien — analysiere wie ein Profi",
+        "description": "15 interaktive Fallstudien mit echten Unternehmenskennzahlen. Von PEG-Ratio-Rechnung bis Wirecard-Red-Flags — lerne durch Anwendung statt durch Theorie.",
+        "icon": "🔬",
+        "color": "#f59e0b",
+        "total_lessons": 15,
+        "status": "available",
+        "category": "practical",
+    },
+    {
         "id": "technical",
         "title": "Technische Analyse",
         "subtitle": "Charts lesen und interpretieren",
@@ -2201,7 +2212,8 @@ ACADEMY_LESSONS_DATA = {
 
 
 def _load_academy_content():
-    """Load lesson JSON files from academy_content/ and merge into ACADEMY_LESSONS_DATA."""
+    """Load lesson JSON files from academy_content/ and merge into ACADEMY_LESSONS_DATA.
+    Supports both single-lesson dicts and arrays of lessons per file."""
     import glob as _glob
     content_dir = os.path.join(os.path.dirname(__file__), "academy_content")
     existing_ids = {
@@ -2212,12 +2224,14 @@ def _load_academy_content():
     for filepath in sorted(_glob.glob(os.path.join(content_dir, "*.json"))):
         try:
             with open(filepath, "r", encoding="utf-8") as f:
-                lesson = json.load(f)
-            if lesson.get("id") in existing_ids:
-                continue
-            track_id = lesson.get("track_id", "foundation")
-            ACADEMY_LESSONS_DATA.setdefault(track_id, []).append(lesson)
-            existing_ids.add(lesson["id"])
+                data = json.load(f)
+            lessons = data if isinstance(data, list) else [data]
+            for lesson in lessons:
+                if lesson.get("id") in existing_ids:
+                    continue
+                track_id = lesson.get("track_id", "foundation")
+                ACADEMY_LESSONS_DATA.setdefault(track_id, []).append(lesson)
+                existing_ids.add(lesson["id"])
         except Exception as exc:
             print(f"Warning: could not load {filepath}: {exc}")
     for track_lessons in ACADEMY_LESSONS_DATA.values():
@@ -3122,28 +3136,37 @@ def _to_yf_ticker(ticker: str) -> str:
 @app.get("/fundamentals/{ticker}")
 async def get_fundamentals(ticker: str):
     cache_key = ticker.upper()
+    # Temporarily clear stale cache entries so fixes take effect
+    fundamentals_cache.pop(cache_key, None)
     cached = fundamentals_cache.get(cache_key)
     if cached and datetime.now() < cached["expires"]:
         return cached["data"]
 
     yf_ticker = _to_yf_ticker(ticker)
 
-    def safe_val(df, row, col=0):
-        try:
-            val = df.loc[row].iloc[col]
-            return None if pd.isna(val) else float(val)
-        except Exception:
-            return None
+    def safe_val(df, *row_names, col=0):
+        for row in row_names:
+            try:
+                val = df.loc[row].iloc[col]
+                if not pd.isna(val):
+                    return float(val)
+            except Exception:
+                continue
+        return None
 
-    def get_series(df, row):
-        try:
-            series = df.loc[row].dropna()
-            return {
-                str(dt.date()): float(v)
-                for dt, v in series.items()
-            }
-        except Exception:
-            return {}
+    def get_series(df, *row_names):
+        for row in row_names:
+            try:
+                if row in df.index:
+                    series = df.loc[row].dropna()
+                    if len(series) > 0:
+                        return [
+                            {"year": str(d.year), "value": float(v)}
+                            for d, v in sorted(series.items())
+                        ]
+            except Exception:
+                continue
+        return []
 
     try:
         import requests as _req
@@ -3162,7 +3185,6 @@ async def get_fundamentals(ticker: str):
             raise HTTPException(status_code=429, detail="Yahoo Finance Rate Limit erreicht. Bitte 60 Sekunden warten und erneut versuchen.")
         raise HTTPException(status_code=502, detail=f"yfinance Fehler: {e}")
 
-    # If yfinance returned an empty info dict the ticker is invalid
     if not info.get("symbol") and not info.get("longName") and not info.get("regularMarketPrice"):
         raise HTTPException(status_code=404, detail=f"Ticker '{yf_ticker}' nicht gefunden")
 
@@ -3171,6 +3193,11 @@ async def get_fundamentals(ticker: str):
         total_cash  = info.get("totalCash") or 0
         shares_out  = info.get("sharesOutstanding") or 1
         fcf         = info.get("freeCashflow")
+
+        # Dividend yield: yfinance sometimes returns value already as percentage
+        dividend_yield_raw = info.get("dividendYield")
+        if dividend_yield_raw and dividend_yield_raw > 0.20:
+            dividend_yield_raw = dividend_yield_raw / 100
 
         result = {
             "ticker":    ticker,
@@ -3214,40 +3241,40 @@ async def get_fundamentals(ticker: str):
                 "debt_to_equity":     info.get("debtToEquity"),
                 "current_ratio":      info.get("currentRatio"),
                 "quick_ratio":        info.get("quickRatio"),
-                "total_assets":       safe_val(balance_sheet, "Total Assets"),
-                "total_equity":       safe_val(balance_sheet, "Stockholders Equity"),
+                "total_assets":       safe_val(balance_sheet, "Total Assets", "TotalAssets"),
+                "total_equity":       safe_val(balance_sheet, "Stockholders Equity", "Total Stockholder Equity", "StockholdersEquity", "Common Stock Equity"),
                 "book_value_per_share": info.get("bookValue"),
                 "history": {
-                    "total_debt": get_series(balance_sheet, "Total Debt"),
-                    "cash":       get_series(balance_sheet, "Cash And Cash Equivalents"),
-                    "equity":     get_series(balance_sheet, "Stockholders Equity"),
+                    "total_debt": get_series(balance_sheet, "Total Debt", "Long Term Debt", "LongTermDebt"),
+                    "cash":       get_series(balance_sheet, "Cash And Cash Equivalents", "Cash", "CashAndCashEquivalents", "Cash And Short Term Investments"),
+                    "equity":     get_series(balance_sheet, "Stockholders Equity", "Total Stockholder Equity", "StockholdersEquity", "Common Stock Equity"),
                 },
             },
             "income": {
                 "revenue_ttm":    info.get("totalRevenue"),
                 "revenue_growth": info.get("revenueGrowth"),
-                "gross_profit":   safe_val(income_stmt, "Gross Profit"),
+                "gross_profit":   safe_val(income_stmt, "Gross Profit", "GrossProfit"),
                 "ebitda":         info.get("ebitda"),
                 "net_income":     info.get("netIncomeToCommon"),
                 "eps_ttm":        info.get("trailingEps"),
                 "eps_forward":    info.get("forwardEps"),
                 "history": {
-                    "revenue":    get_series(income_stmt, "Total Revenue"),
-                    "net_income": get_series(income_stmt, "Net Income"),
-                    "ebitda":     get_series(income_stmt, "EBITDA"),
+                    "revenue":    get_series(income_stmt, "Total Revenue", "TotalRevenue", "Revenue"),
+                    "net_income": get_series(income_stmt, "Net Income", "NetIncome", "Net Income Common Stockholders"),
+                    "ebitda":     get_series(income_stmt, "EBITDA", "Ebitda", "Normalized EBITDA"),
                 },
             },
             "cash_flow": {
-                "operating_cf":    safe_val(cash_flow, "Operating Cash Flow"),
-                "capex":           safe_val(cash_flow, "Capital Expenditure"),
-                "free_cash_flow":  fcf,
-                "fcf_per_share":   (fcf / shares_out) if fcf else None,
-                "dividend_yield":  info.get("dividendYield"),
-                "payout_ratio":    info.get("payoutRatio"),
+                "operating_cf":   safe_val(cash_flow, "Operating Cash Flow", "Total Cash From Operating Activities", "OperatingCashFlow"),
+                "capex":          safe_val(cash_flow, "Capital Expenditure", "Capital Expenditures", "CapitalExpenditure"),
+                "free_cash_flow": fcf,
+                "fcf_per_share":  (fcf / shares_out) if fcf else None,
+                "dividend_yield": dividend_yield_raw,
+                "payout_ratio":   info.get("payoutRatio"),
                 "history": {
-                    "operating_cf":   get_series(cash_flow, "Operating Cash Flow"),
-                    "capex":          get_series(cash_flow, "Capital Expenditure"),
-                    "free_cash_flow": get_series(cash_flow, "Free Cash Flow"),
+                    "operating_cf":   get_series(cash_flow, "Operating Cash Flow", "Total Cash From Operating Activities", "OperatingCashFlow"),
+                    "capex":          get_series(cash_flow, "Capital Expenditure", "Capital Expenditures", "CapitalExpenditure"),
+                    "free_cash_flow": get_series(cash_flow, "Free Cash Flow", "FreeCashFlow"),
                 },
             },
             "growth": {

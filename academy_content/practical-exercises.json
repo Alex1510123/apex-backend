@@ -1,0 +1,1039 @@
+[
+  {
+    "id": "practical-1",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Apple vs. Microsoft — Wer ist fairer bewertet?",
+    "subtitle": "PEG Ratio berechnen und interpretieren",
+    "duration_min": 12,
+    "company": "Apple Inc. vs. Microsoft Corp.",
+    "ticker": "AAPL",
+    "difficulty": "beginner",
+    "status": "available",
+    "sort_order": 1,
+    "learning_goals": [
+      "PEG Ratio selbst berechnen",
+      "Verstehen warum KGV alleine nicht ausreicht",
+      "Wachstum als Bewertungsfaktor einordnen"
+    ],
+    "scenario": "Du vergleichst zwei der wertvollsten Unternehmen der Welt. Apple hat ein höheres KGV als Microsoft — aber bedeutet das automatisch, dass Apple teurer bewertet ist? Die Antwort überrascht viele.",
+    "data_provided": {
+      "AAPL KGV (TTM)": "36x",
+      "AAPL EPS-Wachstum 5J p.a.": "9%",
+      "MSFT KGV (TTM)": "31x",
+      "MSFT EPS-Wachstum 5J p.a.": "20%",
+      "Faustregel fairer PEG": "1.0"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Das Problem mit dem KGV",
+        "body": "Das Kurs-Gewinn-Verhältnis (KGV) ist die bekannteste Bewertungskennzahl — aber es hat einen blinden Fleck: Es ignoriert das Wachstum. Ein KGV von 36 klingt teuer, aber wenn das Unternehmen seinen Gewinn jährlich um 30% steigert, kann es trotzdem günstig sein. Genau hier kommt das PEG Ratio ins Spiel.\n\nDas PEG Ratio wurde von Fondslegende Peter Lynch popularisiert, der damit den Magellan Fund zu +29% p.a. über 13 Jahre führte."
+      },
+      {
+        "type": "info_box",
+        "heading": "Die Formel: PEG Ratio",
+        "body": "PEG = KGV / Gewinnwachstum (in %)\n\nBeispiel: KGV 20x / Wachstum 20% = PEG 1.0\n\nFaustregel: PEG < 1 = günstig | PEG 1-2 = fair | PEG > 2 = teuer"
+      },
+      {
+        "type": "text",
+        "heading": "Schritt-für-Schritt Analyse",
+        "body": "Schritt 1 — Apple: PEG = 36 / 9 = 4.0\nSchritt 2 — Microsoft: PEG = 31 / 20 = 1.55\n\nObwohl Apple ein niedrigeres KGV hat, wächst Microsoft seinen Gewinn mehr als doppelt so schnell. Das PEG zeigt: Apple ist mit 4.0 deutlich teurer bewertet als Microsoft mit 1.55.\n\nWichtig: Das PEG ist ein Ausgangspunkt, kein Urteil. Apple's starke Margen, Ökosystem-Bindung und Aktienrückkäufe rechtfertigen eine Prämie — aber 4x über dem fairen Wert ist eine hohe Latte."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Du berechnest das PEG Ratio für Apple (KGV 36x, EPS-Wachstum 9% p.a.). Was ist das korrekte Ergebnis?",
+        "options": ["PEG = 4.0", "PEG = 2.5", "PEG = 1.55", "PEG = 0.25"],
+        "answer": 0,
+        "explanation": "PEG = KGV / Wachstum = 36 / 9 = 4.0. Ein PEG von 4.0 liegt weit über dem fairen Wert (1.0 nach Peter Lynch), signalisiert aber keine automatische Verkaufsempfehlung — Qualitätsprämien können dauerhaft bestehen."
+      },
+      {
+        "question": "Welche Aussage ist basierend auf PEG-Analyse korrekt?",
+        "options": [
+          "Microsoft ist gunstiger bewertet (PEG 1.55 vs. 4.0)",
+          "Apple ist gunstiger bewertet weil sein KGV hoher ist",
+          "Beide sind gleich fair bewertet da ihre KGVs ahnlich sind",
+          "Das KGV alleine reicht um die gunstigere Aktie zu bestimmen"
+        ],
+        "answer": 0,
+        "explanation": "Microsoft's PEG von 1.55 liegt nahe dem fairen Wert (1.0), während Apple's PEG von 4.0 eine erhebliche Wachstumsprämie einpreist. Trotz niedrigerem KGV ist Apple auf PEG-Basis teurer."
+      },
+      {
+        "type": "open_question",
+        "question": "Erkläre: In welchen Situationen könnte ein PEG von 4.0 trotzdem eine sinnvolle Investition sein? Nenne mindestens zwei konkrete Argumente.",
+        "content_summary": "Moat, Ökosystem-Lock-in, Margenausweitung, Buybacks, Qualitätsprämie, Netzwerkeffekte"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-2",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Der Zinseszins-Effekt — Warren Buffetts Geheimnis",
+    "subtitle": "Exponentielles Wachstum und die 72er-Regel",
+    "duration_min": 10,
+    "company": "Hypothetisches Portfolio",
+    "ticker": null,
+    "difficulty": "beginner",
+    "status": "available",
+    "sort_order": 2,
+    "learning_goals": [
+      "Zinseszins-Effekt mit echten Zahlen erleben",
+      "Die 72er-Regel anwenden",
+      "Verstehen warum Zeit die wichtigste Variable ist"
+    ],
+    "scenario": "Warren Buffett hat 99% seines Vermögens nach seinem 52. Geburtstag verdient — nicht weil er ab 52 besser war, sondern weil der Zinseszins endlich seine volle Kraft entfaltete. Du startest mit 10.000 Euro.",
+    "data_provided": {
+      "Startkapital": "10.000 EUR",
+      "Jährliche Rendite": "7% p.a. (historischer S&P 500 Durchschnitt, real)",
+      "Nach 10 Jahren": "19.672 EUR",
+      "Nach 20 Jahren": "38.697 EUR",
+      "Nach 30 Jahren": "76.123 EUR",
+      "Verdopplungszeit bei 7%": "~10.3 Jahre (72er-Regel)"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Warum Zinseszins Magie ist",
+        "body": "Im ersten Jahr verdienst du 7% auf 10.000€ = 700€. Im zweiten Jahr verdienst du 7% auf 10.700€ = 749€. Klingt klein — aber nach 30 Jahren hat sich dein Kapital mehr als versiebenfacht, obwohl du nie einen Cent zusätzlich investiert hast.\n\nDer Schlüssel: Du verdienst Zinsen auf deine Zinsen. Die Kurve ist exponentiell, nicht linear."
+      },
+      {
+        "type": "info_box",
+        "heading": "Die 72er-Regel",
+        "body": "Verdopplungszeit (Jahre) = 72 / Rendite (%)\n\nBeispiele:\n7% Rendite → 72/7 = 10.3 Jahre bis zur Verdopplung\n10% Rendite → 72/10 = 7.2 Jahre\n4% Rendite → 72/4 = 18 Jahre\n\nSchnelle Faustregel ohne Taschenrechner — Abweichung < 1% bei Renditen bis 20%"
+      },
+      {
+        "type": "text",
+        "heading": "Der entscheidende Unterschied: 20 vs. 30 Jahre",
+        "body": "Zwischen Jahr 20 und Jahr 30 wächst dein Kapital von 38.697€ auf 76.123€ — ein Zuwachs von 37.426€ in nur 10 Jahren. In den ersten 10 Jahren wuchs es nur um 9.672€.\n\nGenau das meinte Einstein, als er den Zinseszins angeblich als '8. Weltwunder' bezeichnete. Jedes Jahr das du früher anfängst ist wertvoller als das vorherige."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Du möchtest wissen, in wie vielen Jahren sich 15.000€ bei 9% Rendite verdoppeln. Was ergibt die 72er-Regel?",
+        "options": ["8 Jahre", "13.5 Jahre", "18 Jahre", "6 Jahre"],
+        "answer": 0,
+        "explanation": "72 / 9 = 8 Jahre. Die 72er-Regel: Teile 72 durch die jährliche Rendite in Prozent — das Ergebnis ist die Verdopplungszeit in Jahren."
+      },
+      {
+        "question": "Wie viel ist aus 10.000€ nach 30 Jahren bei 7% p.a. geworden?",
+        "options": ["76.123 EUR", "31.000 EUR", "21.000 EUR", "51.000 EUR"],
+        "answer": 0,
+        "explanation": "10.000 × 1.07^30 = 76.123€. Das entspricht mehr als einer Versiebenfachung — der Zinseszins entfaltet seine ganze Kraft in den letzten Jahren."
+      },
+      {
+        "type": "open_question",
+        "question": "Buffett begann mit 11 Jahren zu investieren und hielt seine Positionen jahrzehntelang. Warum ist die Haltedauer für den Zinseszins-Effekt wichtiger als die Rendite?",
+        "content_summary": "Exponentielles Wachstum, Verdopplungszyklen, Zeit als Faktor, Verkaufssteuern vermeiden, Geduld"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-3",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Inflation frisst deine Rendite — Reale vs. Nominale Rendite",
+    "subtitle": "Fisher-Gleichung und Kaufkraftverlust berechnen",
+    "duration_min": 11,
+    "company": "Anleihen-Portfolio vs. Aktien",
+    "ticker": null,
+    "difficulty": "beginner",
+    "status": "available",
+    "sort_order": 3,
+    "learning_goals": [
+      "Reale Rendite nach Fisher-Gleichung berechnen",
+      "Kaufkraftverlust über Jahrzehnte verstehen",
+      "Inflationsschutz verschiedener Anlageklassen vergleichen"
+    ],
+    "scenario": "Ein Freund sagt: 'Ich habe mein Geld auf dem Tagesgeldkonto — da bekomme ich 3% Zinsen, das ist safe.' Du weißt jedoch, dass Inflation gerade bei 3% liegt. Wieviel verdient er wirklich?",
+    "data_provided": {
+      "Nominale Rendite (Tagesgeld)": "3.0%",
+      "Inflationsrate": "3.0%",
+      "Reale Rendite (approximiert)": "0.0%",
+      "Reale Rendite (Fisher-exakt)": "-0.03%",
+      "Kaufkraft 10.000 EUR nach 20 Jahren (real)": "~10.000 EUR (Nullrealrendite)",
+      "Kaufkraft 10.000 EUR bei 5% real nach 20 Jahren": "26.533 EUR"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Das Inflationsproblem",
+        "body": "Wenn du nominale 3% verdienst und die Inflation 3% beträgt, bist du in der Kaufkraft auf der Stelle getreten — dein Geld kann nach einem Jahr genau die gleichen Güter kaufen wie vorher. Aber das ist nur der einfache Fall.\n\nHistorisch lag die Inflation in Deutschland bei durchschnittlich ~2.5% p.a. In 2022 stieg sie auf über 8% — wer da im Tagesgeld saß, verlor real bis zu 5% Kaufkraft pro Jahr."
+      },
+      {
+        "type": "info_box",
+        "heading": "Fisher-Gleichung",
+        "body": "Approximation: Reale Rendite ≈ Nominale Rendite - Inflation\nExakt: Reale Rendite = (1 + nominal) / (1 + inflation) - 1\n\nBeispiel: (1.08 / 1.03) - 1 = 4.85% (nicht 5%)\n\nBei niedrigen Renditen ist die Approximation akzeptabel, bei hoher Inflation wichtig."
+      },
+      {
+        "type": "text",
+        "heading": "Welche Anlageklassen schützen vor Inflation?",
+        "body": "Historische Realdaten (USA, 1928-2023):\n- Aktien (S&P 500): +7.0% real p.a.\n- Anleihen 10Y: +1.4% real p.a.\n- Tagesgeld/Geldmarkt: -0.3% real p.a.\n- Gold: +1.1% real p.a.\n\nAktien sind der einzige Asset-Klasse die langfristig signifikant oberhalb der Inflation rentiert — weil Unternehmen Preiserhöhungen an Kunden weitergeben können."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Dein Portfolio erzielt 8% nominal, die Inflation beträgt 3%. Was ist deine approximierte reale Rendite?",
+        "options": ["5%", "8%", "11%", "2.4%"],
+        "answer": 0,
+        "explanation": "Approximation: 8% - 3% = 5% real. Exakter nach Fisher: (1.08/1.03) - 1 = 4.85%. Für Prüfungszwecke ist die Approximation (Subtraktion) üblich."
+      },
+      {
+        "question": "Ein Anleger hält 10.000€ in Tagesgeld mit 1.5% Zinsen bei 3% Inflation für 20 Jahre. Was passiert mit seiner Kaufkraft?",
+        "options": [
+          "Kaufkraft sinkt real um ca. 26%",
+          "Kaufkraft steigt weil Zinsen positiv sind",
+          "Kaufkraft bleibt gleich",
+          "Kaufkraft verdoppelt sich"
+        ],
+        "answer": 0,
+        "explanation": "(1.015/1.03)^20 - 1 = -0.74 → Kaufkraft sinkt um ca. 26% real über 20 Jahre. Aus 10.000€ nominale werden ~7.400€ in heutiger Kaufkraft."
+      },
+      {
+        "type": "open_question",
+        "question": "Erkläre warum Aktien langfristig der beste Inflationsschutz sind. Was unterscheidet Unternehmensgewinne fundamental von Anleihen-Coupons in einem Inflationsumfeld?",
+        "content_summary": "Pricing Power, reale Assets, Gewinnwachstum, Anleihencoupon fix, Sachwerte"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-4",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "ETF oder Einzelaktie — Konzentrationsrisiko verstehen",
+    "subtitle": "Volatilität, Drawdown und Sharpe Ratio vergleichen",
+    "duration_min": 13,
+    "company": "Apple Inc. vs. S&P 500 ETF",
+    "ticker": "AAPL",
+    "difficulty": "beginner",
+    "status": "available",
+    "sort_order": 4,
+    "learning_goals": [
+      "Risikokennzahlen lesen und vergleichen",
+      "Konzentrationsrisiko vs. Diversifikation abwägen",
+      "Sharpe Ratio als risikoadjustierte Rendite verstehen"
+    ],
+    "scenario": "Zwei Investoren streiten sich: Alex hält 100% Apple, Maria hält einen S&P 500 ETF. 2022 verlor Apple -27%, der S&P 500 -18%. Alex sagt: 'Langfristig schlägt Apple den Markt.' Maria antwortet: 'Zu welchem Preis?'",
+    "data_provided": {
+      "AAPL — Jährl. Volatilität (3J)": "28%",
+      "AAPL — Max. Drawdown (2022)": "-45% vom Peak",
+      "AAPL — Sharpe Ratio (5J)": "0.82",
+      "AAPL — Rendite 10J p.a.": "+29%",
+      "S&P 500 — Jährl. Volatilität (3J)": "16%",
+      "S&P 500 — Max. Drawdown (2020)": "-34% vom Peak",
+      "S&P 500 — Sharpe Ratio (5J)": "0.94",
+      "S&P 500 — Rendite 10J p.a.": "+13%"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Was sagen die Zahlen?",
+        "body": "Apple hat über 10 Jahre deutlich mehr Rendite gebracht als der S&P 500 (+29% vs. +13% p.a.). Aber Apple ist auch signifikant riskanter: 28% Volatilität vs. 16%, und ein maximaler Kursrückgang von -45% vom Hoch (2022 Peak zu Tief).\n\nDie entscheidende Frage: Wird Alex mit 100% Apple ruhig schlafen, wenn sein Portfolio über Nacht 45% an Wert verliert — oder wird er panisch verkaufen und damit den Vorteil zunichte machen?"
+      },
+      {
+        "type": "info_box",
+        "heading": "Sharpe Ratio — Rendite pro Risikoeinheit",
+        "body": "Sharpe Ratio = (Portfolio-Rendite - Risikoloser Zins) / Standardabweichung\n\nEin höheres Sharpe Ratio bedeutet: mehr Rendite pro eingegangenes Risiko.\n\nS&P 500 (0.94) > AAPL (0.82): Der ETF liefert mehr Rendite pro Risikoeinheit — trotz niedrigerer Absolutrendite."
+      },
+      {
+        "type": "text",
+        "heading": "Das unsichtbare Risiko: Verhaltensfehler",
+        "body": "Studien zeigen: Der durchschnittliche Privatanleger erzielt in Fonds deutlich weniger als der Fonds selbst — weil er hoch kauft und tief verkauft. Ein -45% Drawdown mit einer Einzelaktie erhöht die Wahrscheinlichkeit von Panikverkäufen erheblich.\n\nDiversifikation ist nicht nur mathematisch sinnvoll — sie schützt auch vor den eigenen Verhaltensfehlern."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "AAPL hat eine Sharpe Ratio von 0.82, der S&P 500 von 0.94. Was bedeutet das?",
+        "options": [
+          "S&P 500 liefert mehr Rendite pro Risikoeinheit",
+          "Apple hat eine bessere risikoadjustierte Rendite",
+          "Apple ist weniger volatil",
+          "Der S&P 500 hat eine hohere Absolutrendite"
+        ],
+        "answer": 0,
+        "explanation": "Sharpe Ratio misst Rendite pro Risikoeinheit. Trotz Apples höherer Absolutrendite ist der S&P 500 auf risikobereinigter Basis überlegen — weil Apples Volatilität (28%) viel höher ist als die des ETFs (16%)."
+      },
+      {
+        "question": "Apple verliert vom Hoch aus -45%. Ein Anleger hat 50.000€ in Apple. Wie groß ist sein Buchverlust?",
+        "options": ["22.500 EUR", "45.000 EUR", "13.500 EUR", "5.000 EUR"],
+        "answer": 0,
+        "explanation": "50.000€ × 0.45 = 22.500€ Buchverlust. Das Portfolio ist auf 27.500€ gefallen. Um zum Ausgangspunkt zurückzukehren, muss Apple danach um +82% steigen — eine asymmetrische Mathematik."
+      },
+      {
+        "type": "open_question",
+        "question": "Ein Investor hat die Wahl zwischen 100% AAPL und einem ETF-Portfolio. Er denkt Apple wird besser performen. Welche psychologischen und mathematischen Argumente sprechen für den ETF, selbst wenn die Renditeerwartung niedriger ist?",
+        "content_summary": "Behavioral Finance, Panikverkauf, Drawdown-Asymmetrie, Diversifikation, Schlafqualität, Einzeltitelrisiko"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-5",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "DCA vs. Lump Sum — Timing des Marktes",
+    "subtitle": "Welche Strategie performt besser bei verschiedenen Szenarien",
+    "duration_min": 11,
+    "company": "S&P 500 Index",
+    "ticker": null,
+    "difficulty": "beginner",
+    "status": "available",
+    "sort_order": 5,
+    "learning_goals": [
+      "Unterschied zwischen DCA und Lump Sum verstehen",
+      "Statistische Vorteil von Lump Sum in Bullenmärkten erkennen",
+      "Psychologischen Wert von DCA würdigen"
+    ],
+    "scenario": "Du hast 12.000€ gespart und willst in den S&P 500 investieren. Strategie A: Alles auf einmal (Lump Sum). Strategie B: 1.000€ pro Monat über 12 Monate (Dollar Cost Averaging). Die Debatte ist alt — die Daten sind eindeutig.",
+    "data_provided": {
+      "Investitionssumme": "12.000 EUR",
+      "Zeitraum Simulation": "2013-2023 (S&P 500)",
+      "Lump Sum Jan 2013": "+269% bis Dez 2023",
+      "DCA monatlich 2013": "+218% bis Dez 2023",
+      "Lump Sum schlägt DCA in": "~68% aller 10-Jahres-Zeitfenster (1930-2023)",
+      "DCA schlägt Lump Sum in": "~32% (typisch: fallende Märkte)"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Warum Lump Sum oft gewinnt",
+        "body": "Aktien steigen langfristig mehr als sie fallen. Da der Markt im statistischen Durchschnitt ~73% aller Handelstage im Plus schließt, ist jeder Tag außerhalb des Marktes (Cash halten) im Erwartungswert ein verlorener Tag.\n\nWer im Januar 2013 sofort 12.000€ investierte, profitierte den gesamten Aufschwung bis 2023. Der DCA-Investor kaufte die ersten Monate günstig, aber auch teuer — und investierte die letzten Raten zu deutlich höheren Kursen."
+      },
+      {
+        "type": "info_box",
+        "heading": "Wann DCA sinnvoll ist",
+        "body": "DCA gewinnt in fallenden Märkten: Wer in einen Crash hinein investiert, kauft alle späteren Einzahlungen günstiger.\n\nDCA reduziert Bedauern: Kein Investor kann garantiert wissen, ob morgen der beste oder schlechteste Zeitpunkt ist.\n\nDCA ist ideal für laufendes Einkommen: Wer monatlich spart (kein Einmalbetrag), macht DCA automatisch."
+      },
+      {
+        "type": "text",
+        "heading": "Die ehrliche Antwort",
+        "body": "Mathematisch: Lump Sum gewinnt in 2/3 aller historischen Perioden. Psychologisch: Wer Lump Sum macht und danach -30% sieht, verkauft oft in Panik — und verwandelt den statistischen Vorteil in einen realen Verlust.\n\nDie beste Strategie ist die, die du langfristig durchhältst. Für unerfahrene Investoren mit großem Einmalkapital ist ein Mix (z.B. 50% sofort, 50% über 6 Monate) eine pragmatische Lösung."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Lump Sum schlägt DCA statistisch in wie vielen der historischen 10-Jahres-Zeitfenster?",
+        "options": ["~68% der Zeitfenster", "~32% der Zeitfenster", "~50% (beide gleich)", "~90% der Zeitfenster"],
+        "answer": 0,
+        "explanation": "Laut Vanguard-Studie (1926-2015, US/UK/AUS) schlägt Lump Sum DCA in ca. 2/3 aller Perioden. Der Grund: Märkte steigen langfristig öfter als sie fallen."
+      },
+      {
+        "question": "In welchem Szenario übertrifft DCA die Lump-Sum-Strategie typischerweise?",
+        "options": [
+          "In fallenden oder volatilen Märkten",
+          "In stark steigenden Bullenmärkten",
+          "Wenn die Inflation hoch ist",
+          "Wenn Zinsen steigen"
+        ],
+        "answer": 0,
+        "explanation": "DCA kauft in fallenden Märkten mehr Anteile zu niedrigeren Preisen (Cost Averaging), was den Durchschnittseinstiegskurs senkt. In Bullenmärkten verpasst man dagegen frühe Kursgewinne."
+      },
+      {
+        "type": "open_question",
+        "question": "Du bekommst eine Erbschaft von 50.000€. Basierend auf dem Gelernten: Würdest du Lump Sum oder DCA wählen, und warum? Berücksichtige sowohl die mathematischen als auch die psychologischen Aspekte.",
+        "content_summary": "Statistik Lump Sum, Behavioral Finance, Risikobereitschaft, Marktphase, persönliche Situation"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-6",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Apples Bilanz sezieren — ROE über 100%?",
+    "subtitle": "Net Debt berechnen und Kapitalstruktur interpretieren",
+    "duration_min": 14,
+    "company": "Apple Inc.",
+    "ticker": "AAPL",
+    "difficulty": "intermediate",
+    "status": "available",
+    "sort_order": 6,
+    "learning_goals": [
+      "Net Debt aus Bilanzposten berechnen",
+      "Verstehen warum ROE > 100% möglich ist",
+      "Aktienrückkäufe und Kapitalstruktur verbinden"
+    ],
+    "scenario": "Apple hat eine ROE von über 160%. Das klingt unmöglich — wie kann ein Unternehmen mehr auf das Eigenkapital verdienen als das Eigenkapital selbst? Die Antwort liegt in der aggressivsten Aktienrückkaufstrategie der Unternehmensgeschichte.",
+    "data_provided": {
+      "Cash & Short-Term Investments": "61 Mrd. USD",
+      "Total Debt (Short + Long Term)": "107 Mrd. USD",
+      "Net Debt": "46 Mrd. USD (zu berechnen: Debt minus Cash)",
+      "Stockholders Equity": "63 Mrd. USD",
+      "Net Income (TTM)": "97 Mrd. USD",
+      "ROE (Net Income / Equity)": "154% (zu berechnen)",
+      "Aktienrückkaufe 2023": "~77 Mrd. USD"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Net Debt berechnen",
+        "body": "Net Debt = Total Debt - Cash & Equivalents\nFür Apple: 107 Mrd. - 61 Mrd. = 46 Mrd. USD Net Debt\n\nEin positiver Net Debt bedeutet: Apple schuldet per Saldo mehr als es besitzt. Das klingt besorgniserregend — aber Apple generiert ~100 Mrd. USD Free Cash Flow pro Jahr. Die Schulden entsprechen weniger als einem halben Jahres-Cashflow."
+      },
+      {
+        "type": "info_box",
+        "heading": "Warum ist ROE über 100% möglich?",
+        "body": "ROE = Net Income / Stockholders Equity\n\nApple: 97 Mrd. / 63 Mrd. = 154%\n\nDer Nenner (Eigenkapital) wurde durch massivenAktienrückkäufe geschrumpft: Apple kaufte 2013-2023 über 550 Mrd. USD eigene Aktien zurück. Das reduziert das buchhalterische Eigenkapital, erhöht aber den Gewinn je Aktie — und damit auch den ROE."
+      },
+      {
+        "type": "text",
+        "heading": "Interpretation: Gut oder schlecht?",
+        "body": "Ein ROE > 100% signalisiert eines von zwei Szenarien:\n1. Exzellente Kapitalallokation: Das Unternehmen kann mit wenig Eigenkapital sehr viel Gewinn erwirtschaften (Apple, Microsoft).\n2. Übermäßiger Leverage: Das Unternehmen ist hochverschuldet und versteckt das hinter hohem ROE.\n\nBei Apple: Schulden/EBITDA ≈ 0.7x. Das ist sehr konservativ — die Schulden dienen als steueroptimierte Finanzierung statt Cash zu repatriieren."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Apple hat 107 Mrd. USD Debt und 61 Mrd. USD Cash. Was ist der Net Debt?",
+        "options": ["46 Mrd. USD", "168 Mrd. USD", "61 Mrd. USD", "-46 Mrd. USD"],
+        "answer": 0,
+        "explanation": "Net Debt = Total Debt - Cash = 107 - 61 = 46 Mrd. USD. Positiver Net Debt = Apple schuldet mehr als es in Cash hält. Trotzdem sehr komfortabel bei ~100 Mrd. FCF/Jahr."
+      },
+      {
+        "question": "Apple hat Net Income von 97 Mrd. USD und Stockholders Equity von 63 Mrd. USD. Wie hoch ist der ROE?",
+        "options": ["154%", "65%", "97%", "41%"],
+        "answer": 0,
+        "explanation": "ROE = 97 / 63 = 154%. Der Nenner (Eigenkapital) ist durch massivenAktienrückkäufe klein geworden — das treibt den ROE über 100%. Apple kaufte 2013-2023 über 550 Mrd. USD eigene Aktien zurück."
+      },
+      {
+        "type": "open_question",
+        "question": "Apple nimmt Schulden auf, obwohl es über 60 Mrd. Cash hält. Erkläre die wirtschaftliche Logik hinter dieser Strategie — warum macht Apple das und welche Risiken birgt es?",
+        "content_summary": "Steueroptimierung, niedrige Zinsen, Cash repatriierung USA, Leverage-Effekt, Zinssteigerungsrisiko"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-7",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Free Cash Flow vs. Net Income — Was zählt wirklich?",
+    "subtitle": "Bilanzmanipulation erkennen vs. echter Cashgenerator",
+    "duration_min": 14,
+    "company": "Fiktive Unternehmen X und Y",
+    "ticker": null,
+    "difficulty": "intermediate",
+    "status": "available",
+    "sort_order": 7,
+    "learning_goals": [
+      "Den Unterschied zwischen Net Income und FCF verstehen",
+      "Aggressive vs. konservative Bilanzierung identifizieren",
+      "FCF-Marge als Qualitätsmerkmal nutzen"
+    ],
+    "scenario": "Unternehmen X zeigt 500 Mio. Gewinn, Unternehmen Y nur 300 Mio. Auf Anhieb scheint X attraktiver. Aber als erfahrener Analyst schaust du nicht nur in die GuV — sondern in den Cash Flow Statement.",
+    "data_provided": {
+      "Unternehmen X — Umsatz": "2.000 Mio. EUR",
+      "Unternehmen X — Net Income": "500 Mio. EUR (25% Marge)",
+      "Unternehmen X — Free Cash Flow": "200 Mio. EUR (10% FCF-Marge)",
+      "Unternehmen X — Goodwill-Anteil an Assets": "55%",
+      "Unternehmen Y — Umsatz": "1.800 Mio. EUR",
+      "Unternehmen Y — Net Income": "300 Mio. EUR (17% Marge)",
+      "Unternehmen Y — Free Cash Flow": "450 Mio. EUR (25% FCF-Marge)",
+      "Unternehmen Y — Goodwill-Anteil an Assets": "12%"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Das Problem mit dem Net Income",
+        "body": "Net Income ist eine buchhalterische Größe. Unternehmen können es durch aggressives Revenue Recognition, Aktivierung von Kosten (statt Aufwand), oder niedrige Abschreibungen optisch aufblähen — ohne dass ein einziger Euro mehr Cash hereinkommt.\n\nFree Cash Flow misst dagegen, was tatsächlich im Portemonnaie landet: Operating Cash Flow minus Investitionen (CapEx)."
+      },
+      {
+        "type": "info_box",
+        "heading": "FCF-Marge als Qualitätsfilter",
+        "body": "FCF-Marge = Free Cash Flow / Umsatz\n\nUnternehmen X: 200 / 2.000 = 10%\nUnternehmen Y: 450 / 1.800 = 25%\n\nFaustregel: FCF-Marge > 15% = ausgezeichnet\nFCF deutlich < Net Income Marge = rotes Flag"
+      },
+      {
+        "type": "text",
+        "heading": "Red Flags bei Unternehmen X",
+        "body": "Drei Warnsignale bei Unternehmen X:\n\n1. NI-FCF-Gap: 500 Mio. Net Income aber nur 200 Mio. FCF. 300 Mio. 'Gewinn' existieren nur auf dem Papier — mögliche Ursachen: aggressive Debitorenpolitik, kapitalisierte Kosten, niedrige Abschreibungen.\n\n2. Goodwill 55% der Assets: Hoher Goodwill deutet auf teure Übernahmen hin. Bei Abschreibungen drohen massive Wertberichtigungen.\n\n3. FCF-Marge 10% vs. NI-Marge 25%: Eine solche Schere ist nachhaltig nicht erklärbar."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Unternehmen Y hat 450 Mio. FCF bei 1.800 Mio. Umsatz. Wie hoch ist die FCF-Marge?",
+        "options": ["25%", "17%", "10%", "40%"],
+        "answer": 0,
+        "explanation": "FCF-Marge = 450 / 1.800 = 25%. Das ist exzellent. Zum Vergleich: Apple's FCF-Marge liegt bei ~26%, Microsoft bei ~37%. Unternehmen Y generiert echten Cash."
+      },
+      {
+        "question": "Unternehmen X verdient buchhalterisch 500 Mio. aber generiert nur 200 Mio. FCF. Welche Erklärung ist am wahrscheinlichsten?",
+        "options": [
+          "Aggressive Bilanzierung: Kosten aktiviert, Revenue zu früh erfasst",
+          "Hohe Investitionen in Wachstum (normalerweise positiv)",
+          "Das Unternehmen zahlt zu viele Steuern",
+          "FCF und Net Income divergieren immer um 60%"
+        ],
+        "answer": 0,
+        "explanation": "Eine große NI-FCF-Lücke ohne plausible Investitionsstory deutet auf aggressive Bilanzierung hin: Kosten werden aktiviert (verlängert über Jahre verteilt) oder Umsatz zu früh erfasst — was Net Income künstlich erhöht aber keinen Cash generiert."
+      },
+      {
+        "type": "open_question",
+        "question": "Du bist Analyst. Welches Unternehmen würdest du bevorzugen und warum? Beschreibe mindestens drei Kennzahlen die du noch untersuchen würdest bevor du eine endgültige Entscheidung triffst.",
+        "content_summary": "FCF-Marge, Goodwill-Risiko, Working Capital, Schulden, Wachstumsrate, Sektorzyklus"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-8",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Red Flags erkennen — Der Wirecard-Lehrfall",
+    "subtitle": "Bilanzmanipulation anhand realer Muster identifizieren",
+    "duration_min": 15,
+    "company": "Fiktives Unternehmen (Wirecard-Muster)",
+    "ticker": null,
+    "difficulty": "intermediate",
+    "status": "available",
+    "sort_order": 8,
+    "learning_goals": [
+      "Typische Betrugs-Red-Flags in Bilanzen erkennen",
+      "Schnell-Prüfung für verdächtige Kennzahlen durchführen",
+      "Kritisch hinterfragen was Analysten oft übersehen"
+    ],
+    "scenario": "FinTech AG (fiktiv) ist der neue Liebling der Börse. Umsatz wächst 42% pro Jahr, Gewinnmarge 18% — beeindruckend. Die FT und short-seller warnen, aber die Aktie steigt weiter. Als du die Bilanz liest, siehst du Dinge die dich beunruhigen.",
+    "data_provided": {
+      "Umsatzwachstum YoY": "+42%",
+      "Net Income Marge": "18%",
+      "Free Cash Flow": "-180 Mio. EUR (negativ!)",
+      "Goodwill als % der Total Assets": "61%",
+      "Quick Ratio": "0.28",
+      "Forderungen-Wachstum vs. Umsatz-Wachstum": "+85% vs. +42% (Forderungen wachsen 2x schneller)",
+      "Testate des Abschlussprufers": "Eingeschrankt (2 Jahre in Folge)"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Was auf den ersten Blick gut aussieht",
+        "body": "42% Umsatzwachstum, 18% Nettomarge — das klingt nach einem Traumunternehmen. Analysten gaben Kaufempfehlungen, institutionelle Investoren kauften massiv. Die Aktie hatte zeitweise einen Börsenwert von 24 Milliarden Euro.\n\nDer echte Wirecard-Konzern war ähnlich gelagert — bis 2020 aufflog, dass 1,9 Milliarden Euro auf Treuhandkonten nicht existierten."
+      },
+      {
+        "type": "info_box",
+        "heading": "Die 5 gravierendsten Red Flags",
+        "body": "1. Positiver Net Income bei stark negativem FCF: Wo geht der Gewinn hin?\n2. Goodwill 61% der Assets: Überteuerte Akquisitionen, Abschreibungsrisiko enorm\n3. Quick Ratio 0.28: Das Unternehmen kann kaum kurzfristige Verbindlichkeiten bedienen\n4. Forderungen wachsen 2x schneller als Umsatz: Umsatz möglicherweise nicht realisiert\n5. Eingeschränktes Testat: Der Wirtschaftsprüfer hat Vorbehalte — extrem selten bei gesunden Unternehmen"
+      },
+      {
+        "type": "text",
+        "heading": "Das Analyse-Framework für verdächtige Bilanzen",
+        "body": "Schritt 1: NI vs. FCF vergleichen. Große dauerhafte Lücke = roter Flag.\nSchritt 2: Forderungen vs. Umsatz-Wachstum. Forderungen dürfen nicht dauerhaft schneller wachsen.\nSchritt 3: Goodwill als % der Assets. Über 40% = due diligence auf Akquisitionen.\nSchritt 4: Liquiditätsquoten prüfen. Quick Ratio < 0.5 bei FinTechs = kritisch.\nSchritt 5: Testate lesen. Jede Einschränkung ist ein Warnsignal."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "FinTech AG zeigt 18% Net Income Marge aber -180 Mio. FCF. Was ist das gravierendste Problem?",
+        "options": [
+          "Der Gewinn existiert buchhalterisch aber nicht als echter Cash-Zufluss",
+          "Das Unternehmen investiert zu viel in Wachstum",
+          "Negative FCF sind bei FinTechs normal",
+          "Der Gewinn ist zu hoch fur die Branche"
+        ],
+        "answer": 0,
+        "explanation": "Wenn Gewinne dauerhaft nicht als Cash ankommen, werden sie entweder nicht realisiert (fiktive Umsätze), zu früh verbucht, oder durch Bilanzierungstricks aufgebläht. Das ist das klassische Wirecard-Muster."
+      },
+      {
+        "question": "Die Forderungen von FinTech AG wachsen mit +85% bei +42% Umsatzwachstum. Was ist die wahrscheinlichste Erklärung?",
+        "options": [
+          "Umsatz wird erfasst bevor er eingesammelt wird — mogliche Revenue-Recognition-Probleme",
+          "Das Unternehmen hat mehr Kunden gewonnen",
+          "Die Zahlungsbedingungen haben sich verbessert",
+          "Forderungen wachsen immer schneller als Umsatz"
+        ],
+        "answer": 0,
+        "explanation": "Wenn Forderungen dauerhaft schneller als der Umsatz wachsen, deutet das auf zu frühe oder fiktive Revenue-Recognition hin. Legitimes Wachstum führt normalerweise zu proportional wachsenden Forderungen."
+      },
+      {
+        "type": "open_question",
+        "question": "Du bist institutioneller Investor mit 50 Mio. EUR Position in FinTech AG. Basierend auf den Red Flags: Wie gehst du vor? Beschreibe konkret deine nächsten 3 Schritte.",
+        "content_summary": "Position reduzieren, Shorts als Hedge, Management-Call, externe Forensik, Testat nochmals lesen, Whistleblower-Berichte"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-9",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Tesla vs. BMW — Rechtfertigt das Wachstum die Bewertungsprämie?",
+    "subtitle": "Relative Bewertung und Wachstumserwartungen analysieren",
+    "duration_min": 13,
+    "company": "Tesla Inc. vs. BMW AG",
+    "ticker": "TSLA",
+    "difficulty": "intermediate",
+    "status": "available",
+    "sort_order": 9,
+    "learning_goals": [
+      "Relative Bewertung zwischen Wachstums- und Value-Aktien durchführen",
+      "EV/Revenue als Bewertungsmultiple verstehen",
+      "Implizierte Wachstumserwartungen aus Bewertungen ableiten"
+    ],
+    "scenario": "Tesla wird mit dem 8-fachen Umsatz bewertet, BMW mit dem 0.4-fachen. Tesla ist also 20x teurer als BMW auf EV/Revenue-Basis. Die Frage: Welches Wachstum muss Tesla liefern um diese Prämie zu rechtfertigen?",
+    "data_provided": {
+      "Tesla — Umsatz (TTM)": "97 Mrd. USD",
+      "Tesla — EV/Revenue": "8x",
+      "Tesla — Umsatzwachstum (3J CAGR)": "+22%",
+      "Tesla — Bruttomarge": "17%",
+      "BMW — Umsatz (TTM)": "142 Mrd. EUR",
+      "BMW — EV/Revenue": "0.4x",
+      "BMW — Umsatzwachstum (3J CAGR)": "+8%",
+      "BMW — Bruttomarge": "18%",
+      "Premium (Tesla vs. BMW EV/Rev)": "20x"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Warum werden sie so unterschiedlich bewertet?",
+        "body": "BMW ist profitabler als Tesla (Bruttomarge 18% vs. 17%), deutlich größer (142 Mrd. vs. 97 Mrd. Umsatz), und zahlt eine Dividende. Trotzdem ist Tesla 20x teurer auf EV/Revenue-Basis.\n\nDer Markt zahlt für Teslas Zukunft — Software-Umsätze, autonomes Fahren (FSD), Energiespeicher und AI. Das Kalkül: Tesla wird in 10 Jahren nicht nur Autos bauen, sondern ein AI/Robotik-Unternehmen sein."
+      },
+      {
+        "type": "info_box",
+        "heading": "Was muss Tesla liefern um die Bewertung zu rechtfertigen?",
+        "body": "Einfache Schätzung (Reverse DCF):\nBei 15% Diskontrate und 20x Revenue-Premium:\nTesla muss seinen Umsatz in 10 Jahren von 97 Mrd. auf ~600 Mrd. USD steigern — das wäre 20%+ CAGR über ein Jahrzehnt.\n\nZum Vergleich: Toyota (größter Autobauer) macht ~300 Mrd. USD Umsatz."
+      },
+      {
+        "type": "text",
+        "heading": "Das Value-Trap Risiko bei BMW",
+        "body": "BMW mit EV/Revenue 0.4x sieht billig aus — aber der Markt bezweifelt, ob traditionelle OEMs den EV-Übergang schaffen. Wenn Tesla 50% Marktanteil bei E-Autos gewinnt, schrumpft BMW's Umsatz.\n\nDas ist kein einfaches 'Tesla teuer, BMW günstig'. Es ist ein Wettauf verschiedene Zukünfte: Entweder zahlt sich Teslas Prämie aus, oder BMW ist ein Value-Trap."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Tesla hat einen EV von 800 Mrd. USD bei 97 Mrd. Umsatz. Wie hoch ist das EV/Revenue Multiple?",
+        "options": ["8.2x", "0.4x", "20x", "4x"],
+        "answer": 0,
+        "explanation": "EV/Revenue = 800 / 97 = 8.2x (≈8x). Im Vergleich: BMW mit EV/Revenue 0.4x ist auf dieser Metrik 20x günstiger — der Markt preist enorme Wachstumserwartungen für Tesla ein."
+      },
+      {
+        "question": "Tesla wächst mit 22% CAGR, BMW mit 8%. Tesla ist 20x teurer (EV/Rev). Was ist die korrekte Einordnung?",
+        "options": [
+          "Teslas Prämie spiegelt Software/AI-Optionalitaten wider die bei BMW fehlen",
+          "Tesla ist immer die bessere Investition wegen hoheres Wachstum",
+          "BMW ist immer die bessere Investition wegen gunstiger Bewertung",
+          "Beide sind fair bewertet da der Markt effizient ist"
+        ],
+        "answer": 0,
+        "explanation": "Teslas Bewertungsprämie enthält implizite Annahmen über AI, autonomes Fahren und Energiespeicher — nicht nur Umsatzwachstum. Ob diese Prämie gerechtfertigt ist, hängt davon ab ob diese Optionen eintreten."
+      },
+      {
+        "type": "open_question",
+        "question": "Du musst 100.000€ auf 10 Jahre in eine der beiden Aktien investieren — Tesla oder BMW — ohne nachschauen zu können. Welche wählst du und warum? Begründe deine Entscheidung mit mindestens drei Argumenten.",
+        "content_summary": "Wachstum vs. Value, Disruption, Margin of Safety, Bewertungsrisiko, Optionswert, Dividende, Kapitalerhalt"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-10",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "DCF-Rückrechnung — Was preist der Markt bei Apple ein?",
+    "subtitle": "Implizierte Wachstumsrate aus aktuellem Kurs ableiten",
+    "duration_min": 15,
+    "company": "Apple Inc.",
+    "ticker": "AAPL",
+    "difficulty": "intermediate",
+    "status": "available",
+    "sort_order": 10,
+    "learning_goals": [
+      "Reverse-DCF als Bewertungswerkzeug anwenden",
+      "Gordon-Growth-Modell vereinfacht einsetzen",
+      "Markterwartungen kritisch hinterfragen"
+    ],
+    "scenario": "Apple notiert bei ~200 USD. Du willst verstehen: Welches ewige Wachstum muss Apple liefern damit der aktuelle Kurs fair ist? Statt einen Wert zu berechnen, rechnest du rückwärts.",
+    "data_provided": {
+      "Apple Aktienkurs": "~200 USD",
+      "Shares Outstanding": "15.4 Mrd.",
+      "Market Cap": "~3.080 Mrd. USD",
+      "Free Cash Flow (TTM)": "~106 Mrd. USD",
+      "FCF per Share": "~6.88 USD",
+      "P/FCF Ratio": "~29x (200 / 6.88)",
+      "Diskontrate (Annahme)": "10%"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Was ist Reverse-DCF?",
+        "body": "Statt zu fragen 'was ist Apple wert', fragst du: 'Welche Wachstumsrate muss Apple liefern, damit 200 USD fair ist?' Das gibt dir eine Sanity-Check: Ist die implizierte Erwartung realistisch?"
+      },
+      {
+        "type": "info_box",
+        "heading": "Gordon-Growth-Modell (vereinfacht)",
+        "body": "P/FCF = 1 / (Diskontrate - Wachstumsrate)\n\nUmgestellt nach Wachstumsrate:\nWachstumsrate = Diskontrate - (1 / P/FCF)\n\nFür Apple:\ng = 10% - (1/29) = 10% - 3.4% = 6.6%\n\nDer Markt impliziert: Apple muss seinen FCF ewig mit ~6.6% wachsen lassen."
+      },
+      {
+        "type": "text",
+        "heading": "Ist 6.6% realistisch?",
+        "body": "Apple's FCF CAGR der letzten 5 Jahre: ~8% p.a. Die implizierte Rate von 6.6% erscheint moderat — allerdings setzt das Gordon-Growth-Modell voraus, dass dieses Wachstum ewig anhält.\n\nApple's Größe macht hohes Wachstum schwieriger: Mit 3.000 Mrd. Marktkapitalisierung muss Apple extreme Mengen an FCF generieren nur um stagnieren. Kritiker sagen: Dienstleistungs-Wachstum (AppStore, iCloud) rechtfertigt höheres Multiple — Bulls sehen 6.6% als konservative Annahme."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Apple hat FCF/Share von 6.88 USD und Kurs 200 USD. Wie hoch ist das P/FCF Ratio?",
+        "options": ["29x", "45x", "15x", "106x"],
+        "answer": 0,
+        "explanation": "P/FCF = 200 / 6.88 = 29.1x. Das bedeutet: Zum aktuellen Preis kaufst du Apples FCF mit dem 29-fachen — bei 10% Diskontrate impliziert das eine ewige Wachstumsrate von ~6.6%."
+      },
+      {
+        "question": "Mit Gordon-Growth: Diskontrate 10%, P/FCF 29x. Was ist die implizierte ewige Wachstumsrate?",
+        "options": ["ca. 6.6%", "ca. 3.4%", "ca. 10%", "ca. 29%"],
+        "answer": 0,
+        "explanation": "g = 10% - (1/29) = 10% - 3.45% = 6.55% ≈ 6.6%. Das ist die Wachstumsrate die der Markt bei Apple für die Ewigkeit einpreist. Apple's historischer FCF-CAGR (5J) liegt bei ~8% — die Erwartung erscheint erreichbar."
+      },
+      {
+        "type": "open_question",
+        "question": "Das Gordon-Growth-Modell ist eine starke Vereinfachung. Welche drei Annahmen könnten in der Realität nicht zutreffen, und wie würde das den fairen Wert verändern?",
+        "content_summary": "Ewiges Wachstum unrealistisch, variable Diskontrate, FCF-Schwankungen, Aktienrückkäufe, Steuern, Terminalwert"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-11",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Yield Curve Inversion — Was jetzt mit dem Portfolio?",
+    "subtitle": "Rezessionsindikator lesen und Portfolio-Konsequenzen ableiten",
+    "duration_min": 14,
+    "company": "US Treasury / Makroökonomie",
+    "ticker": null,
+    "difficulty": "intermediate",
+    "status": "available",
+    "sort_order": 11,
+    "learning_goals": [
+      "Yield Curve Inversion als Rezessionsindikator verstehen",
+      "Historische Trefferquote und Timing einordnen",
+      "Portfolio-Anpassungen bei Inversion ableiten"
+    ],
+    "scenario": "Die 2-jährige US-Staatsanleihe rentiert 5.1%, die 10-jährige nur 4.3%. Der Spread ist damit -80 Basispunkte negativ. Alle reden über Inversion — du musst verstehen was das für dein Portfolio bedeutet.",
+    "data_provided": {
+      "2Y Treasury Yield": "5.10%",
+      "10Y Treasury Yield": "4.30%",
+      "2Y-10Y Spread": "-80 Basispunkte (invertiert)",
+      "Historische Trefferquote": "8 von 10 Inversionen fuhrten zur Rezession",
+      "Durchschnittlicher Vorlauf": "12-18 Monate nach Inversion",
+      "Dauer der aktuellen Inversion": "24 Monate (2022-2024, langste je)"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Warum ist Inversion ein Warnsignal?",
+        "body": "Normalerweise: Langfristige Anleihen bieten höhere Zinsen als kurzfristige — weil Investoren für längere Bindung entschädigt werden. Wenn sich das umkehrt, signalisiert der Markt: Die Zentralbank wird in Zukunft die Zinsen senken müssen — weil die Wirtschaft schwächer wird.\n\nEin -80bps Spread ist einer der stärksten Inversionen seit 1980. Historisch folgte in 80% der Fälle eine Rezession."
+      },
+      {
+        "type": "info_box",
+        "heading": "Historische Daten: Inversion → Rezession",
+        "body": "1989 Inversion → Rezession 1990 (18 Monate Vorlauf)\n2000 Inversion → Dotcom-Krise 2001 (9 Monate)\n2006 Inversion → Finanzkrise 2008 (24 Monate)\n2019 kurze Inversion → COVID-Rezession 2020 (7 Monate)\n2022 Inversion → noch keine Rezession (Stand 2024)\n\nFazit: Kein perfekter Indikator, aber der zuverlässigste den wir haben."
+      },
+      {
+        "type": "text",
+        "heading": "Portfolio-Konsequenzen",
+        "body": "Sektoren die historisch in Rezessionen besser performen (defensive Sektoren):\n- Consumer Staples: -8% durchschnittlich in Rezession (vs. -30% Markt)\n- Healthcare: -10%\n- Utilities: -11%\n\nSektoren die in Rezessionen stark leiden:\n- Financials: -45%\n- Consumer Discretionary: -35%\n- Industrials: -32%\n\nEine Inversion rechtfertigt keine Panikverkäufe, aber eine schrittweise Defensivierung."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "2Y Treasury: 5.1%, 10Y Treasury: 4.3%. Wie hoch ist der 2Y-10Y Spread?",
+        "options": ["-80 Basispunkte", "+80 Basispunkte", "-170 Basispunkte", "0 Basispunkte"],
+        "answer": 0,
+        "explanation": "Spread = 10Y - 2Y = 4.3% - 5.1% = -0.8% = -80 Basispunkte. Negativ bedeutet invertiert: kurzfristige Zinsen sind höher als langfristige — historisch ein Rezessionssignal."
+      },
+      {
+        "question": "Welcher Sektor performt historisch am besten wahrend einer Rezession?",
+        "options": ["Consumer Staples (-8%)", "Financials (-45%)", "Technology (-30%)", "Consumer Discretionary (-35%)"],
+        "answer": 0,
+        "explanation": "Consumer Staples (Grundnahrungsmittel, Haushaltsprodukte) sind rezessionsresistent: Menschen kaufen auch in Krisen Lebensmittel und Reinigungsmittel. Unternehmen wie Procter & Gamble, Nestlé oder Coca-Cola haben stabile Cashflows."
+      },
+      {
+        "type": "open_question",
+        "question": "Dein Portfolio ist aktuell: 50% US-Tech, 30% Financials, 20% Consumer Discretionary. Die Yield Curve ist seit 18 Monaten invertiert. Beschreibe wie du das Portfolio defensiver gestalten würdest ohne alles zu verkaufen.",
+        "content_summary": "Stufenweise Umschichtung, defensive Sektoren, Anleihen als Hedge, Gold, Position Sizing, Liquiditat halten"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-12",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Fed erhöht Zinsen um 50bps — Sektorrotation antizipieren",
+    "subtitle": "Historische Sektorperformance nach Zinserhöhungen nutzen",
+    "duration_min": 13,
+    "company": "US Federal Reserve / Makroökonomie",
+    "ticker": null,
+    "difficulty": "intermediate",
+    "status": "available",
+    "sort_order": 12,
+    "learning_goals": [
+      "Zinseffekte auf verschiedene Sektoren verstehen",
+      "Historische Sektorrotation nach Zinsschritten anwenden",
+      "Portfolio proaktiv auf Zinsumfeld ausrichten"
+    ],
+    "scenario": "Die Fed erhöht die Zinsen unerwartet um 50bps von 5.0% auf 5.5%. Die Märkte reagieren mit Volatilität. Du weißt: Nicht alle Sektoren werden gleich betroffen. Historische Daten geben dir einen Vorteil.",
+    "data_provided": {
+      "Fed Funds Rate vorher": "5.0%",
+      "Fed Funds Rate nachher": "5.5%",
+      "Financials — Ø 6 Monate nach Erhohung": "+8%",
+      "Energy — Ø 6 Monate nach Erhohung": "+5%",
+      "Consumer Staples — Ø 6 Monate": "+2%",
+      "Technology — Ø 6 Monate nach Erhohung": "-10%",
+      "Real Estate (REITs) — Ø 6 Monate": "-15%",
+      "Utilities — Ø 6 Monate nach Erhohung": "-12%"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Warum wirken Zinsen sektordifferenziert?",
+        "body": "Zinsen beeinflussen verschiedene Geschäftsmodelle unterschiedlich:\n\nGewinner: Banken (höhere Net Interest Margin = Gewinn aus Kredit-Einlagen-Differenz). Energieunternehmen (Rohstoffpreise oft inflationsgetrieben, gleichzeitig Zinserhöhungen).\n\nVerlierer: Utilities und REITs (zahlen hohe Dividenden, werden als 'Anleihen-Substitute' gehandelt — bei höheren Zinsen werden echte Anleihen attraktiver). Tech-Wachstumsaktien (zukünftige Cashflows werden mit höherer Rate diskontiert)."
+      },
+      {
+        "type": "info_box",
+        "heading": "Net Interest Margin (NIM) — Warum Banken profitieren",
+        "body": "NIM = (Kreditzinsen - Einlagenzinsen) / Gesamte Assets\n\nBei Zinserhöhungen steigen Kreditzinsen schneller als Einlagenzinsen (Trägheit).\nJPMorgan steigerte seine NIM 2022-2023 von 1.7% auf 2.7% = +50 Mrd. USD Mehrertrag.\n\nBanken profitieren direkt vom Zinsanstieg — sofern keine Rezession folgt."
+      },
+      {
+        "type": "text",
+        "heading": "Praktische Rotation",
+        "body": "Vor einer Zinserhöhung (antizipativ):\n+ Financials übergewichten (JPM, GS, BAC)\n+ Energy beibehalten (Rohstoff-Hedge)\n- Utilities und REITs reduzieren\n- Long-Duration Tech trimmen\n\nNach der Erhöhung, wenn Rezessionssignale auftauchen:\n→ Rotation in Consumer Staples und Healthcare (defensiv)\n→ Anleihen wieder attraktiv wenn Zinserhöhungszyklus endet"
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Die Fed erhöht Zinsen um 50bps. Welcher Sektor profitiert historisch am stärksten in den folgenden 6 Monaten?",
+        "options": ["Financials (+8%)", "Utilities (-12%)", "Technology (-10%)", "Real Estate (-15%)"],
+        "answer": 0,
+        "explanation": "Banken profitieren von steigenden Zinsen: Die Net Interest Margin (Differenz zwischen Kredit- und Einlagenzinsen) steigt, weil Kreditzinsen schneller angepasst werden als Spar/Einlagenzinsen."
+      },
+      {
+        "question": "Warum leiden REITs und Utilities besonders unter Zinserhöhungen?",
+        "options": [
+          "Sie werden als Anleihen-Substitute gehandelt — hohere Zinsen machen echte Anleihen attraktiver",
+          "Sie haben hohe Schulden die sie nicht bedienen konnen",
+          "Zinserhohungen reduzieren ihren Umsatz direkt",
+          "Sie investieren hauptsachlich in Tech-Aktien"
+        ],
+        "answer": 0,
+        "explanation": "REITs und Utilities zahlen hohe, stabile Dividenden und gelten als 'Bond-Proxies'. Wenn risikolose Staatsanleihen mehr Rendite bieten, werden diese Aktien relativ unattraktiver — Investoren rotieren aus Dividendenaktien in Anleihen."
+      },
+      {
+        "type": "open_question",
+        "question": "Du managst einen 500.000€-Portfolio mit aktuell 40% Tech, 30% REITs, 20% Consumer Disc, 10% Cash. Die Fed kündigt aggressive Zinserhöhungen an. Beschreibe deine Rotation-Strategie Schritt für Schritt.",
+        "content_summary": "REITs verkaufen, Financials kaufen, Tech Duration reduzieren, Consumer Staples, schrittweise vorgehen, Cash halten fur Chancen"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-13",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Dollar stärker — Wer gewinnt, wer verliert?",
+    "subtitle": "DXY-Auswirkungen auf globale Asset-Klassen verstehen",
+    "duration_min": 12,
+    "company": "FX Markets / Global Macro",
+    "ticker": null,
+    "difficulty": "intermediate",
+    "status": "available",
+    "sort_order": 13,
+    "learning_goals": [
+      "Dollar-Stärke auf verschiedene Asset-Klassen übertragen",
+      "EM-Risiken bei starkem Dollar quantifizieren",
+      "Gewinner und Verlierer eines USD-Anstiegs benennen"
+    ],
+    "scenario": "Der DXY (Dollar Index) ist in 6 Monaten um 10% gestiegen — angetrieben von überraschend starken US-Wirtschaftsdaten und hawkisher Fed. Dein Portfolio hat internationale Positionen. Was passiert jetzt?",
+    "data_provided": {
+      "DXY Anstieg": "+10% in 6 Monaten",
+      "EM-Aktien (MSCI EM) Reaktion": "-13% in USD",
+      "Gold Reaktion": "-7%",
+      "Rohöl (Brent) Reaktion": "-5%",
+      "US-Exporteure (z.B. Boeing)": "-8% (Produkte teurer fur Ausland)",
+      "US-Importeure (z.B. Walmart)": "+3% (gunstigere Importe)",
+      "EUR/USD": "von 1.10 auf 1.00 (-9%)"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Warum schadet ein starker Dollar EM-Ländern?",
+        "body": "Viele Schwellenländer haben Schulden in US-Dollar. Wenn der Dollar stärker wird, müssen sie mehr lokale Währung aufwenden um dieselbe Dollar-Schuld zu bedienen — was Staatsfinanzen und Unternehmen unter Druck setzt.\n\nZusätzlich: Rohstoffe werden in Dollar gehandelt. Ein stärkerer Dollar macht Rohstoffe für nicht-US-Käufer teurer (Nachfragerückgang), drückt aber die Rohstoffpreise in USD."
+      },
+      {
+        "type": "info_box",
+        "heading": "Die Dollar-Smile-Theorie",
+        "body": "Der Dollar steigt in zwei Szenarien:\n1. US-Wirtschaft sehr stark (Risk-On): Kapital fließt in US-Assets\n2. Globale Krise (Risk-Off): Dollar als sicherer Hafen\n\nIn der Mitte (globale Erholung, US schwächer): Dollar schwächt sich ab\n\nAktuelles Szenario (starke US-Wirtschaft, hawkische Fed) = linke Seite des Smiles"
+      },
+      {
+        "type": "text",
+        "heading": "Gewinner und Verlierer",
+        "body": "VERLIERER eines starken Dollars:\n- EM-Aktien: Dollarkredite teurer, Kapitalabfluss aus EM\n- Gold: Negativkorrelation (beide sind 'Store of Value' — konkurrieren sich)\n- US-Exportunternehmen (Boeing, Caterpillar, Deere): Produkte werden für Ausländer teurer\n\nGEWINNER eines starken Dollars:\n- US-Importunternehmen (Walmart, Amazon, Apple Produktion in Asien): günstigere Einkaufspreise\n- US-Reisende im Ausland: Mehr Kaufkraft\n- Öl-Importeure (Europa, Japan): günstigere Energieimporte"
+      }
+    ],
+    "quiz": [
+      {
+        "question": "DXY steigt um 10%. Welche Asset-Klasse leidet typischerweise am stärksten?",
+        "options": ["EM-Aktien (-13%)", "Gold (-7%)", "US-Importeure (+3%)", "Rohöl (-5%)"],
+        "answer": 0,
+        "explanation": "EM-Aktien reagieren am stärksten negativ: Dollarkredite werden teurer, Kapitalflucht aus EM in USD-Assets, und Rohstoffexporte (für viele EM der Hauptumsatz) fallen im Wert."
+      },
+      {
+        "question": "Du hältst Boeing-Aktien (US-Exporteur). Der Dollar steigt 10%. Was passiert tendenziell?",
+        "options": [
+          "Boeing-Aktien fallen weil Exporte fur Auslandskunden teurer werden",
+          "Boeing-Aktien steigen weil der Dollar stark ist",
+          "Keine Auswirkung auf Exporteure",
+          "Boeing profitiert weil US-Markt starker ist"
+        ],
+        "answer": 0,
+        "explanation": "US-Exporteure verlieren Wettbewerbsfähigkeit: Ein Boeing 787 kostet für einen europäischen Kunden in Euro gerechnet 10% mehr — ohne dass Boeing den Preis erhöht hat. Das reduziert die Nachfrage und kann Margen drücken."
+      },
+      {
+        "type": "open_question",
+        "question": "Dein Portfolio: 30% MSCI EM ETF, 20% Gold, 20% US-Tech, 30% EUR/USD-Anleihen. Der DXY steigt 10%. Schätze: Wie viel verliert dein Portfolio insgesamt und wie würdest du es absichern?",
+        "content_summary": "EM -13%, Gold -7%, Tech neutral, EUR-Anleihen -9% USD-Effekt, Hedging via USD-long, Rebalancing, Importeure beimischen"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-14",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Dividenden-Portfolio — 12 Monate Cashflow planen",
+    "subtitle": "Jahres-Cashflow berechnen und Payout-Ratio prüfen",
+    "duration_min": 12,
+    "company": "JNJ, KO, O, AAPL, NEE",
+    "ticker": null,
+    "difficulty": "beginner",
+    "status": "available",
+    "sort_order": 14,
+    "learning_goals": [
+      "Jährlichen Dividenden-Cashflow eines Portfolios berechnen",
+      "Payout Ratio als Nachhaltigkeitsprüfung nutzen",
+      "Diversifikation der Ex-Dividend-Daten für monatlichen Cashflow"
+    ],
+    "scenario": "Du hast 50.000€ gespart und möchtest ein Dividenden-Portfolio aufbauen das monatlichen Cashflow generiert. Du verteilst das Kapital gleichmäßig auf 5 Dividendenaristokraten.",
+    "data_provided": {
+      "Investment pro Position": "10.000 EUR (je 20%)",
+      "Johnson & Johnson (JNJ) Yield": "3.0% | Payout Ratio 45% | Quartalsweise",
+      "Coca-Cola (KO) Yield": "3.2% | Payout Ratio 73% | Quartalsweise",
+      "Realty Income (O) Yield": "5.8% | Payout Ratio 76% | Monatlich",
+      "Apple (AAPL) Yield": "0.5% | Payout Ratio 15% | Quartalsweise",
+      "NextEra Energy (NEE) Yield": "3.5% | Payout Ratio 60% | Quartalsweise",
+      "Gesamtinvestition": "50.000 EUR"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Cashflow-Berechnung",
+        "body": "JNJ: 10.000 × 3.0% = 300 EUR/Jahr (75 EUR/Quartal)\nKO: 10.000 × 3.2% = 320 EUR/Jahr (80 EUR/Quartal)\nO: 10.000 × 5.8% = 580 EUR/Jahr (48 EUR/Monat)\nAAPL: 10.000 × 0.5% = 50 EUR/Jahr (12.50 EUR/Quartal)\nNEE: 10.000 × 3.5% = 350 EUR/Jahr (87.50 EUR/Quartal)\n\nGesamt: 1.600 EUR/Jahr = 133 EUR/Monat\nDurchschnittsrendite: 1.600 / 50.000 = 3.2% p.a."
+      },
+      {
+        "type": "info_box",
+        "heading": "Payout Ratio als Nachhaltigkeitsprüfung",
+        "body": "Payout Ratio = Dividenden / Net Income (oder FCF)\n\nFaustregel:\n< 50%: Sehr nachhaltig, viel Wachstumspotenzial\n50-70%: Gut, noch Puffer\n70-85%: Akzeptabel, wenig Spielraum\n> 85%: Kritisch — bei Gewinneinbruch droht Kürzung"
+      },
+      {
+        "type": "text",
+        "heading": "Cashflow-Optimierung durch Terminplanung",
+        "body": "Um jeden Monat Cashflow zu erhalten, ist die Verteilung der Ex-Dividend-Daten wichtig:\n\nTypische Auszahlungsgruppen:\n- Januar/April/Juli/Oktober: JNJ, NEE\n- Februar/Mai/August/November: KO, AAPL\n- Jeden Monat: Realty Income (O)\n\nRealty Income zahlt monatlich — ideal für Portfolios die auf regelmäßigen Cashflow angewiesen sind. In Kombination mit quartalsweisen Zahlern entsteht ein relativ gleichmäßiger Zufluss."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Wie hoch ist der jährliche Dividenden-Cashflow des beschriebenen Portfolios?",
+        "options": ["1.600 EUR", "800 EUR", "2.500 EUR", "320 EUR"],
+        "answer": 0,
+        "explanation": "JNJ 300 + KO 320 + O 580 + AAPL 50 + NEE 350 = 1.600 EUR/Jahr = 133 EUR/Monat. Das entspricht einer Portfolio-Rendite von 3.2% auf 50.000€ investiertes Kapital."
+      },
+      {
+        "question": "Coca-Cola hat eine Payout Ratio von 73%. Was bedeutet das für die Dividendensicherheit?",
+        "options": [
+          "Akzeptabel, aber wenig Puffer — bei Gewinnruckgang unter Druck",
+          "Sehr nachhaltig mit viel Wachstumspotenzial",
+          "Kritisch — Dividendenkurzung wahrscheinlich",
+          "Optimal, 73% ist die goldene Mitte"
+        ],
+        "answer": 0,
+        "explanation": "73% Payout Ratio ist akzeptabel aber nicht komfortabel. KO ist ein Consumer Staples-Unternehmen mit sehr stabilen Gewinnen — daher kann KO eine höhere Payout Ratio tragen als zyklische Unternehmen."
+      },
+      {
+        "type": "open_question",
+        "question": "Du möchtest deinen monatlichen Cashflow auf 500 EUR erhöhen. Erkläre zwei Wege das zu erreichen: a) durch Kapitalerhöhung b) durch Portfolio-Umstrukturierung. Diskutiere die Risiken jedes Ansatzes.",
+        "content_summary": "Mehr Kapital investieren, High-Yield-Aktien, Dividendenwachstum, Risiko hoher Payout Ratio, Substanzverlust, Reinvestition"
+      }
+    ]
+  },
+
+  {
+    "id": "practical-15",
+    "track_id": "praktische_uebungen",
+    "type": "case_study",
+    "title": "Rezession — Portfolio defensiv umschichten",
+    "subtitle": "Frühindikatoren lesen und proaktiv umschichten",
+    "duration_min": 14,
+    "company": "Hypothetisches Wachstumsportfolio",
+    "ticker": null,
+    "difficulty": "advanced",
+    "status": "available",
+    "sort_order": 15,
+    "learning_goals": [
+      "Rezessions-Frühindikatoren interpretieren",
+      "Historische Sektorperformance in Rezessionen anwenden",
+      "Schrittweise defensiven Umbau eines Portfolios planen"
+    ],
+    "scenario": "Dein Portfolio: 60% US-Tech, 20% Consumer Discretionary, 20% Financials. Drei Frühindikatoren signalisieren gleichzeitig Schwäche: Yield Curve invertiert seit 18 Monaten, ISM PMI bei 46.2 (< 50 = Kontraktion), Erstanträge auf Arbeitslosenhilfe steigen seit 4 Wochen.",
+    "data_provided": {
+      "Aktuelle Allokation": "60% Tech | 20% Consumer Disc | 20% Financials",
+      "ISM Manufacturing PMI": "46.2 (unter 50 = Kontraktion)",
+      "Yield Curve 2Y-10Y": "-65bps (invertiert seit 18 Monaten)",
+      "Arbeitslosenerstantrage": "+12% in 4 Wochen",
+      "Rezessions-Performance (Ø Sektoren)": "Tech -35% | Disc -38% | Financials -42% | Staples -9% | Health -11% | Utilities -10%",
+      "Erwartete Portfolio-Performance (unverändert)": "-38% im Rezessionsszenario"
+    },
+    "sections": [
+      {
+        "type": "text",
+        "heading": "Die drei Frühindikatoren im Kontext",
+        "body": "Du siehst drei gleichzeitige Warnsignale:\n\n1. PMI 46.2: Unter 50 bedeutet Kontraktion im Industriesektor. Zwei aufeinanderfolgende PMI < 50 korrelieren stark mit wirtschaftlicher Schwäche.\n\n2. Yield Curve -65bps: Die Inversion hält seit 18 Monaten an — historisch folgte innerhalb von 6-12 Monaten nach Ende der Inversion oft eine Rezession.\n\n3. Steigende Arbeitslosenerstanträge: Ein Anstieg über 4 Wochen deutet auf Einstellungsstopps und erste Entlassungen hin — lagging indicator, aber wichtig."
+      },
+      {
+        "type": "info_box",
+        "heading": "Sektorperformance in Rezessionen (historisch, USA)",
+        "body": "Consumer Staples: -9% (Nahrungsmittel, Haushaltsprodukte — nicht diskretionär)\nHealthcare: -11% (Menschen werden auch in Krisen krank)\nUtilities: -10% (Strom und Wasser — nicht abschaltbar)\nTech (Growth): -35% bis -55% je nach Zyklus\nConsumer Discretionary: -38% (Luxus, Reisen, Unterhaltung)\nFinancials: -42% (Kreditausfälle, sinkende Margen)\n\nQuelle: NBER, Bloomberg Sektordaten 1980-2023"
+      },
+      {
+        "type": "text",
+        "heading": "Schrittweiser Umbauplan",
+        "body": "Phase 1 (sofort, 30 Tage): Financials von 20% auf 8% reduzieren (historisch schlechteste Rezessionsperformance). In Consumer Staples reinvestieren (auf 15%).\n\nPhase 2 (30-60 Tage): Tech von 60% auf 40% trimmen — besonders long-duration Wachstumstitel ohne aktuelle Gewinne. Healthcare auf 12%, Utilities auf 8%.\n\nPhase 3 (opportunistisch): Cash-Reserve von 10-15% für günstige Einstiegschancen im Rezessionstief.\n\nZiel-Allokation: 40% Tech (profitable), 15% Staples, 12% Health, 8% Utilities, 8% Financials (Regionalbanken), 17% Cash."
+      }
+    ],
+    "quiz": [
+      {
+        "question": "Dein Portfolio (60% Tech, 20% Disc, 20% Fin) würde in einer Rezession im Schnitt wie viel verlieren?",
+        "options": [
+          "ca. -38% (gewichteter Durchschnitt der Sektoren)",
+          "ca. -10% weil Tech defensiv ist",
+          "ca. -60% weil alle Sektoren gleich fallen",
+          "ca. -20% weil Diversifikation schutzt"
+        ],
+        "answer": 0,
+        "explanation": "Gewichteter Verlust: Tech 60% × (-35%) + Disc 20% × (-38%) + Fin 20% × (-42%) = -21% + -7.6% + -8.4% = -37% ≈ -38%. Das entspricht fast dem Gesamtmarkt-Durchschnitt ohne defensive Puffer."
+      },
+      {
+        "question": "ISM PMI fällt auf 46.2. Was bedeutet das für die Wirtschaft?",
+        "options": [
+          "Kontraktion im Industriesektor — PMI unter 50 signalisiert Schrumpfung",
+          "Starkes Wachstum — 46.2 ist uber dem langfristigen Durchschnitt",
+          "Neutrale Phase — weder Wachstum noch Schrumpfung",
+          "Hyperinflation droht"
+        ],
+        "answer": 0,
+        "explanation": "PMI 50 = Nullwachstum. Unter 50 = Kontraktion (Einkaufsmanager sehen weniger Aufträge, Personal, Produktion). PMI 46.2 ist deutlich im Kontraktionsbereich und deutet auf verlangsamtes Wachstum oder beginnende Rezession hin."
+      },
+      {
+        "type": "open_question",
+        "question": "Du willst defensiv umschichten, aber hast Angst eine Rezession zu früh anzunehmen und Upside zu verpassen. Erkläre: Wie würdest du mit dieser Unsicherheit umgehen? Beschreibe eine konkrete Risikomanagement-Strategie.",
+        "content_summary": "Szenario-Analyse, schrittweise Rotation, Hedges statt Vollverkauf, Stop-Loss, Liquiditat vorhalten, Überprüfungspunkte definieren"
+      }
+    ]
+  }
+]
