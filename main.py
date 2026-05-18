@@ -4024,6 +4024,244 @@ async def create_fo_comment(post_id: str, request: Request, user_id: str = Depen
     return {"comment": result.data[0]}
 
 
+# ─── FO Notifications, Leaderboard, Polls ─────────────────────────────────────
+
+@app.post("/fo/groups/{group_id}/mark-read")
+def fo_mark_read(group_id: str, tab: str = Query(...), user_id: str = Depends(verify_jwt)):
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    if tab not in ("messages", "posts", "polls"):
+        raise HTTPException(400, "Ungültiger tab")
+    field = f"last_read_{tab}_at"
+    now_str = datetime.utcnow().isoformat() + "Z"
+    existing = sb_client.table("fo_last_read").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if existing.data:
+        sb_client.table("fo_last_read").update({field: now_str}).eq("id", existing.data[0]["id"]).execute()
+    else:
+        sb_client.table("fo_last_read").insert({"user_id": user_id, "group_id": group_id, field: now_str}).execute()
+    return {"success": True}
+
+
+@app.get("/fo/groups/{group_id}/unread-counts")
+def fo_unread_counts(group_id: str, user_id: str = Depends(verify_jwt)):
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    lr = sb_client.table("fo_last_read").select("*").eq("group_id", group_id).eq("user_id", user_id).execute()
+    last_read = lr.data[0] if lr.data else {}
+    epoch = "1970-01-01T00:00:00"
+    lr_msgs  = last_read.get("last_read_messages_at", epoch) or epoch
+    lr_posts = last_read.get("last_read_posts_at",    epoch) or epoch
+    lr_polls = last_read.get("last_read_polls_at",    epoch) or epoch
+    msgs  = sb_client.table("fo_messages").select("id", count="exact").eq("group_id", group_id).neq("user_id", user_id).gt("created_at", lr_msgs).execute()
+    posts = sb_client.table("fo_posts").select("id", count="exact").eq("group_id", group_id).neq("user_id", user_id).gt("created_at", lr_posts).execute()
+    polls = sb_client.table("fo_polls").select("id", count="exact").eq("group_id", group_id).neq("user_id", user_id).gt("created_at", lr_polls).execute()
+    return {
+        "messages": msgs.count or 0,
+        "posts":    posts.count or 0,
+        "polls":    polls.count or 0,
+    }
+
+
+@app.get("/fo/groups/{group_id}/leaderboard")
+def fo_leaderboard(group_id: str, user_id: str = Depends(verify_jwt)):
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    portfolios = sb_client.table("fo_shared_portfolios").select("*").eq("group_id", group_id).execute()
+    if not portfolios.data:
+        return {"leaderboard": [], "sp500_ytd": 0.0}
+    members = sb_client.table("fo_members").select("user_id, display_name, avatar_emoji").eq("group_id", group_id).execute()
+    mmap = {m["user_id"]: m for m in members.data}
+
+    all_symbols: set = set()
+    for p in portfolios.data:
+        raw = p.get("positions") or []
+        if isinstance(raw, str):
+            raw = json.loads(raw)
+        for pos in raw:
+            sym = pos.get("symbol", "")
+            if sym:
+                all_symbols.add(sym)
+    all_symbols.add("SPY")
+
+    ytd_year = datetime.now().year
+    ytd_start = f"{ytd_year}-01-01"
+    ytd_start_end = f"{ytd_year}-01-10"
+    price_start: dict = {}
+    price_now: dict = {}
+
+    for sym in all_symbols:
+        try:
+            hist = requests.get(
+                f"{EODHD_BASE}/eod/{sym}.US",
+                params={"from": ytd_start, "to": ytd_start_end, "api_token": EODHD_API_KEY, "fmt": "json"},
+                timeout=8,
+            ).json()
+            if isinstance(hist, list) and hist:
+                price_start[sym] = float(hist[0]["close"])
+            rt = requests.get(
+                f"{EODHD_BASE}/real-time/{sym}.US",
+                params={"api_token": EODHD_API_KEY, "fmt": "json"},
+                timeout=8,
+            ).json()
+            if isinstance(rt, dict):
+                price_now[sym] = float(rt.get("close") or rt.get("adjusted_close") or 0)
+        except Exception:
+            pass
+
+    sp500_ytd = 0.0
+    if price_start.get("SPY", 0) > 0 and price_now.get("SPY", 0) > 0:
+        sp500_ytd = (price_now["SPY"] - price_start["SPY"]) / price_start["SPY"] * 100
+
+    entries = []
+    for p in portfolios.data:
+        m = mmap.get(p["user_id"], {})
+        raw = p.get("positions") or []
+        if isinstance(raw, str):
+            raw = json.loads(raw)
+        ytd = 0.0
+        total_w = 0.0
+        for pos in raw:
+            sym = pos.get("symbol", "")
+            w = float(pos.get("weight_pct", 0)) / 100
+            ps = price_start.get(sym, 0)
+            pn = price_now.get(sym, 0)
+            if ps > 0 and pn > 0:
+                ytd += ((pn - ps) / ps) * w
+                total_w += w
+        ytd_pct = (ytd / total_w * 100) if total_w > 0 else 0.0
+        entries.append({
+            "display_name": m.get("display_name", "Unbekannt"),
+            "avatar":       m.get("avatar_emoji", "👤"),
+            "ytd_pct":      round(ytd_pct, 2),
+            "vs_sp500_pct": round(ytd_pct - sp500_ytd, 2),
+            "is_me":        p["user_id"] == user_id,
+        })
+
+    entries.sort(key=lambda x: x["ytd_pct"], reverse=True)
+    for i, e in enumerate(entries):
+        e["rank"] = i + 1
+    return {"leaderboard": entries, "sp500_ytd": round(sp500_ytd, 2)}
+
+
+@app.post("/fo/groups/{group_id}/polls")
+async def create_fo_poll(group_id: str, request: Request, user_id: str = Depends(verify_jwt)):
+    data = await request.json()
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    question = (data.get("question") or "").strip()
+    options_raw = data.get("options", [])
+    if not question or len([o for o in options_raw if str(o).strip()]) < 2:
+        raise HTTPException(400, "Frage und mindestens 2 Optionen erforderlich")
+    options = [{"id": str(i), "label": str(o).strip()[:100]} for i, o in enumerate(options_raw[:6]) if str(o).strip()]
+    closes_at = None
+    try:
+        hours = int(data.get("closes_in_hours") or 0)
+        if hours > 0:
+            closes_at = (datetime.utcnow() + timedelta(hours=hours)).isoformat() + "Z"
+    except (ValueError, TypeError):
+        pass
+    result = sb_client.table("fo_polls").insert({
+        "group_id": group_id, "user_id": user_id,
+        "question": question[:500], "options": options, "closes_at": closes_at,
+    }).execute()
+    return {"poll": result.data[0]}
+
+
+@app.get("/fo/groups/{group_id}/polls")
+def fo_polls_list(group_id: str, user_id: str = Depends(verify_jwt)):
+    membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    polls = sb_client.table("fo_polls").select("*").eq("group_id", group_id).order("created_at", desc=True).execute()
+    if not polls.data:
+        return {"polls": []}
+    poll_ids = [p["id"] for p in polls.data]
+    votes_all = sb_client.table("fo_poll_votes").select("poll_id, user_id, option_id").in_("poll_id", poll_ids).execute()
+    members = sb_client.table("fo_members").select("user_id, display_name, avatar_emoji").eq("group_id", group_id).execute()
+    mmap = {m["user_id"]: m for m in members.data}
+    vote_counts: dict = {}
+    my_vote: dict = {}
+    for v in votes_all.data:
+        pid = v["poll_id"]
+        vote_counts.setdefault(pid, {})
+        vote_counts[pid][v["option_id"]] = vote_counts[pid].get(v["option_id"], 0) + 1
+        if v["user_id"] == user_id:
+            my_vote[pid] = v["option_id"]
+    result = []
+    for p in polls.data:
+        m = mmap.get(p["user_id"], {})
+        is_closed = p.get("is_closed", False)
+        if p.get("closes_at") and not is_closed:
+            try:
+                if datetime.fromisoformat(p["closes_at"].replace("Z", "")) < datetime.utcnow():
+                    is_closed = True
+            except Exception:
+                pass
+        counts = vote_counts.get(p["id"], {})
+        result.append({
+            **p,
+            "display_name": m.get("display_name", "Unbekannt"),
+            "avatar_emoji": m.get("avatar_emoji", "👤"),
+            "is_mine":      p["user_id"] == user_id,
+            "is_closed":    is_closed,
+            "vote_counts":  counts,
+            "my_vote":      my_vote.get(p["id"]),
+            "total_votes":  sum(counts.values()),
+        })
+    return {"polls": result}
+
+
+@app.post("/fo/polls/{poll_id}/vote")
+async def fo_vote(poll_id: str, request: Request, user_id: str = Depends(verify_jwt)):
+    data = await request.json()
+    poll = sb_client.table("fo_polls").select("*").eq("id", poll_id).execute()
+    if not poll.data:
+        raise HTTPException(404, "Umfrage nicht gefunden")
+    p = poll.data[0]
+    if p.get("is_closed"):
+        raise HTTPException(400, "Umfrage ist geschlossen")
+    membership = sb_client.table("fo_members").select("id").eq("group_id", p["group_id"]).eq("user_id", user_id).execute()
+    if not membership.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    option_id = str(data.get("option_id", ""))
+    valid_ids = [str(o["id"]) for o in (p.get("options") or [])]
+    if option_id not in valid_ids:
+        raise HTTPException(400, "Ungültige Option")
+    existing = sb_client.table("fo_poll_votes").select("id").eq("poll_id", poll_id).eq("user_id", user_id).execute()
+    if existing.data:
+        sb_client.table("fo_poll_votes").update({"option_id": option_id}).eq("id", existing.data[0]["id"]).execute()
+    else:
+        sb_client.table("fo_poll_votes").insert({"poll_id": poll_id, "user_id": user_id, "option_id": option_id}).execute()
+    return {"success": True}
+
+
+@app.post("/fo/polls/{poll_id}/close")
+def fo_close_poll(poll_id: str, user_id: str = Depends(verify_jwt)):
+    poll = sb_client.table("fo_polls").select("user_id").eq("id", poll_id).execute()
+    if not poll.data:
+        raise HTTPException(404, "Umfrage nicht gefunden")
+    if poll.data[0]["user_id"] != user_id:
+        raise HTTPException(403, "Nur der Ersteller kann die Umfrage schließen")
+    sb_client.table("fo_polls").update({"is_closed": True}).eq("id", poll_id).execute()
+    return {"success": True}
+
+
+@app.delete("/fo/polls/{poll_id}")
+def fo_delete_poll(poll_id: str, user_id: str = Depends(verify_jwt)):
+    poll = sb_client.table("fo_polls").select("user_id").eq("id", poll_id).execute()
+    if not poll.data:
+        raise HTTPException(404, "Umfrage nicht gefunden")
+    if poll.data[0]["user_id"] != user_id:
+        raise HTTPException(403, "Keine Berechtigung")
+    sb_client.table("fo_poll_votes").delete().eq("poll_id", poll_id).execute()
+    sb_client.table("fo_polls").delete().eq("id", poll_id).execute()
+    return {"success": True}
+
+
 # ─── 13F Filing Tracker ───────────────────────────────────────────────────────
 
 INVESTORS = {
