@@ -5227,7 +5227,7 @@ def _fetch_openinsider(url: str, cache_key: str, ttl_seconds: int = 3600) -> tup
 
 @app.get("/debug/insider/raw")
 async def debug_insider_raw():
-    url = "http://openinsider.com/screener?fd=7&xs=1&vl=100"
+    url = "http://openinsider.com/screener?fd=7&vl=100&cnt=30&Action=Run"
     try:
         resp = requests.get(url, headers=_OPENINSIDER_HEADERS, timeout=15)
     except Exception as exc:
@@ -5256,16 +5256,22 @@ async def debug_insider_raw():
 async def debug_insider_parsed():
     url = (
         "http://openinsider.com/screener?s=&o=&pl=&ph=&ll=&lh="
-        "&fd=7&td=0&tdr=&fdlyl=&fdlyh=&daysago=&xs=1"
+        "&fd=7&td=0&tdr=&fdlyl=&fdlyh=&daysago="
         "&vl=100&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
         "&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&oc2l=&oc2h="
-        "&sortcol=0&cnt=100&Action=Run"
+        "&sortcol=0&cnt=500&Action=Run"
     )
     trades, cached = _fetch_openinsider(url, "debug_parsed", ttl_seconds=0)
+    buys = [t for t in trades if "P -" in t.get("trade_type", "")]
+    sells = [t for t in trades if "S -" in t.get("trade_type", "")]
     return {
-        "count": len(trades),
+        "total_rows": len(trades),
+        "buy_count": len(buys),
+        "sell_count": len(sells),
         "cached": cached,
-        "trades": trades[:5],
+        "sample_buys": buys[:3],
+        "sample_sells": sells[:2],
+        "all_trade_types": list({t.get("trade_type", "") for t in trades}),
     }
 
 
@@ -5273,10 +5279,10 @@ async def debug_insider_parsed():
 async def insider_top(days: int = Query(7, le=30), limit: int = Query(50, le=200), min_value: int = Query(100000)):
     url = (
         f"http://openinsider.com/screener?s=&o=&pl=&ph=&ll=&lh="
-        f"&fd={days}&td=0&tdr=&fdlyl=&fdlyh=&daysago=&xs=1"
+        f"&fd={days}&td=0&tdr=&fdlyl=&fdlyh=&daysago="
         f"&vl={min_value // 1000}&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
         f"&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&oc2l=&oc2h="
-        f"&sortcol=0&cnt=100&Action=Run"
+        f"&sortcol=0&cnt=500&Action=Run"
     )
     cache_key = f"insider_top_{days}_{min_value}"
     trades, cached = _fetch_openinsider(url, cache_key)
@@ -5293,10 +5299,10 @@ async def insider_top(days: int = Query(7, le=30), limit: int = Query(50, le=200
 async def insider_clusters(days: int = Query(7, le=30), min_insiders: int = Query(2, le=10)):
     url = (
         f"http://openinsider.com/screener?s=&o=&pl=&ph=&ll=&lh="
-        f"&fd={days}&td=0&tdr=&fdlyl=&fdlyh=&daysago=&xs=1"
-        f"&vl=50&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
+        f"&fd={days}&td=0&tdr=&fdlyl=&fdlyh=&daysago="
+        f"&vl=0&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
         f"&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&oc2l=&oc2h="
-        f"&sortcol=0&cnt=200&Action=Run"
+        f"&sortcol=0&cnt=500&Action=Run"
     )
     cache_key = f"insider_clusters_{days}"
     trades, _ = _fetch_openinsider(url, cache_key)
@@ -5375,10 +5381,10 @@ async def insider_my_alerts(user_id: str = Depends(verify_jwt)):
 
     url = (
         f"http://openinsider.com/screener?s=&o=&pl=&ph=&ll=&lh="
-        f"&fd=7&td=0&tdr=&fdlyl=&fdlyh=&daysago=&xs=1"
-        f"&vl=&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
+        f"&fd=7&td=0&tdr=&fdlyl=&fdlyh=&daysago="
+        f"&vl=0&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
         f"&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&oc2l=&oc2h="
-        f"&sortcol=0&cnt=200&Action=Run"
+        f"&sortcol=0&cnt=500&Action=Run"
     )
     trades, _ = _fetch_openinsider(url, "insider_all_7d", ttl_seconds=3600)
     alerts = [t for t in trades if t["ticker"] in tickers and ("P -" in t.get("trade_type", "") or t.get("trade_type", "").startswith("P"))]
