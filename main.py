@@ -5167,6 +5167,221 @@ async def test_av():
         return {"status": r.status_code, "keys": list(r.json().keys())[:10]}
 
 
+# ─── News KI-Analyse ─────────────────────────────────────────────────────────
+
+class NewsAnalyzeRequest(BaseModel):
+    news_id: str | None = None
+    headline: str
+    summary: str
+    source: str | None = None
+    url: str | None = None
+    published_at: str | None = None
+
+class NewsPortfolioImpactRequest(BaseModel):
+    headline: str
+    summary: str
+    user_holdings: list[dict]
+
+class NewsDailyBriefingRequest(BaseModel):
+    force_regenerate: bool = False
+
+
+def _strip_json_fence(text: str) -> str:
+    text = text.strip()
+    if text.startswith("```"):
+        parts = text.split("```")
+        text = parts[1] if len(parts) > 1 else text
+        if text.startswith("json"):
+            text = text[4:]
+    return text.strip()
+
+
+@app.post("/news/analyze")
+async def news_analyze(body: NewsAnalyzeRequest):
+    if not ANTHROPIC_API_KEY:
+        raise HTTPException(status_code=503, detail="ANTHROPIC_API_KEY nicht konfiguriert.")
+
+    prompt = (
+        f"Du bist ein Investment-Analyst. Analysiere diese News objektiv.\n\n"
+        f"Headline: {body.headline}\n"
+        f"Zusammenfassung: {body.summary}\n\n"
+        f'Liefere exakt dieses JSON (kein Markdown drumherum):\n'
+        f'{{"ai_summary":"3-4 Sätze sachliche Zusammenfassung auf Deutsch",'
+        f'"sentiment":"bullish|neutral|bearish",'
+        f'"sentiment_score":0.0,'
+        f'"affected_sectors":["Sektor1"],'
+        f'"key_takeaways":["Takeaway 1","Takeaway 2"]}}\n\n'
+        f"Sektoren nur aus: Technologie, Gesundheit, Finanzen, Konsum, Industrie, Kommunikation, Energie, Materialien, Immobilien, Versorger\n"
+        f"Sachlich, deutsch, keine Empfehlungen. Passive Sprache. Nur reines JSON."
+    )
+
+    try:
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={"Content-Type": "application/json", "x-api-key": ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01"},
+            json={"model": "claude-sonnet-4-6", "max_tokens": 600, "messages": [{"role": "user", "content": prompt}]},
+            timeout=30,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(status_code=502, detail=f"Anthropic Netzwerkfehler: {exc}")
+
+    if not resp.ok:
+        err = resp.json() if resp.content else {}
+        raise HTTPException(status_code=502, detail=err.get("error", {}).get("message", f"Anthropic Fehler {resp.status_code}"))
+
+    try:
+        result = json.loads(_strip_json_fence(resp.json()["content"][0]["text"]))
+    except (json.JSONDecodeError, KeyError):
+        raise HTTPException(status_code=502, detail="Ungültige JSON-Antwort von Anthropic")
+
+    return result
+
+
+@app.post("/news/portfolio-impact")
+async def news_portfolio_impact(body: NewsPortfolioImpactRequest, user_id: str = Depends(verify_jwt)):
+    if not ANTHROPIC_API_KEY:
+        raise HTTPException(status_code=503, detail="ANTHROPIC_API_KEY nicht konfiguriert.")
+
+    if not body.user_holdings:
+        raise HTTPException(status_code=400, detail="user_holdings erforderlich.")
+
+    holdings_text = "\n".join([
+        f"{h.get('ticker','?')} ({TICKER_SECTOR_MAP.get(h.get('ticker',''), 'Unbekannt')}) - {h.get('weight_pct', 0):.1f}%"
+        for h in body.user_holdings
+    ])
+
+    prompt = (
+        f"Analysiere wie diese News das Portfolio des Users beeinflussen würde.\n\n"
+        f"News: {body.headline}\n{body.summary}\n\n"
+        f"Portfolio:\n{holdings_text}\n\n"
+        f'Liefere exakt dieses JSON (kein Markdown):\n'
+        f'{{"overall_impact":"positive|neutral|negative",'
+        f'"impact_score":0.0,'
+        f'"position_impacts":[{{"ticker":"AAPL","sector":"Technologie","expected_direction":"+","reasoning":"1-Satz-Begründung"}}],'
+        f'"summary_for_user":"2-3 Sätze Zusammenfassung"}}\n\n'
+        f'expected_direction: "+" positiv, "-" negativ, "0" neutral\n'
+        f"impact_score: -1 (sehr negativ) bis +1 (sehr positiv)\n"
+        f"Sachlich, deutsch, keine Empfehlungen. Nur reines JSON."
+    )
+
+    try:
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={"Content-Type": "application/json", "x-api-key": ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01"},
+            json={"model": "claude-sonnet-4-6", "max_tokens": 800, "messages": [{"role": "user", "content": prompt}]},
+            timeout=40,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(status_code=502, detail=f"Anthropic Netzwerkfehler: {exc}")
+
+    if not resp.ok:
+        err = resp.json() if resp.content else {}
+        raise HTTPException(status_code=502, detail=err.get("error", {}).get("message", f"Anthropic Fehler {resp.status_code}"))
+
+    try:
+        result = json.loads(_strip_json_fence(resp.json()["content"][0]["text"]))
+    except (json.JSONDecodeError, KeyError):
+        raise HTTPException(status_code=502, detail="Ungültige JSON-Antwort von Anthropic")
+
+    return result
+
+
+@app.post("/news/daily-briefing")
+async def news_daily_briefing(body: NewsDailyBriefingRequest, user_id: str = Depends(verify_jwt)):
+    if not ANTHROPIC_API_KEY:
+        raise HTTPException(status_code=503, detail="ANTHROPIC_API_KEY nicht konfiguriert.")
+
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    if not body.force_regenerate:
+        existing = sb_client.table("news_briefings").select("*").eq("user_id", user_id).eq("briefing_date", today).execute()
+        if existing.data:
+            row = existing.data[0]
+            return {"briefing_date": row["briefing_date"], "content": row["content"], "generated_at": row["created_at"], "cached": True}
+
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            r = await client.get(
+                f"{AV_BASE}?function=NEWS_SENTIMENT&topics=financial_markets,economy_macro,finance&limit=10&apikey={AV_KEY}"
+            )
+        feed = r.json().get("feed", [])
+        news_items = [
+            {"title": item.get("title", ""), "summary": (item.get("summary", "") or "")[:200], "source": item.get("source", "")}
+            for item in feed[:6]
+        ]
+    except Exception:
+        news_items = []
+
+    portfolios = sb_client.table("portfolios").select("id").eq("user_id", user_id).execute()
+    holdings = []
+    portfolio_snapshot: dict = {}
+    if portfolios.data:
+        p_id = portfolios.data[0]["id"]
+        positions = sb_client.table("positions").select("ticker,shares,cost_basis").eq("portfolio_id", p_id).execute()
+        if positions.data:
+            holdings = [{"ticker": p["ticker"], "sector": TICKER_SECTOR_MAP.get(p["ticker"], "Unbekannt")} for p in positions.data]
+            portfolio_snapshot = {"portfolio_id": p_id, "tickers": [p["ticker"] for p in positions.data]}
+
+    news_text = "\n".join([f"- {n['title']} ({n['source']}): {n['summary']}" for n in news_items]) or "Keine aktuellen News verfügbar."
+    holdings_text = "\n".join([f"- {h['ticker']} ({h['sector']})" for h in holdings]) or "Kein Portfolio erfasst."
+    date_de = datetime.now().strftime("%d.%m.%Y")
+
+    prompt = (
+        f"Du bist ein sachlicher Finanzmarkt-Beobachter. Erstelle ein tägliches Marktbriefing.\n\n"
+        f"Aktuelle News (letzte 24h):\n{news_text}\n\n"
+        f"Portfolio des Users:\n{holdings_text}\n\n"
+        f"Erstelle ein strukturiertes Markdown-Briefing in exakt dieser Form:\n\n"
+        f"# Tägliches Marktbriefing — {date_de}\n\n"
+        f"## Top-Themen heute\n"
+        f"- [Bullet 1]\n- [Bullet 2]\n- [Bullet 3]\n\n"
+        f"## Was bedeutet das für dein Portfolio?\n"
+        f"[Pro relevante Position 1-2 Sätze Impact. Falls kein Portfolio: allgemeine Einschätzung.]\n\n"
+        f"## Heute zu beobachten\n"
+        f"[Relevante Earnings/Wirtschaftsdaten/Fed-Reden — falls keine bekannt: 'Keine besonderen Termine heute'.]\n\n"
+        f"## Risiken\n"
+        f"[2-3 konkrete Risikofaktoren für die Holdings.]\n\n"
+        f"*Keine Anlageberatung. Nur Marktbeobachtung.*\n\n"
+        f"Ton: Sachlich, passiv, objektiv. Keine Kauf- oder Verkaufsempfehlungen."
+    )
+
+    try:
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={"Content-Type": "application/json", "x-api-key": ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01"},
+            json={"model": "claude-sonnet-4-6", "max_tokens": 1000, "messages": [{"role": "user", "content": prompt}]},
+            timeout=60,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(status_code=502, detail=f"Anthropic Netzwerkfehler: {exc}")
+
+    if not resp.ok:
+        err = resp.json() if resp.content else {}
+        raise HTTPException(status_code=502, detail=err.get("error", {}).get("message", f"Anthropic Fehler {resp.status_code}"))
+
+    content = resp.json()["content"][0]["text"]
+    now_str = datetime.utcnow().isoformat()
+
+    sb_client.table("news_briefings").upsert(
+        {"user_id": user_id, "briefing_date": today, "content": content, "portfolio_snapshot": portfolio_snapshot},
+        on_conflict="user_id,briefing_date",
+    ).execute()
+
+    return {"briefing_date": today, "content": content, "generated_at": now_str, "cached": False}
+
+
+@app.get("/news/briefings/history")
+async def news_briefings_history(limit: int = Query(7, le=30), user_id: str = Depends(verify_jwt)):
+    rows = (
+        sb_client.table("news_briefings")
+        .select("briefing_date,content,created_at")
+        .eq("user_id", user_id)
+        .order("briefing_date", desc=True)
+        .limit(limit)
+        .execute()
+    )
+    return [{"briefing_date": r["briefing_date"], "content": r["content"], "created_at": r["created_at"]} for r in (rows.data or [])]
+
+
 # ─── Run ──────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
