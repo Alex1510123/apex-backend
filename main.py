@@ -5696,6 +5696,229 @@ async def news_briefings_history(limit: int = Query(7, le=30), user_id: str = De
     return [{"briefing_date": r["briefing_date"], "content": r["content"], "created_at": r["created_at"]} for r in (rows.data or [])]
 
 
+# ─── Tax: Loss Harvesting ─────────────────────────────────────────────────────
+
+class TaxSettingsUpdate(BaseModel):
+    tax_rate:        float | None = None
+    tax_year:        int   | None = None
+    realized_gains:  float | None = None
+
+class WashSaleCheckRequest(BaseModel):
+    ticker:                  str
+    planned_sell_date:       str
+    planned_repurchase_date: str | None = None
+
+WASH_SALE_ALTERNATIVES: dict[str, list[dict]] = {
+    "SPY":  [{"ticker": "VOO",  "name": "Vanguard S&P 500 ETF"},     {"ticker": "IVV",  "name": "iShares Core S&P 500"}],
+    "VOO":  [{"ticker": "SPY",  "name": "SPDR S&P 500 ETF"},          {"ticker": "IVV",  "name": "iShares Core S&P 500"}],
+    "IVV":  [{"ticker": "SPY",  "name": "SPDR S&P 500 ETF"},          {"ticker": "VOO",  "name": "Vanguard S&P 500 ETF"}],
+    "QQQ":  [{"ticker": "QQQM", "name": "Invesco NASDAQ 100 ETF"},    {"ticker": "ONEQ", "name": "Fidelity NASDAQ Composite"}],
+    "QQQM": [{"ticker": "QQQ",  "name": "Invesco QQQ Trust"},          {"ticker": "ONEQ", "name": "Fidelity NASDAQ Composite"}],
+    "IWM":  [{"ticker": "VB",   "name": "Vanguard Small-Cap ETF"},    {"ticker": "IJR",  "name": "iShares Core S&P Small-Cap"}],
+    "VB":   [{"ticker": "IWM",  "name": "iShares Russell 2000 ETF"},  {"ticker": "IJR",  "name": "iShares Core S&P Small-Cap"}],
+}
+
+
+@app.get("/tax/settings")
+def get_tax_settings(user_id: str = Depends(verify_jwt)):
+    row = sb_client.table("tax_settings").select("*").eq("user_id", user_id).execute()
+    if row.data:
+        r = row.data[0]
+        return {
+            "tax_rate":        float(r["tax_rate"]),
+            "tax_year":        r["tax_year"],
+            "realized_gains":  float(r["realized_gains"]),
+            "realized_losses": float(r["realized_losses"]),
+        }
+    return {"tax_rate": 27.5, "tax_year": datetime.utcnow().year, "realized_gains": 0.0, "realized_losses": 0.0}
+
+
+@app.post("/tax/settings")
+def upsert_tax_settings(body: TaxSettingsUpdate, user_id: str = Depends(verify_jwt)):
+    existing = sb_client.table("tax_settings").select("*").eq("user_id", user_id).execute()
+    if existing.data:
+        cur  = existing.data[0]
+        data = {
+            "user_id":         user_id,
+            "tax_rate":        body.tax_rate       if body.tax_rate       is not None else float(cur["tax_rate"]),
+            "tax_year":        body.tax_year       if body.tax_year       is not None else cur["tax_year"],
+            "realized_gains":  body.realized_gains if body.realized_gains is not None else float(cur["realized_gains"]),
+            "realized_losses": float(cur["realized_losses"]),
+            "updated_at":      datetime.utcnow().isoformat(),
+        }
+    else:
+        data = {
+            "user_id":         user_id,
+            "tax_rate":        body.tax_rate       if body.tax_rate       is not None else 27.5,
+            "tax_year":        body.tax_year       if body.tax_year       is not None else datetime.utcnow().year,
+            "realized_gains":  body.realized_gains if body.realized_gains is not None else 0.0,
+            "realized_losses": 0.0,
+            "updated_at":      datetime.utcnow().isoformat(),
+        }
+    result = sb_client.table("tax_settings").upsert(data, on_conflict="user_id").execute()
+    r = result.data[0]
+    return {
+        "tax_rate":        float(r["tax_rate"]),
+        "tax_year":        r["tax_year"],
+        "realized_gains":  float(r["realized_gains"]),
+        "realized_losses": float(r["realized_losses"]),
+    }
+
+
+def _get_loss_candidates_for_user(user_id: str) -> dict:
+    portfolios = sb_client.table("portfolios").select("id").eq("user_id", user_id).execute()
+    if not portfolios.data:
+        return {"candidates": [], "total_potential_savings": 0.0, "total_realizable_losses": 0.0}
+
+    p_id      = portfolios.data[0]["id"]
+    positions = sb_client.table("positions").select("id,ticker,shares,cost_basis,added_at").eq("portfolio_id", p_id).execute()
+    if not positions.data:
+        return {"candidates": [], "total_potential_savings": 0.0, "total_realizable_losses": 0.0}
+
+    tickers  = [p["ticker"] for p in positions.data]
+    quotes   = fetch_realtime(tickers)
+    today    = datetime.utcnow().date()
+    tax_row  = sb_client.table("tax_settings").select("tax_rate").eq("user_id", user_id).execute()
+    tax_rate = float(tax_row.data[0]["tax_rate"]) / 100.0 if tax_row.data else 0.275
+
+    candidates = []
+    for pos in positions.data:
+        ticker = pos["ticker"]
+        q      = quotes.get(ticker)
+        if not q or not q.get("price"):
+            continue
+
+        current_price = float(q["price"])
+        avg_buy_price = float(pos["cost_basis"])
+        shares        = float(pos["shares"])
+        unrealized    = (current_price - avg_buy_price) * shares
+
+        if unrealized >= 0:
+            continue
+
+        bought_at        = (pos.get("added_at") or "")[:10] or None
+        days_held        = None
+        wash_sale_risk   = False
+        wash_sale_reason = None
+
+        if bought_at:
+            try:
+                buy_date  = datetime.strptime(bought_at, "%Y-%m-%d").date()
+                days_held = (today - buy_date).days
+                if days_held < 30:
+                    wash_sale_risk   = True
+                    wash_sale_reason = (
+                        f"Position erst vor {days_held} Tagen gekauft. "
+                        "Das Finanzamt kann den Verlust bei Rückkauf < 30 Tage als Gestaltungsmissbrauch ablehnen."
+                    )
+            except Exception:
+                pass
+
+        unrealized_pct = ((current_price - avg_buy_price) / avg_buy_price) * 100
+        tax_savings    = abs(unrealized) * tax_rate
+
+        candidates.append({
+            "ticker":              ticker,
+            "name":                q.get("shortName", ticker),
+            "shares":              shares,
+            "avg_buy_price":       avg_buy_price,
+            "current_price":       current_price,
+            "unrealized_loss":     unrealized,
+            "unrealized_loss_pct": unrealized_pct,
+            "tax_savings":         tax_savings,
+            "bought_at":           bought_at,
+            "days_held":           days_held,
+            "wash_sale_risk":      wash_sale_risk,
+            "wash_sale_reason":    wash_sale_reason,
+        })
+
+    candidates.sort(key=lambda x: abs(x["unrealized_loss"]), reverse=True)
+    total_losses  = sum(abs(c["unrealized_loss"]) for c in candidates)
+    total_savings = sum(c["tax_savings"] for c in candidates)
+
+    return {
+        "candidates":              candidates,
+        "total_potential_savings": total_savings,
+        "total_realizable_losses": total_losses,
+    }
+
+
+@app.get("/tax/loss-candidates")
+def get_loss_candidates(user_id: str = Depends(verify_jwt)):
+    return _get_loss_candidates_for_user(user_id)
+
+
+@app.get("/tax/year-end-summary")
+def get_year_end_summary(user_id: str = Depends(verify_jwt)):
+    settings_row = sb_client.table("tax_settings").select("*").eq("user_id", user_id).execute()
+    if settings_row.data:
+        s              = settings_row.data[0]
+        tax_rate       = float(s["tax_rate"]) / 100.0
+        tax_year       = s["tax_year"]
+        realized_gains = float(s["realized_gains"])
+    else:
+        tax_rate       = 0.275
+        tax_year       = datetime.utcnow().year
+        realized_gains = 0.0
+
+    cands            = _get_loss_candidates_for_user(user_id)
+    potential_losses = cands["total_realizable_losses"]
+
+    tax_without = max(realized_gains, 0.0) * tax_rate
+    net_taxable = max(realized_gains - potential_losses, 0.0)
+    tax_with    = net_taxable * tax_rate
+    savings     = max(tax_without - tax_with, 0.0)
+
+    return {
+        "tax_year":                   tax_year,
+        "tax_rate":                   tax_rate * 100,
+        "realized_gains_input":       realized_gains,
+        "realized_losses_potential":  potential_losses,
+        "net_taxable":                net_taxable,
+        "tax_due_without_harvesting": tax_without,
+        "tax_due_with_harvesting":    tax_with,
+        "total_savings":              savings,
+    }
+
+
+@app.post("/tax/wash-sale-check")
+def wash_sale_check(body: WashSaleCheckRequest, user_id: str = Depends(verify_jwt)):
+    ticker = body.ticker.strip().upper()
+    try:
+        sell_date = datetime.strptime(body.planned_sell_date, "%Y-%m-%d").date()
+    except Exception:
+        raise HTTPException(status_code=400, detail="planned_sell_date muss YYYY-MM-DD sein")
+
+    days_between = None
+    is_risky     = False
+
+    if body.planned_repurchase_date:
+        try:
+            repurchase_date = datetime.strptime(body.planned_repurchase_date, "%Y-%m-%d").date()
+            days_between    = (repurchase_date - sell_date).days
+            is_risky        = 0 < days_between < 30
+        except Exception:
+            pass
+
+    if is_risky:
+        recommendation = (
+            f"Rückkauf nach nur {days_between} Tagen ist riskant. "
+            "Warte mindestens 30 Tage nach dem Verkauf, um Gestaltungsmissbrauch zu vermeiden."
+        )
+    elif days_between is not None:
+        recommendation = f"OK — {days_between} Tage Abstand. Kein erhöhtes Risiko."
+    else:
+        recommendation = "Kein Rückkaufdatum angegeben. Warte mindestens 30 Tage, falls du die Position wiederkaufen möchtest."
+
+    return {
+        "ticker":              ticker,
+        "is_risky":            is_risky,
+        "days_between":        days_between,
+        "recommendation":      recommendation,
+        "alternative_tickers": WASH_SALE_ALTERNATIVES.get(ticker, []),
+    }
+
+
 # ─── Run ──────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
