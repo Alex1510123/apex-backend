@@ -11,6 +11,7 @@ import logging
 import requests
 import pandas as pd
 import numpy as np
+from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from fastapi import FastAPI, HTTPException, Query, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -5165,6 +5166,195 @@ async def test_av():
             f"{AV_BASE}?function=OVERVIEW&symbol=AAPL&apikey={AV_KEY}"
         )
         return {"status": r.status_code, "keys": list(r.json().keys())[:10]}
+
+
+# ─── Insider Trading ─────────────────────────────────────────────────────────
+
+_insider_cache: dict = {}   # key → {"data": [...], "ts": datetime}
+
+_OPENINSIDER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+
+def _parse_insider_table(html: str) -> list[dict]:
+    soup = BeautifulSoup(html, "html.parser")
+    table = soup.find("table", class_="tinytable")
+    if not table:
+        return []
+    rows = table.find("tbody").find_all("tr") if table.find("tbody") else []
+    trades = []
+    for row in rows:
+        cols = row.find_all("td")
+        if len(cols) < 13:
+            continue
+        try:
+            trades.append({
+                "filing_date":   cols[1].get_text(strip=True),
+                "trade_date":    cols[2].get_text(strip=True),
+                "ticker":        cols[3].get_text(strip=True).upper(),
+                "company":       cols[4].get_text(strip=True),
+                "insider_name":  cols[5].get_text(strip=True),
+                "insider_role":  cols[6].get_text(strip=True),
+                "trade_type":    cols[7].get_text(strip=True),
+                "price":         cols[8].get_text(strip=True),
+                "qty":           cols[9].get_text(strip=True),
+                "owned":         cols[10].get_text(strip=True),
+                "delta_own":     cols[11].get_text(strip=True),
+                "value":         cols[12].get_text(strip=True),
+            })
+        except (IndexError, AttributeError):
+            continue
+    return trades
+
+
+def _fetch_openinsider(url: str, cache_key: str, ttl_seconds: int = 3600) -> tuple[list[dict], bool]:
+    cached = _insider_cache.get(cache_key)
+    if cached and (datetime.now() - cached["ts"]).total_seconds() < ttl_seconds:
+        return cached["data"], True
+    try:
+        resp = requests.get(url, headers=_OPENINSIDER_HEADERS, timeout=15)
+        resp.raise_for_status()
+        trades = _parse_insider_table(resp.text)
+        _insider_cache[cache_key] = {"data": trades, "ts": datetime.now()}
+        return trades, False
+    except Exception as exc:
+        logger.warning(f"[insider] fetch failed: {exc}")
+        if cached:
+            return cached["data"], True
+        return [], False
+
+
+@app.get("/insider/top")
+async def insider_top(days: int = Query(7, le=30), limit: int = Query(50, le=200), min_value: int = Query(100000)):
+    url = (
+        f"http://openinsider.com/screener?s=&o=&pl=&ph=&ll=&lh="
+        f"&fd={days}&td=0&tdr=&fdlyl=&fdlyh=&daysago=&xs=1"
+        f"&vl={min_value // 1000}&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
+        f"&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&oc2l=&oc2h="
+        f"&sortcol=0&cnt=100&Action=Run"
+    )
+    cache_key = f"insider_top_{days}_{min_value}"
+    trades, cached = _fetch_openinsider(url, cache_key)
+    buys = [t for t in trades if "P -" in t.get("trade_type", "") or t.get("trade_type", "").startswith("P")]
+    return {
+        "trades": buys[:limit],
+        "cached": cached,
+        "last_updated": _insider_cache.get(cache_key, {}).get("ts", datetime.now()).isoformat(),
+        "total": len(buys),
+    }
+
+
+@app.get("/insider/clusters")
+async def insider_clusters(days: int = Query(7, le=30), min_insiders: int = Query(2, le=10)):
+    url = (
+        f"http://openinsider.com/screener?s=&o=&pl=&ph=&ll=&lh="
+        f"&fd={days}&td=0&tdr=&fdlyl=&fdlyh=&daysago=&xs=1"
+        f"&vl=50&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
+        f"&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&oc2l=&oc2h="
+        f"&sortcol=0&cnt=200&Action=Run"
+    )
+    cache_key = f"insider_clusters_{days}"
+    trades, _ = _fetch_openinsider(url, cache_key)
+    buys = [t for t in trades if "P -" in t.get("trade_type", "") or t.get("trade_type", "").startswith("P")]
+
+    def parse_value(v: str) -> float:
+        try:
+            return float(v.replace("$", "").replace(",", "").replace("+", "").strip())
+        except Exception:
+            return 0.0
+
+    groups: dict[str, dict] = {}
+    for t in buys:
+        ticker = t["ticker"]
+        if not ticker:
+            continue
+        if ticker not in groups:
+            groups[ticker] = {"ticker": ticker, "company": t["company"], "insiders": [], "total_value": 0.0, "earliest_filing": t["filing_date"]}
+        val = parse_value(t["value"])
+        groups[ticker]["total_value"] += val
+        groups[ticker]["insiders"].append({"name": t["insider_name"], "role": t["insider_role"], "value": t["value"]})
+
+    clusters = [
+        {**g, "insider_count": len(g["insiders"]), "total_value_fmt": f"${g['total_value']:,.0f}"}
+        for g in groups.values()
+        if len(g["insiders"]) >= min_insiders
+    ]
+    clusters.sort(key=lambda x: x["insider_count"], reverse=True)
+    return clusters
+
+
+@app.get("/insider/ticker/{ticker}")
+async def insider_ticker(ticker: str, days: int = Query(30, le=365)):
+    t = ticker.upper().strip()
+    url = (
+        f"http://openinsider.com/screener?s={t}&o=&pl=&ph=&ll=&lh="
+        f"&fd={days}&td=0&tdr=&fdlyl=&fdlyh=&daysago="
+        f"&xs=0&vl=&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
+        f"&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&oc2l=&oc2h="
+        f"&sortcol=0&cnt=100&Action=Run"
+    )
+    cache_key = f"insider_ticker_{t}_{days}"
+    trades, cached = _fetch_openinsider(url, cache_key, ttl_seconds=1800)
+
+    def parse_value(v: str) -> float:
+        try:
+            return float(v.replace("$", "").replace(",", "").replace("+", "").strip())
+        except Exception:
+            return 0.0
+
+    buys  = [tr for tr in trades if "P -" in tr.get("trade_type", "") or tr.get("trade_type", "").startswith("P")]
+    sells = [tr for tr in trades if "S -" in tr.get("trade_type", "") or tr.get("trade_type", "").startswith("S")]
+    net   = sum(parse_value(b["value"]) for b in buys) - sum(parse_value(s["value"]) for s in sells)
+    return {
+        "ticker": t,
+        "trades": trades,
+        "buy_count": len(buys),
+        "sell_count": len(sells),
+        "net_value": net,
+        "net_value_fmt": f"{'+'if net>=0 else ''}${net:,.0f}",
+        "cached": cached,
+    }
+
+
+@app.get("/insider/my-alerts")
+async def insider_my_alerts(user_id: str = Depends(verify_jwt)):
+    portfolios = sb_client.table("portfolios").select("id").eq("user_id", user_id).execute()
+    if not portfolios.data:
+        return []
+    p_id = portfolios.data[0]["id"]
+    positions = sb_client.table("positions").select("ticker").eq("portfolio_id", p_id).execute()
+    if not positions.data:
+        return []
+
+    tickers = list({p["ticker"].upper() for p in positions.data})
+
+    url = (
+        f"http://openinsider.com/screener?s=&o=&pl=&ph=&ll=&lh="
+        f"&fd=7&td=0&tdr=&fdlyl=&fdlyh=&daysago=&xs=1"
+        f"&vl=&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
+        f"&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&oc2l=&oc2h="
+        f"&sortcol=0&cnt=200&Action=Run"
+    )
+    trades, _ = _fetch_openinsider(url, "insider_all_7d", ttl_seconds=3600)
+    alerts = [t for t in trades if t["ticker"] in tickers and ("P -" in t.get("trade_type", "") or t.get("trade_type", "").startswith("P"))]
+
+    result = []
+    for t in alerts:
+        is_cluster = sum(1 for x in alerts if x["ticker"] == t["ticker"]) >= 3
+        result.append({
+            "ticker":            t["ticker"],
+            "company":           t["company"],
+            "alert_type":        "cluster_buy" if is_cluster else "insider_buy",
+            "insider_name":      t["insider_name"],
+            "insider_role":      t["insider_role"],
+            "trade_type":        t["trade_type"],
+            "value":             t["value"],
+            "qty":               t["qty"],
+            "filing_date":       t["filing_date"],
+            "seen":              False,
+        })
+    return result
 
 
 # ─── News KI-Analyse ─────────────────────────────────────────────────────────
