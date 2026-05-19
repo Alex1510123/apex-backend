@@ -4756,6 +4756,38 @@ def lookup_sector(ticker: str) -> str:
     return sector_de
 
 
+@app.get("/debug/sector/{ticker}")
+async def debug_sector(ticker: str):
+    normalized = _eodhd_ticker(ticker)
+    url = f"{EODHD_BASE}/fundamentals/{normalized}"
+    params = {"api_token": EODHD_API_KEY, "filter": "General::Sector", "fmt": "json"}
+    try:
+        resp = requests.get(url, params=params, timeout=10)
+        try:
+            resp_json = resp.json()
+        except Exception:
+            resp_json = None
+        return {
+            "input_ticker":  ticker,
+            "normalized":    normalized,
+            "url_called":    str(resp.url),
+            "status_code":   resp.status_code,
+            "raw_response":  resp.text[:500],
+            "response_json": resp_json,
+            "cached_value":  cache.get(f"sector:{ticker}", 86400),
+        }
+    except Exception as e:
+        return {"error": str(e), "input_ticker": ticker, "normalized": normalized}
+
+
+@app.post("/debug/clear-sector-cache")
+async def clear_sector_cache():
+    keys_removed = [k for k in list(cache._store.keys()) if k.startswith("sector:")]
+    for k in keys_removed:
+        del cache._store[k]
+    return {"cleared": True, "keys_removed": keys_removed}
+
+
 @app.get("/groups/{group_id}/sector-allocation")
 def groups_sector_allocation(group_id: str, user_id: str = Depends(verify_jwt)):
     mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
