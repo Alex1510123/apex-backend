@@ -5177,31 +5177,76 @@ _OPENINSIDER_HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
 }
 
+_HEADER_ALIASES = {
+    # normalised header → field name
+    "filing date":   "filing_date",
+    "trade date":    "trade_date",
+    "ticker":        "ticker",
+    "company":       "company",
+    "insider name":  "insider_name",
+    "title":         "insider_role",
+    "trade type":    "trade_type",
+    "price":         "price",
+    "qty":           "qty",
+    "owned":         "owned",
+    "δown":          "delta_own",
+    "value":         "value",
+}
+
 def _parse_insider_table(html: str) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     table = soup.find("table", class_="tinytable")
     if not table:
         return []
+
+    # Build col-index map from headers so we handle different table layouts
+    col_map: dict[str, int] = {}
+    thead = table.find("thead")
+    if thead:
+        for i, th in enumerate(thead.find_all("th")):
+            raw = th.get_text(strip=True).lower().replace("\xa0", " ").replace("  ", " ")
+            field = _HEADER_ALIASES.get(raw)
+            if field:
+                col_map[field] = i
+
+    # Fallback: classic 17-col layout (general screener)
+    FALLBACK = {
+        "filing_date": 1, "trade_date": 2, "ticker": 3, "company": 4,
+        "insider_name": 5, "insider_role": 6, "trade_type": 7,
+        "price": 8, "qty": 9, "owned": 10, "delta_own": 11, "value": 12,
+    }
+    if not col_map:
+        col_map = FALLBACK
+
+    required = {"filing_date", "trade_type", "value"}
+    if not required.issubset(col_map):
+        col_map = {**FALLBACK, **col_map}  # merge: header-detected overrides fallback
+
     rows = table.find("tbody").find_all("tr") if table.find("tbody") else []
     trades = []
     for row in rows:
         cols = row.find_all("td")
-        if len(cols) < 13:
+        if len(cols) < 8:
             continue
+        def get(field: str) -> str:
+            idx = col_map.get(field, -1)
+            if idx < 0 or idx >= len(cols):
+                return ""
+            return cols[idx].get_text(strip=True)
         try:
             trades.append({
-                "filing_date":   cols[1].get_text(strip=True),
-                "trade_date":    cols[2].get_text(strip=True),
-                "ticker":        cols[3].get_text(strip=True).upper(),
-                "company":       cols[4].get_text(strip=True),
-                "insider_name":  cols[5].get_text(strip=True),
-                "insider_role":  cols[6].get_text(strip=True),
-                "trade_type":    cols[7].get_text(strip=True),
-                "price":         cols[8].get_text(strip=True),
-                "qty":           cols[9].get_text(strip=True),
-                "owned":         cols[10].get_text(strip=True),
-                "delta_own":     cols[11].get_text(strip=True),
-                "value":         cols[12].get_text(strip=True),
+                "filing_date":  get("filing_date"),
+                "trade_date":   get("trade_date"),
+                "ticker":       get("ticker").upper(),
+                "company":      get("company"),
+                "insider_name": get("insider_name"),
+                "insider_role": get("insider_role"),
+                "trade_type":   get("trade_type"),
+                "price":        get("price"),
+                "qty":          get("qty"),
+                "owned":        get("owned"),
+                "delta_own":    get("delta_own"),
+                "value":        get("value"),
             })
         except (IndexError, AttributeError):
             continue
@@ -5381,9 +5426,10 @@ async def insider_ticker(ticker: str, days: int = Query(30, le=365)):
         except Exception:
             return 0.0
 
-    buys  = [tr for tr in trades if "P -" in tr.get("trade_type", "") or tr.get("trade_type", "").startswith("P")]
-    sells = [tr for tr in trades if "S -" in tr.get("trade_type", "") or tr.get("trade_type", "").startswith("S")]
-    net   = sum(parse_value(b["value"]) for b in buys) - sum(parse_value(s["value"]) for s in sells)
+    buys  = [tr for tr in trades if tr.get("trade_type", "").strip().startswith("P")]
+    sells = [tr for tr in trades if tr.get("trade_type", "").strip().startswith("S")]
+    # values are already signed: buys "+$X" → positive, sells "-$X" → negative
+    net = sum(parse_value(t["value"]) for t in trades)
     return {
         "ticker": t,
         "trades": trades,
