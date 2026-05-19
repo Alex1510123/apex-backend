@@ -5252,6 +5252,34 @@ async def debug_insider_raw():
     }
 
 
+@app.get("/debug/insider/ticker-cols")
+async def debug_insider_ticker_cols(ticker: str = "AAPL"):
+    url = (
+        f"http://openinsider.com/screener?s={ticker.upper()}&o=&pl=&ph=&ll=&lh="
+        f"&fd=30&td=0&tdr=&fdlyl=&fdlyh=&daysago="
+        f"&vl=&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
+        f"&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&oc2l=&oc2h="
+        f"&sortcol=0&cnt=10&Action=Run"
+    )
+    try:
+        resp = requests.get(url, headers=_OPENINSIDER_HEADERS, timeout=15)
+    except Exception as exc:
+        return {"error": str(exc)}
+    soup = BeautifulSoup(resp.text, "html.parser")
+    table = soup.find("table", class_="tinytable")
+    if not table or not table.find("tbody"):
+        return {"error": "no tinytable found", "url": url}
+    rows = table.find("tbody").find_all("tr")
+    result = []
+    for row in rows[:3]:
+        cols = row.find_all("td")
+        result.append({f"col{i}": c.get_text(strip=True) for i, c in enumerate(cols)})
+    headers = []
+    if table.find("thead"):
+        headers = [th.get_text(strip=True) for th in table.find("thead").find_all("th")]
+    return {"ticker": ticker.upper(), "url": url, "col_count": len(rows[0].find_all("td")) if rows else 0, "headers": headers, "first_rows": result}
+
+
 @app.get("/debug/insider/parsed")
 async def debug_insider_parsed():
     url = (
