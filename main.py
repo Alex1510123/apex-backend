@@ -5225,6 +5225,50 @@ def _fetch_openinsider(url: str, cache_key: str, ttl_seconds: int = 3600) -> tup
         return [], False
 
 
+@app.get("/debug/insider/raw")
+async def debug_insider_raw():
+    url = "http://openinsider.com/screener?fd=7&xs=1&vl=100"
+    try:
+        resp = requests.get(url, headers=_OPENINSIDER_HEADERS, timeout=15)
+    except Exception as exc:
+        return {"error": str(exc)}
+    soup = BeautifulSoup(resp.text, "html.parser")
+    table = soup.find("table", class_="tinytable")
+    tbody_rows = 0
+    col_counts = []
+    if table and table.find("tbody"):
+        rows = table.find("tbody").find_all("tr")
+        tbody_rows = len(rows)
+        for row in rows[:3]:
+            col_counts.append(len(row.find_all("td")))
+    return {
+        "url": url,
+        "status_code": resp.status_code,
+        "response_size": len(resp.text),
+        "has_tinytable": table is not None,
+        "tbody_row_count": tbody_rows,
+        "col_counts_first3_rows": col_counts,
+        "html_snippet": resp.text[:3000],
+    }
+
+
+@app.get("/debug/insider/parsed")
+async def debug_insider_parsed():
+    url = (
+        "http://openinsider.com/screener?s=&o=&pl=&ph=&ll=&lh="
+        "&fd=7&td=0&tdr=&fdlyl=&fdlyh=&daysago=&xs=1"
+        "&vl=100&vh=&ocl=&och=&sic1=-1&sicl=100&sich=9999"
+        "&grp=0&nfl=&nfh=&nil=&nih=&nol=&noh=&v2l=&v2h=&oc2l=&oc2h="
+        "&sortcol=0&cnt=100&Action=Run"
+    )
+    trades, cached = _fetch_openinsider(url, "debug_parsed", ttl_seconds=0)
+    return {
+        "count": len(trades),
+        "cached": cached,
+        "trades": trades[:5],
+    }
+
+
 @app.get("/insider/top")
 async def insider_top(days: int = Query(7, le=30), limit: int = Query(50, le=200), min_value: int = Query(100000)):
     url = (
