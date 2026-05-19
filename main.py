@@ -3943,8 +3943,8 @@ def fo_group_aggregate(group_id: str, user_id: str = Depends(verify_jwt)):
         if isinstance(raw, str):
             raw = json.loads(raw)
         for pos in raw:
-            sym = pos.get("symbol", "")
-            sec = pos.get("sector", "Sonstige")
+            sym = pos.get("symbol") or pos.get("ticker", "")
+            sec = lookup_sector(sym) if sym else "Sonstige"
             w   = float(pos.get("weight_pct", 0))
             sector_weights[sec] = sector_weights.get(sec, 0) + (w / n)
             symbol_holders[sym] = symbol_holders.get(sym, 0) + 1
