@@ -3777,15 +3777,18 @@ def fo_group_members(group_id: str, user_id: str = Depends(verify_jwt)):
 async def share_fo_portfolio(group_id: str, request: Request, user_id: str = Depends(verify_jwt)):
     data = await request.json()
     positions = data.get("positions", [])
-    validated = []
+    # Dedupe by symbol — sum weight_pct if ticker appears multiple times
+    deduped: dict = {}
     for p in positions:
         if "symbol" not in p or "weight_pct" not in p:
             continue
-        validated.append({
-            "symbol":     str(p["symbol"]),
-            "weight_pct": round(float(p["weight_pct"]), 2),
-            "sector":     str(p.get("sector", "Sonstige")),
-        })
+        sym = str(p["symbol"]).upper()
+        deduped[sym] = deduped.get(sym, 0) + float(p["weight_pct"])
+    validated = [
+        {"symbol": sym, "weight_pct": round(w, 2), "sector": "Sonstige"}
+        for sym, w in deduped.items()
+        if w > 0
+    ]
     cash_pct = float(data.get("cash_pct", 0))
     existing = sb_client.table("fo_shared_portfolios").select("id").eq("user_id", user_id).eq("group_id", group_id).execute()
     payload = {
@@ -4694,6 +4697,47 @@ def groups_ideas_delete(group_id: str, idea_id: str, user_id: str = Depends(veri
 
 # ── Group Sector Allocation ────────────────────────────────────────────────────
 
+EODHD_SECTOR_MAP = {
+    "Technology":            "Technologie",
+    "Healthcare":            "Gesundheit",
+    "Financial Services":    "Finanzen",
+    "Financial":             "Finanzen",
+    "Consumer Cyclical":     "Konsum",
+    "Consumer Defensive":    "Konsum",
+    "Industrials":           "Industrie",
+    "Communication Services":"Kommunikation",
+    "Energy":                "Energie",
+    "Basic Materials":       "Materialien",
+    "Real Estate":           "Immobilien",
+    "Utilities":             "Versorger",
+}
+
+def lookup_sector(ticker: str) -> str:
+    cache_key = f"sector:{ticker}"
+    cached = cache.get(cache_key, 86400)
+    if cached is not None:
+        return cached
+    try:
+        resp = requests.get(
+            f"{EODHD_BASE}/fundamentals/{ticker}.US",
+            params={"api_token": EODHD_API_KEY, "filter": "General::Sector", "fmt": "json"},
+            timeout=5,
+        )
+        raw = resp.json()
+        # Response is either a plain string or {"General":{"Sector":"..."}}
+        if isinstance(raw, str) and raw:
+            sector_en = raw
+        elif isinstance(raw, dict):
+            sector_en = raw.get("General", {}).get("Sector") or raw.get("Sector") or ""
+        else:
+            sector_en = ""
+        sector_de = EODHD_SECTOR_MAP.get(sector_en, "Sonstige") if sector_en else "Sonstige"
+    except Exception:
+        sector_de = "Sonstige"
+    cache.set(cache_key, sector_de)
+    return sector_de
+
+
 @app.get("/groups/{group_id}/sector-allocation")
 def groups_sector_allocation(group_id: str, user_id: str = Depends(verify_jwt)):
     mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
@@ -4712,7 +4756,8 @@ def groups_sector_allocation(group_id: str, user_id: str = Depends(verify_jwt)):
             continue
         member_count += 1
         for pos in raw:
-            sector = pos.get("sector", "Sonstige") or "Sonstige"
+            ticker = pos.get("symbol", "")
+            sector = lookup_sector(ticker) if ticker else "Sonstige"
             sector_totals[sector] = sector_totals.get(sector, 0) + float(pos.get("weight_pct", 0))
 
     if member_count == 0:
