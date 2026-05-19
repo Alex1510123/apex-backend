@@ -4413,7 +4413,7 @@ def fo_member_profile(group_id: str, target_user_id: str, user_id: str = Depends
         raw = port.data[0].get("positions") or []
         if isinstance(raw, str):
             raw = json.loads(raw)
-        positions = raw
+        positions = _aggregate_positions(raw)
         try:
             ytd_year = datetime.now().year
             ytd_start = f"{ytd_year}-01-01"
