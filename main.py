@@ -3749,6 +3749,11 @@ async def join_fo_group(request: Request, user_id: str = Depends(verify_jwt)):
         "avatar_emoji": data.get("avatar_emoji", "👤"),
         "role":         "member",
     }).execute()
+    emit_activity(group_id, user_id, "join", {})
+    # Achievement: early_bird if <=3 members
+    mc = sb_client.table("fo_members").select("id", count="exact").eq("group_id", group_id).execute()
+    if (mc.count or 0) <= 3:
+        check_and_unlock(group_id, user_id, "early_bird")
     return {"group": group.data[0]}
 
 
@@ -3796,6 +3801,7 @@ async def share_fo_portfolio(group_id: str, request: Request, user_id: str = Dep
         sb_client.table("fo_shared_portfolios").update(payload).eq("id", existing.data[0]["id"]).execute()
     else:
         sb_client.table("fo_shared_portfolios").insert(payload).execute()
+    emit_activity(group_id, user_id, "portfolio_share", {"positions": len(validated)})
     return {"success": True}
 
 
@@ -3955,6 +3961,14 @@ async def create_fo_post(group_id: str, request: Request, user_id: str = Depends
         "title":     (data.get("title") or "").strip()[:200],
         "thesis":    (data.get("thesis") or "").strip()[:2000],
     }).execute()
+    emit_activity(group_id, user_id, "post", {"title": (data.get("title") or "").strip()[:80]})
+    # Achievements
+    post_count = sb_client.table("fo_posts").select("id", count="exact").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if (post_count.count or 0) == 1:
+        check_and_unlock(group_id, user_id, "first_post")
+    thesis_count = sb_client.table("fo_posts").select("id", count="exact").eq("group_id", group_id).eq("user_id", user_id).neq("thesis", "").execute()
+    if (thesis_count.count or 0) >= 5:
+        check_and_unlock(group_id, user_id, "thesis_master")
     return {"post": result.data[0]}
 
 
@@ -4169,6 +4183,13 @@ async def create_fo_poll(group_id: str, request: Request, user_id: str = Depends
         "group_id": group_id, "user_id": user_id,
         "question": question[:500], "options": options, "closes_at": closes_at,
     }).execute()
+    emit_activity(group_id, user_id, "poll_create", {"title": question[:80]})
+    # Achievements
+    poll_count = sb_client.table("fo_polls").select("id", count="exact").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if (poll_count.count or 0) == 1:
+        check_and_unlock(group_id, user_id, "debate_starter")
+    if (poll_count.count or 0) >= 3:
+        check_and_unlock(group_id, user_id, "consensus_builder")
     return {"poll": result.data[0]}
 
 
@@ -4338,6 +4359,446 @@ def fo_member_profile(group_id: str, target_user_id: str, user_id: str = Depends
         "xp":           xp,
         "positions":    positions,
     }
+
+
+# ─── Gruppen (Sprint 34) ───────────────────────────────────────────────────────
+
+ACHIEVEMENTS = {
+    "first_post":        {"name": "Erster Post",        "icon": "✍️"},
+    "consensus_builder": {"name": "Konsens-Baumeister", "icon": "🤝"},
+    "first_idea":        {"name": "Ideen-Starter",      "icon": "💡"},
+    "thesis_master":     {"name": "These-Meister",      "icon": "📝"},
+    "early_bird":        {"name": "Early Bird",         "icon": "🐦"},
+    "top_performer":     {"name": "Top Performer",      "icon": "🏆"},
+    "debate_starter":    {"name": "Debate-Starter",     "icon": "🔥"},
+    "watchlist_curator": {"name": "Watchlist-Kurator",  "icon": "👁"},
+}
+
+SP500_SECTOR_WEIGHTS = {
+    "Technologie": 28, "Gesundheit": 13, "Finanzen": 13, "Konsum": 10,
+    "Industrie": 9, "Kommunikation": 9, "Energie": 4, "Materialien": 3,
+    "Immobilien": 3, "Versorger": 3, "Sonstige": 5,
+}
+
+def emit_activity(group_id: str, user_id: str, activity_type: str, payload: dict):
+    try:
+        mem = sb_client.table("fo_members").select("display_name,avatar_emoji").eq("group_id", group_id).eq("user_id", user_id).execute()
+        display_name = mem.data[0].get("display_name", "?") if mem.data else "?"
+        avatar_emoji = mem.data[0].get("avatar_emoji", "👤") if mem.data else "👤"
+        sb_client.table("group_activity").insert({
+            "group_id": group_id, "user_id": user_id,
+            "activity_type": activity_type,
+            "payload": {**payload, "display_name": display_name, "avatar_emoji": avatar_emoji},
+        }).execute()
+    except Exception:
+        pass
+
+def check_and_unlock(group_id: str, user_id: str, achievement_id: str):
+    try:
+        sb_client.table("group_achievements").insert({
+            "group_id": group_id, "user_id": user_id, "achievement_id": achievement_id,
+        }).execute()
+        meta = ACHIEVEMENTS.get(achievement_id, {})
+        emit_activity(group_id, user_id, "achievement", {"achievement_id": achievement_id, "achievement_name": meta.get("name", achievement_id)})
+    except Exception:
+        pass  # unique constraint = already unlocked, ignore
+
+
+@app.get("/groups/{group_id}/activity")
+def groups_activity(group_id: str, user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    rows = sb_client.table("group_activity").select("*").eq("group_id", group_id).order("created_at", desc=True).limit(60).execute()
+    activities = []
+    for r in (rows.data or []):
+        p = r.get("payload") or {}
+        activities.append({
+            "id":            r["id"],
+            "user_id":       r["user_id"],
+            "activity_type": r["activity_type"],
+            "display_name":  p.get("display_name", "?"),
+            "avatar_emoji":  p.get("avatar_emoji", "👤"),
+            "payload":       {k: v for k, v in p.items() if k not in ("display_name", "avatar_emoji")},
+            "created_at":    r["created_at"],
+        })
+    return {"activities": activities}
+
+
+@app.get("/groups/{group_id}/performance-history")
+def groups_performance_history(group_id: str, period: str = "1m", user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+
+    cache_key = f"perf-history:{group_id}:{period}"
+    cached = cache.get(cache_key, 21600)
+    if cached:
+        return cached
+
+    # Date range
+    today = datetime.now().date()
+    if period == "1m":
+        from_date = today - timedelta(days=31)
+    elif period == "3m":
+        from_date = today - timedelta(days=93)
+    else:  # ytd
+        from_date = datetime(today.year, 1, 1).date()
+
+    portfolios = sb_client.table("fo_shared_portfolios").select("user_id,positions").eq("group_id", group_id).execute()
+    if not portfolios.data:
+        return {"chartData": [], "members": {}}
+
+    member_rows = sb_client.table("fo_members").select("user_id,display_name,avatar_emoji").eq("group_id", group_id).execute()
+    member_map  = {m["user_id"]: m for m in (member_rows.data or [])}
+
+    # Collect all unique symbols
+    all_symbols = set()
+    port_map    = {}
+    for p in portfolios.data:
+        raw = p.get("positions") or []
+        if isinstance(raw, str):
+            raw = json.loads(raw)
+        positions = [pos for pos in raw if pos.get("symbol") and pos.get("weight_pct", 0) > 0]
+        port_map[p["user_id"]] = positions
+        all_symbols.update(pos["symbol"] for pos in positions)
+
+    # Fetch EOD history for each symbol
+    price_history = {}
+    for sym in all_symbols:
+        try:
+            hist = requests.get(
+                f"{EODHD_BASE}/eod/{sym}.US",
+                params={"from": str(from_date), "to": str(today), "api_token": EODHD_API_KEY, "fmt": "json"},
+                timeout=8,
+            ).json()
+            if isinstance(hist, list):
+                price_history[sym] = {h["date"]: float(h["adjusted_close"] or h["close"]) for h in hist}
+        except Exception:
+            pass
+
+    # Get all dates
+    all_dates = sorted({d for ph in price_history.values() for d in ph.keys()})
+    if not all_dates:
+        return {"chartData": [], "members": {}}
+
+    chart_data = []
+    for date in all_dates:
+        row = {"date": date}
+        for uid, positions in port_map.items():
+            total_w = sum(float(pos.get("weight_pct", 0)) / 100 for pos in positions)
+            if total_w <= 0:
+                continue
+            pct = 0.0
+            for pos in positions:
+                sym  = pos["symbol"]
+                w    = float(pos.get("weight_pct", 0)) / 100
+                ph   = price_history.get(sym, {})
+                # Base price = first available date
+                dates_sorted = sorted(ph.keys())
+                base = ph.get(dates_sorted[0]) if dates_sorted else None
+                curr = ph.get(date)
+                if base and curr and base > 0:
+                    pct += ((curr - base) / base) * (w / total_w)
+            row[uid] = round(pct * 100, 2)
+        chart_data.append(row)
+
+    members_out = {uid: {"display_name": member_map.get(uid, {}).get("display_name", "?"),
+                         "avatar_emoji": member_map.get(uid, {}).get("avatar_emoji", "👤")}
+                   for uid in port_map.keys()}
+    result = {"chartData": chart_data, "members": members_out}
+    cache.set(cache_key, result)
+    return result
+
+
+# ── Group Watchlist ────────────────────────────────────────────────────────────
+
+class WatchlistAddBody(BaseModel):
+    ticker: str
+
+@app.post("/groups/{group_id}/watchlist")
+def groups_watchlist_add(group_id: str, body: WatchlistAddBody, user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    ticker = body.ticker.upper().split(".")[0]
+    try:
+        sb_client.table("group_watchlist").insert({"group_id": group_id, "user_id": user_id, "ticker": ticker}).execute()
+    except Exception:
+        raise HTTPException(409, "Ticker bereits in Watchlist")
+
+    emit_activity(group_id, user_id, "watchlist_add", {"ticker": ticker})
+    # Achievement: watchlist_curator after 5 entries
+    count = sb_client.table("group_watchlist").select("id", count="exact").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if (count.count or 0) >= 5:
+        check_and_unlock(group_id, user_id, "watchlist_curator")
+    return {"success": True}
+
+
+@app.delete("/groups/{group_id}/watchlist/{ticker}")
+def groups_watchlist_remove(group_id: str, ticker: str, user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    sb_client.table("group_watchlist").delete().eq("group_id", group_id).eq("user_id", user_id).eq("ticker", ticker.upper()).execute()
+    return {"success": True}
+
+
+@app.get("/groups/{group_id}/watchlist")
+def groups_watchlist_list(group_id: str, user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+
+    rows     = sb_client.table("group_watchlist").select("*").eq("group_id", group_id).order("created_at").execute()
+    mem_rows = sb_client.table("fo_members").select("user_id,display_name,avatar_emoji").eq("group_id", group_id).execute()
+    mem_map  = {m["user_id"]: m for m in (mem_rows.data or [])}
+
+    items = []
+    for r in (rows.data or []):
+        ticker = r["ticker"]
+        price  = None
+        chg    = None
+        try:
+            rt = requests.get(
+                f"{EODHD_BASE}/real-time/{ticker}.US",
+                params={"api_token": EODHD_API_KEY, "fmt": "json"},
+                timeout=4,
+            ).json()
+            if isinstance(rt, dict):
+                price = float(rt.get("close") or rt.get("adjusted_close") or 0) or None
+                chg   = float(rt.get("change_p", 0) or 0)
+        except Exception:
+            pass
+        mem = mem_map.get(r["user_id"], {})
+        items.append({
+            "ticker":       ticker,
+            "user_id":      r["user_id"],
+            "display_name": mem.get("display_name", "?"),
+            "avatar_emoji": mem.get("avatar_emoji", "👤"),
+            "is_mine":      r["user_id"] == user_id,
+            "created_at":   r["created_at"],
+            "price":        price,
+            "change_pct":   chg,
+        })
+    return {"items": items}
+
+
+# ── Group Trade Ideas ──────────────────────────────────────────────────────────
+
+class TradeIdeaBody(BaseModel):
+    ticker:    str
+    direction: str
+    title:     str
+    rationale: str = ""
+
+class IdeaVoteBody(BaseModel):
+    vote: str  # "up", "down", "none"
+
+@app.post("/groups/{group_id}/trade-ideas")
+def groups_ideas_create(group_id: str, body: TradeIdeaBody, user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    if body.direction not in ("long", "short"):
+        raise HTTPException(400, "direction muss long oder short sein")
+
+    sb_client.table("group_trade_ideas").insert({
+        "group_id": group_id, "user_id": user_id,
+        "ticker": body.ticker.upper(), "direction": body.direction,
+        "title": body.title, "rationale": body.rationale,
+    }).execute()
+
+    emit_activity(group_id, user_id, "trade_idea", {"ticker": body.ticker.upper(), "title": body.title})
+    # Check first_idea achievement
+    count = sb_client.table("group_trade_ideas").select("id", count="exact").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if (count.count or 0) == 1:
+        check_and_unlock(group_id, user_id, "first_idea")
+    return {"success": True}
+
+
+@app.get("/groups/{group_id}/trade-ideas")
+def groups_ideas_list(group_id: str, user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+
+    rows     = sb_client.table("group_trade_ideas").select("*").eq("group_id", group_id).order("created_at", desc=True).execute()
+    mem_rows = sb_client.table("fo_members").select("user_id,display_name,avatar_emoji").eq("group_id", group_id).execute()
+    mem_map  = {m["user_id"]: m for m in (mem_rows.data or [])}
+
+    ideas = []
+    for r in (rows.data or []):
+        votes = sb_client.table("group_trade_idea_votes").select("user_id,vote").eq("idea_id", r["id"]).execute()
+        upvotes   = sum(1 for v in (votes.data or []) if v["vote"] == "up")
+        downvotes = sum(1 for v in (votes.data or []) if v["vote"] == "down")
+        my_vote   = next((v["vote"] for v in (votes.data or []) if v["user_id"] == user_id), None)
+        mem = mem_map.get(r["user_id"], {})
+        ideas.append({
+            "id":           r["id"],
+            "user_id":      r["user_id"],
+            "display_name": mem.get("display_name", "?"),
+            "avatar_emoji": mem.get("avatar_emoji", "👤"),
+            "ticker":       r["ticker"],
+            "direction":    r["direction"],
+            "title":        r["title"],
+            "rationale":    r.get("rationale", ""),
+            "is_closed":    r.get("is_closed", False),
+            "created_at":   r["created_at"],
+            "upvotes":      upvotes,
+            "downvotes":    downvotes,
+            "my_vote":      my_vote,
+            "is_mine":      r["user_id"] == user_id,
+        })
+    return {"ideas": ideas}
+
+
+@app.post("/groups/{group_id}/trade-ideas/{idea_id}/vote")
+def groups_ideas_vote(group_id: str, idea_id: str, body: IdeaVoteBody, user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    if body.vote == "none":
+        sb_client.table("group_trade_idea_votes").delete().eq("idea_id", idea_id).eq("user_id", user_id).execute()
+    else:
+        existing = sb_client.table("group_trade_idea_votes").select("id").eq("idea_id", idea_id).eq("user_id", user_id).execute()
+        if existing.data:
+            sb_client.table("group_trade_idea_votes").update({"vote": body.vote}).eq("id", existing.data[0]["id"]).execute()
+        else:
+            sb_client.table("group_trade_idea_votes").insert({"idea_id": idea_id, "user_id": user_id, "vote": body.vote}).execute()
+    return {"success": True}
+
+
+@app.post("/groups/{group_id}/trade-ideas/{idea_id}/close")
+def groups_ideas_close(group_id: str, idea_id: str, user_id: str = Depends(verify_jwt)):
+    idea = sb_client.table("group_trade_ideas").select("user_id").eq("id", idea_id).execute()
+    if not idea.data:
+        raise HTTPException(404, "Nicht gefunden")
+    if idea.data[0]["user_id"] != user_id:
+        raise HTTPException(403, "Keine Berechtigung")
+    sb_client.table("group_trade_ideas").update({"is_closed": True}).eq("id", idea_id).execute()
+    return {"success": True}
+
+
+@app.delete("/groups/{group_id}/trade-ideas/{idea_id}")
+def groups_ideas_delete(group_id: str, idea_id: str, user_id: str = Depends(verify_jwt)):
+    idea = sb_client.table("group_trade_ideas").select("user_id").eq("id", idea_id).execute()
+    if not idea.data:
+        raise HTTPException(404, "Nicht gefunden")
+    if idea.data[0]["user_id"] != user_id:
+        raise HTTPException(403, "Keine Berechtigung")
+    sb_client.table("group_trade_idea_votes").delete().eq("idea_id", idea_id).execute()
+    sb_client.table("group_trade_ideas").delete().eq("id", idea_id).execute()
+    return {"success": True}
+
+
+# ── Group Sector Allocation ────────────────────────────────────────────────────
+
+@app.get("/groups/{group_id}/sector-allocation")
+def groups_sector_allocation(group_id: str, user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+
+    portfolios = sb_client.table("fo_shared_portfolios").select("positions").eq("group_id", group_id).execute()
+    sector_totals: dict = {}
+    member_count = 0
+
+    for p in (portfolios.data or []):
+        raw = p.get("positions") or []
+        if isinstance(raw, str):
+            raw = json.loads(raw)
+        if not raw:
+            continue
+        member_count += 1
+        for pos in raw:
+            sector = pos.get("sector", "Sonstige") or "Sonstige"
+            sector_totals[sector] = sector_totals.get(sector, 0) + float(pos.get("weight_pct", 0))
+
+    if member_count == 0:
+        return {"group_allocation": {}, "sp500_weights": SP500_SECTOR_WEIGHTS}
+
+    group_allocation = {k: round(v / member_count, 1) for k, v in sector_totals.items()}
+    return {"group_allocation": group_allocation, "sp500_weights": SP500_SECTOR_WEIGHTS}
+
+
+# ── Group KI Briefing ──────────────────────────────────────────────────────────
+
+@app.get("/groups/{group_id}/briefing/latest")
+def groups_briefing_latest(group_id: str, user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    row = sb_client.table("group_briefings").select("*").eq("group_id", group_id).order("generated_at", desc=True).limit(1).execute()
+    if not row.data:
+        return {"briefing": None}
+    b = row.data[0]
+    return {"briefing": {"content": b["content"], "generated_at": b["generated_at"]}}
+
+
+@app.post("/groups/{group_id}/briefing/generate")
+def groups_briefing_generate(group_id: str, user_id: str = Depends(verify_jwt)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+
+    # Gather context
+    portfolios = sb_client.table("fo_shared_portfolios").select("positions").eq("group_id", group_id).execute()
+    ideas_rows = sb_client.table("group_trade_ideas").select("ticker,direction,title").eq("group_id", group_id).eq("is_closed", False).limit(10).execute()
+    polls_rows = sb_client.table("fo_polls").select("question").eq("group_id", group_id).eq("is_closed", False).limit(5).execute()
+
+    all_tickers = set()
+    for p in (portfolios.data or []):
+        raw = p.get("positions") or []
+        if isinstance(raw, str):
+            raw = json.loads(raw)
+        all_tickers.update(pos.get("symbol", "") for pos in raw if pos.get("symbol"))
+
+    ideas_text = "\n".join(f"- {i['ticker']} ({i['direction']}): {i['title']}" for i in (ideas_rows.data or []))
+    polls_text = "\n".join(f"- {q['question']}" for q in (polls_rows.data or []))
+    tickers_text = ", ".join(sorted(all_tickers)[:20])
+
+    prompt = f"""Du bist ein kompakter KI-Marktanalyst für eine private Investment-Gruppe.
+
+Portfolio-Positionen der Gruppe: {tickers_text or 'keine'}
+Offene Trade-Ideen:
+{ideas_text or 'keine'}
+Aktive Diskussions-Fragen:
+{polls_text or 'keine'}
+
+Erstelle ein kurzes, prägnantes Gruppen-Briefing (max. 200 Wörter) auf Deutsch:
+1. Kurze Markteinschätzung zu den gehaltenen Titeln
+2. Kommentar zu den Trade-Ideen
+3. Ein konkreter Ausblick / Handlungshinweis für die Gruppe
+Keine Anlageberatung — nur Marktbeobachtung."""
+
+    try:
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={"x-api-key": ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+            json={"model": "claude-sonnet-4-6", "max_tokens": 512, "messages": [{"role": "user", "content": prompt}]},
+            timeout=30,
+        )
+        content = resp.json()["content"][0]["text"]
+    except Exception:
+        raise HTTPException(500, "KI-Briefing konnte nicht generiert werden")
+
+    now_str = datetime.utcnow().isoformat()
+    sb_client.table("group_briefings").insert({"group_id": group_id, "content": content, "generated_at": now_str}).execute()
+    return {"content": content, "generated_at": now_str}
+
+
+# ── Group Achievements ─────────────────────────────────────────────────────────
+
+@app.get("/groups/{group_id}/achievements")
+def groups_achievements(group_id: str, user_id: str = Depends(verify_jwt), target_user_id: str = Query(None)):
+    mb = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
+    if not mb.data:
+        raise HTTPException(403, "Nicht Mitglied")
+    uid = target_user_id or user_id
+    rows = sb_client.table("group_achievements").select("*").eq("group_id", group_id).eq("user_id", uid).execute()
+    achievements = [{"achievement_id": r["achievement_id"], "unlocked_at": r["unlocked_at"]} for r in (rows.data or [])]
+    return {"achievements": achievements}
 
 
 # ─── 13F Filing Tracker ───────────────────────────────────────────────────────
