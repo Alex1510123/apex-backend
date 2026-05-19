@@ -48,6 +48,91 @@ SECTOR_ETFS = {
     "Versorger":       "XLU",
 }
 
+TICKER_SECTOR_MAP = {
+    # Technologie
+    "AAPL": "Technologie", "MSFT": "Technologie", "NVDA": "Technologie",
+    "GOOGL": "Technologie", "GOOG": "Technologie", "META": "Technologie",
+    "AMZN": "Technologie", "ORCL": "Technologie", "CRM": "Technologie",
+    "ADBE": "Technologie", "SAP": "Technologie", "ASML": "Technologie",
+    "TSM": "Technologie", "AVGO": "Technologie", "AMD": "Technologie",
+    "INTC": "Technologie", "CSCO": "Technologie", "IBM": "Technologie",
+    "QCOM": "Technologie", "TXN": "Technologie", "AMAT": "Technologie",
+    "MU": "Technologie", "LRCX": "Technologie", "KLAC": "Technologie",
+    "SNPS": "Technologie", "CDNS": "Technologie", "NOW": "Technologie",
+    "INTU": "Technologie", "PANW": "Technologie", "CRWD": "Technologie",
+    "SNOW": "Technologie", "NET": "Technologie", "DDOG": "Technologie",
+    "SHOP": "Technologie", "SE": "Technologie", "BABA": "Technologie",
+    "IFX": "Technologie",
+    # Gesundheit
+    "JNJ": "Gesundheit", "PFE": "Gesundheit", "UNH": "Gesundheit",
+    "LLY": "Gesundheit", "MRK": "Gesundheit", "ABBV": "Gesundheit",
+    "NVO": "Gesundheit", "NOVO": "Gesundheit", "TMO": "Gesundheit",
+    "ABT": "Gesundheit", "DHR": "Gesundheit", "BMY": "Gesundheit",
+    "AMGN": "Gesundheit", "GILD": "Gesundheit", "ISRG": "Gesundheit",
+    "SYK": "Gesundheit", "MDT": "Gesundheit", "BSX": "Gesundheit",
+    "ELV": "Gesundheit", "CVS": "Gesundheit", "HUM": "Gesundheit",
+    "BAYN": "Gesundheit", "SHL": "Gesundheit", "FRE": "Gesundheit",
+    # Finanzen
+    "JPM": "Finanzen", "BAC": "Finanzen", "GS": "Finanzen",
+    "MS": "Finanzen", "V": "Finanzen", "MA": "Finanzen",
+    "BRK-B": "Finanzen", "BRK-A": "Finanzen", "BLK": "Finanzen",
+    "WFC": "Finanzen", "C": "Finanzen", "AXP": "Finanzen",
+    "SCHW": "Finanzen", "SPGI": "Finanzen", "MCO": "Finanzen",
+    "ALV": "Finanzen", "MUV2": "Finanzen", "DBK": "Finanzen",
+    "CBK": "Finanzen", "AXA": "Finanzen", "BNP": "Finanzen",
+    "ING": "Finanzen", "INGA": "Finanzen", "SAN": "Finanzen",
+    "CS": "Finanzen", "UBS": "Finanzen",
+    # Konsum
+    "TSLA": "Konsum", "HD": "Konsum", "NKE": "Konsum",
+    "MCD": "Konsum", "SBUX": "Konsum", "LULU": "Konsum",
+    "PG": "Konsum", "KO": "Konsum", "PEP": "Konsum",
+    "WMT": "Konsum", "COST": "Konsum", "TGT": "Konsum",
+    "AMZN": "Konsum", "EBAY": "Konsum", "ETSY": "Konsum",
+    "F": "Konsum", "GM": "Konsum", "TM": "Konsum",
+    "BMW": "Konsum", "MBG": "Konsum", "VOW3": "Konsum",
+    "PAH3": "Konsum", "RACE": "Konsum", "OR": "Konsum",
+    "MC": "Konsum", "CDI": "Konsum", "HEN3": "Konsum",
+    "MDLZ": "Konsum", "GIS": "Konsum", "HSY": "Konsum",
+    "CL": "Konsum", "EL": "Konsum",
+    # Industrie
+    "BA": "Industrie", "CAT": "Industrie", "GE": "Industrie",
+    "HON": "Industrie", "UPS": "Industrie", "LMT": "Industrie",
+    "RTX": "Industrie", "MMM": "Industrie", "DE": "Industrie",
+    "SIE": "Industrie", "AIR": "Industrie", "BAS": "Industrie",
+    "FDX": "Industrie", "NOC": "Industrie", "GD": "Industrie",
+    "EMR": "Industrie", "ETN": "Industrie", "PH": "Industrie",
+    "ROK": "Industrie", "CMI": "Industrie", "PCAR": "Industrie",
+    "WM": "Industrie", "RSG": "Industrie", "UBER": "Industrie",
+    "MTX": "Industrie", "RHM": "Industrie",
+    # Kommunikation
+    "NFLX": "Kommunikation", "DIS": "Kommunikation", "T": "Kommunikation",
+    "VZ": "Kommunikation", "CMCSA": "Kommunikation", "TMUS": "Kommunikation",
+    "GOOGL": "Kommunikation", "GOOG": "Kommunikation", "META": "Kommunikation",
+    "CHTR": "Kommunikation", "PARA": "Kommunikation", "WBD": "Kommunikation",
+    "SPOT": "Kommunikation", "SNAP": "Kommunikation", "PINS": "Kommunikation",
+    "DTE": "Kommunikation", "TEF": "Kommunikation", "ORAN": "Kommunikation",
+    # Energie
+    "XOM": "Energie", "CVX": "Energie", "COP": "Energie",
+    "SHEL": "Energie", "BP": "Energie", "TTE": "Energie",
+    "EOG": "Energie", "SLB": "Energie", "PSX": "Energie",
+    "MPC": "Energie", "VLO": "Energie", "OXY": "Energie",
+    "ENB": "Energie", "ET": "Energie",
+    # Materialien
+    "LIN": "Materialien", "FCX": "Materialien", "NEM": "Materialien",
+    "BHP": "Materialien", "RIO": "Materialien", "APD": "Materialien",
+    "SHW": "Materialien", "ECL": "Materialien", "DD": "Materialien",
+    "PPG": "Materialien", "ALB": "Materialien",
+    # Immobilien
+    "PLD": "Immobilien", "AMT": "Immobilien", "EQIX": "Immobilien",
+    "VNA": "Immobilien", "CCI": "Immobilien", "PSA": "Immobilien",
+    "WELL": "Immobilien", "DLR": "Immobilien", "O": "Immobilien",
+    # Versorger
+    "NEE": "Versorger", "DUK": "Versorger", "SO": "Versorger",
+    "EOAN": "Versorger", "RWE": "Versorger", "AEP": "Versorger",
+    "EXC": "Versorger", "XEL": "Versorger", "D": "Versorger",
+    "ED": "Versorger", "EIX": "Versorger",
+}
+
 # EODHD ticker format:
 #   US stocks/ETFs : symbol only (SPY, AAPL)
 #   Crypto         : BTC-USD.CC
@@ -4711,81 +4796,9 @@ def groups_ideas_delete(group_id: str, idea_id: str, user_id: str = Depends(veri
 
 # ── Group Sector Allocation ────────────────────────────────────────────────────
 
-EODHD_SECTOR_MAP = {
-    "Technology":            "Technologie",
-    "Healthcare":            "Gesundheit",
-    "Financial Services":    "Finanzen",
-    "Financial":             "Finanzen",
-    "Consumer Cyclical":     "Konsum",
-    "Consumer Defensive":    "Konsum",
-    "Industrials":           "Industrie",
-    "Communication Services":"Kommunikation",
-    "Energy":                "Energie",
-    "Basic Materials":       "Materialien",
-    "Real Estate":           "Immobilien",
-    "Utilities":             "Versorger",
-}
-
-def _eodhd_ticker(ticker: str) -> str:
-    return ticker if "." in ticker else f"{ticker}.US"
-
-
 def lookup_sector(ticker: str) -> str:
-    cache_key = f"sector:{ticker}"
-    cached = cache.get(cache_key, 86400)
-    if cached is not None:
-        return cached
-    try:
-        resp = requests.get(
-            f"{EODHD_BASE}/fundamentals/{_eodhd_ticker(ticker)}",
-            params={"api_token": EODHD_API_KEY, "filter": "General::Sector", "fmt": "json"},
-            timeout=5,
-        )
-        raw = resp.json()
-        # Response is either a plain string or {"General":{"Sector":"..."}}
-        if isinstance(raw, str) and raw:
-            sector_en = raw
-        elif isinstance(raw, dict):
-            sector_en = raw.get("General", {}).get("Sector") or raw.get("Sector") or ""
-        else:
-            sector_en = ""
-        sector_de = EODHD_SECTOR_MAP.get(sector_en, "Sonstige") if sector_en else "Sonstige"
-    except Exception:
-        sector_de = "Sonstige"
-    cache.set(cache_key, sector_de)
-    return sector_de
-
-
-@app.get("/debug/sector/{ticker}")
-async def debug_sector(ticker: str):
-    normalized = _eodhd_ticker(ticker)
-    url = f"{EODHD_BASE}/fundamentals/{normalized}"
-    params = {"api_token": EODHD_API_KEY, "filter": "General::Sector", "fmt": "json"}
-    try:
-        resp = requests.get(url, params=params, timeout=10)
-        try:
-            resp_json = resp.json()
-        except Exception:
-            resp_json = None
-        return {
-            "input_ticker":  ticker,
-            "normalized":    normalized,
-            "url_called":    str(resp.url),
-            "status_code":   resp.status_code,
-            "raw_response":  resp.text[:500],
-            "response_json": resp_json,
-            "cached_value":  cache.get(f"sector:{ticker}", 86400),
-        }
-    except Exception as e:
-        return {"error": str(e), "input_ticker": ticker, "normalized": normalized}
-
-
-@app.post("/debug/clear-sector-cache")
-async def clear_sector_cache():
-    keys_removed = [k for k in list(cache._store.keys()) if k.startswith("sector:")]
-    for k in keys_removed:
-        del cache._store[k]
-    return {"cleared": True, "keys_removed": keys_removed}
+    base = ticker.split(".")[0].upper()
+    return TICKER_SECTOR_MAP.get(base, "Sonstige")
 
 
 @app.get("/groups/{group_id}/sector-allocation")
