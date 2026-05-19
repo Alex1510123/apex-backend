@@ -3808,6 +3808,19 @@ async def share_fo_portfolio(group_id: str, request: Request, user_id: str = Dep
     return {"success": True}
 
 
+def _aggregate_positions(positions) -> list:
+    if isinstance(positions, str):
+        positions = json.loads(positions)
+    agg: dict = {}
+    for p in (positions or []):
+        t = p.get("ticker") or p.get("symbol", "")
+        if t in agg:
+            agg[t]["weight_pct"] = agg[t].get("weight_pct", 0) + p.get("weight_pct", 0)
+        else:
+            agg[t] = {**p}
+    return list(agg.values())
+
+
 @app.get("/fo/groups/{group_id}/portfolios")
 def fo_group_portfolios(group_id: str, user_id: str = Depends(verify_jwt)):
     membership = sb_client.table("fo_members").select("id").eq("group_id", group_id).eq("user_id", user_id).execute()
@@ -3821,6 +3834,7 @@ def fo_group_portfolios(group_id: str, user_id: str = Depends(verify_jwt)):
         m = member_map.get(p["user_id"], {})
         enriched.append({
             **p,
+            "positions":    _aggregate_positions(p.get("positions") or []),
             "display_name": m.get("display_name", "Unbekannt"),
             "avatar_emoji": m.get("avatar_emoji", "👤"),
             "is_me":        p["user_id"] == user_id,
@@ -4712,6 +4726,10 @@ EODHD_SECTOR_MAP = {
     "Utilities":             "Versorger",
 }
 
+def _eodhd_ticker(ticker: str) -> str:
+    return ticker if "." in ticker else f"{ticker}.US"
+
+
 def lookup_sector(ticker: str) -> str:
     cache_key = f"sector:{ticker}"
     cached = cache.get(cache_key, 86400)
@@ -4719,7 +4737,7 @@ def lookup_sector(ticker: str) -> str:
         return cached
     try:
         resp = requests.get(
-            f"{EODHD_BASE}/fundamentals/{ticker}.US",
+            f"{EODHD_BASE}/fundamentals/{_eodhd_ticker(ticker)}",
             params={"api_token": EODHD_API_KEY, "filter": "General::Sector", "fmt": "json"},
             timeout=5,
         )
